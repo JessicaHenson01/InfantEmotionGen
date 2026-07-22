@@ -1,5 +1,5 @@
 """
-Training script for SDXL with LoRA using diffusers' built-in methods.
+Training script for SDXL using diffusers' built-in methods.
 """
 
 import argparse
@@ -73,7 +73,7 @@ def collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Train SDXL with LoRA")
+    parser = argparse.ArgumentParser(description="Train SDXL")
     parser.add_argument(
         "--pretrained_model_name_or_path",
         type=str,
@@ -269,7 +269,7 @@ def main() -> None:
 
             # Encode prompts with both text encoders (SDXL has two)
             with torch.no_grad():
-                # First text encoder - CLIP (768 dims)
+                # First text encoder - CLIP (768 dims) - full sequence output
                 tokenized_prompts = tokenizer(
                     prompts,
                     padding="max_length",
@@ -277,9 +277,10 @@ def main() -> None:
                     truncation=True,
                     return_tensors="pt",
                 ).input_ids.to(device)
-                text_embeddings = text_encoder(tokenized_prompts)[0]  # (batch, 77, 768)
+                # (batch, 77, 768)
+                text_embeddings = text_encoder(tokenized_prompts)[0]
 
-                # Second text encoder - CLIP (1280 dims)
+                # Second text encoder - CLIP (1280 dims) - full sequence output
                 tokenized_prompts_2 = tokenizer_2(
                     prompts,
                     padding="max_length",
@@ -287,11 +288,16 @@ def main() -> None:
                     truncation=True,
                     return_tensors="pt",
                 ).input_ids.to(device)
-                text_embeddings_2 = text_encoder_2(tokenized_prompts_2)[0]  # (batch, 77, 1280)
+                # FIX: Use last_hidden_state to get 3D tensor (batch, 77, 1280)
+                text_embeddings_2 = (
+                    text_encoder_2(tokenized_prompts_2).last_hidden_state
+                )
 
                 # Concatenate along the last dimension for SDXL
                 # Result: (batch, 77, 2048)
-                text_embeddings = torch.cat([text_embeddings, text_embeddings_2], dim=-1)
+                text_embeddings = torch.cat(
+                    [text_embeddings, text_embeddings_2], dim=-1
+                )
 
             # Encode images to latents
             with torch.no_grad():
@@ -313,11 +319,11 @@ def main() -> None:
             # SDXL requires added_cond_kwargs
             batch_size = images.shape[0]
 
-            # Create proper text_embeds for SDXL (pooled output from second encoder)
-            # Use the mean of the second text encoder's sequence output
+            # Pooled text_embeds from second encoder
             text_embeds = text_embeddings_2.mean(dim=1)  # (batch, 1280)
-
-            time_ids = torch.zeros(batch_size, 6, device=device, dtype=torch.float16)
+            time_ids = torch.zeros(
+                batch_size, 6, device=device, dtype=torch.float16
+            )
 
             added_cond_kwargs = {
                 "text_embeds": text_embeds,
@@ -334,7 +340,9 @@ def main() -> None:
             )[0]
 
             # Compute loss
-            loss = torch.nn.functional.mse_loss(noise_pred, noise, reduction="mean")
+            loss = torch.nn.functional.mse_loss(
+                noise_pred, noise, reduction="mean"
+            )
 
             accelerator.backward(loss)
             optimizer.step()
