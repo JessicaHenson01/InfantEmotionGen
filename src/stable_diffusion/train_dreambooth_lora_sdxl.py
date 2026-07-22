@@ -318,123 +318,125 @@ def main() -> None:
     running_loss = 0.0
     progress_bar = tqdm(range(args.max_train_steps))
 
-    for _step in progress_bar:
-        for batch in dataloader:
-            # Move to device - FP16 for memory efficiency
-            images = batch["images"].to(device, dtype=torch.float16)
-            prompts = batch["prompts"]
+    # ============================================================
+    # FIX: Use a single loop over dataloader with accelerator.accumulate
+    # ============================================================
+    for batch in dataloader:
+        # Move to device - FP16 for memory efficiency
+        images = batch["images"].to(device, dtype=torch.float16)
+        prompts = batch["prompts"]
 
-            # Check input images
-            if check_tensor(images, "images", global_step):
-                print(f"   Images range: min={images.min():.4f}, max={images.max():.4f}")
-                optimizer.zero_grad()
-                continue
+        # Check input images
+        if check_tensor(images, "images", global_step):
+            print(f"   Images range: min={images.min():.4f}, max={images.max():.4f}")
+            optimizer.zero_grad()
+            continue
 
-            # Encode prompts
-            with torch.no_grad():
-                tokenized_prompts = tokenizer(
-                    prompts,
-                    padding="max_length",
-                    max_length=tokenizer.model_max_length,
-                    truncation=True,
-                    return_tensors="pt",
-                ).input_ids.to(device)
-                text_embeddings = text_encoder(tokenized_prompts)[0]
+        # Encode prompts
+        with torch.no_grad():
+            tokenized_prompts = tokenizer(
+                prompts,
+                padding="max_length",
+                max_length=tokenizer.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            ).input_ids.to(device)
+            text_embeddings = text_encoder(tokenized_prompts)[0]
 
-                tokenized_prompts_2 = tokenizer_2(
-                    prompts,
-                    padding="max_length",
-                    max_length=tokenizer_2.model_max_length,
-                    truncation=True,
-                    return_tensors="pt",
-                ).input_ids.to(device)
-                text_embeddings_2 = text_encoder_2(
-                    tokenized_prompts_2
-                ).last_hidden_state
-                text_embeddings = torch.cat(
-                    [text_embeddings, text_embeddings_2], dim=-1
-                )
-
-            # ============================================================
-            # FIX 3: Convert images to FP32 before VAE encoding
-            # ============================================================
-            with torch.no_grad():
-                latents = vae.encode(images.float()).latent_dist.sample()
-                latents = latents * 0.18215
-
-                if check_tensor(latents, "latents", global_step):
-                    print("   VAE produced NaN! Skipping...")
-                    optimizer.zero_grad()
-                    continue
-
-            timesteps = torch.randint(
-                0,
-                noise_scheduler.config.num_train_timesteps,
-                (images.shape[0],),
-                device=device,
-            ).long()
-
-            noise = torch.randn_like(latents)
-            noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
-
-            batch_size = images.shape[0]
-            text_embeds = text_embeddings_2.mean(dim=1)
-            time_ids = torch.zeros(
-                batch_size, 6, device=device, dtype=torch.float16
+            tokenized_prompts_2 = tokenizer_2(
+                prompts,
+                padding="max_length",
+                max_length=tokenizer_2.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            ).input_ids.to(device)
+            text_embeddings_2 = text_encoder_2(
+                tokenized_prompts_2
+            ).last_hidden_state
+            text_embeddings = torch.cat(
+                [text_embeddings, text_embeddings_2], dim=-1
             )
 
-            added_cond_kwargs = {
-                "text_embeds": text_embeds,
-                "time_ids": time_ids,
-            }
+        # ============================================================
+        # FIX 3: Convert images to FP32 before VAE encoding
+        # ============================================================
+        with torch.no_grad():
+            latents = vae.encode(images.float()).latent_dist.sample()
+            latents = latents * 0.18215
 
-            # Predict noise
-            noise_pred = unet(
-                noisy_latents,
-                timesteps,
-                encoder_hidden_states=text_embeddings,
-                added_cond_kwargs=added_cond_kwargs,
-                return_dict=False,
-            )[0]
-
-            if check_tensor(noise_pred, "noise_pred", global_step):
+            if check_tensor(latents, "latents", global_step):
+                print("   VAE produced NaN! Skipping...")
                 optimizer.zero_grad()
                 continue
 
-            # Compute loss in FP32 for stability
-            loss = torch.nn.functional.mse_loss(
-                noise_pred.float(), noise.float(), reduction="mean"
-            )
+        timesteps = torch.randint(
+            0,
+            noise_scheduler.config.num_train_timesteps,
+            (images.shape[0],),
+            device=device,
+        ).long()
 
-            if torch.isnan(loss) or torch.isinf(loss):
-                print(f"⚠️ NaN/Inf loss at step {global_step}! Skipping...")
-                optimizer.zero_grad()
-                continue
+        noise = torch.randn_like(latents)
+        noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
 
-            # Backward
+        batch_size = images.shape[0]
+        text_embeds = text_embeddings_2.mean(dim=1)
+        time_ids = torch.zeros(
+            batch_size, 6, device=device, dtype=torch.float16
+        )
+
+        added_cond_kwargs = {
+            "text_embeds": text_embeds,
+            "time_ids": time_ids,
+        }
+
+        # Predict noise
+        noise_pred = unet(
+            noisy_latents,
+            timesteps,
+            encoder_hidden_states=text_embeddings,
+            added_cond_kwargs=added_cond_kwargs,
+            return_dict=False,
+        )[0]
+
+        if check_tensor(noise_pred, "noise_pred", global_step):
+            optimizer.zero_grad()
+            continue
+
+        # Compute loss in FP32 for stability
+        loss = torch.nn.functional.mse_loss(
+            noise_pred.float(), noise.float(), reduction="mean"
+        )
+
+        if torch.isnan(loss) or torch.isinf(loss):
+            print(f"⚠️ NaN/Inf loss at step {global_step}! Skipping...")
+            optimizer.zero_grad()
+            continue
+
+        # ============================================================
+        # FIX: Use accelerator.accumulate for gradient accumulation
+        # ============================================================
+        with accelerator.accumulate(unet):
             accelerator.backward(loss)
 
-            # Gradient clipping
             if accelerator.sync_gradients:
                 accelerator.clip_grad_norm_(unet.parameters(), max_norm=1.0)
 
             optimizer.step()
             optimizer.zero_grad()
 
-            global_step += 1
-            running_loss += loss.item()
-            avg_loss = running_loss / global_step
+        global_step += 1
+        running_loss += loss.item()
+        avg_loss = running_loss / global_step
 
-            wandb.log({
-                "train/loss": loss.item(),
-                "train/avg_loss": avg_loss,
-                "train/global_step": global_step,
-            })
+        wandb.log({
+            "train/loss": loss.item(),
+            "train/avg_loss": avg_loss,
+            "train/global_step": global_step,
+        })
 
-            progress_bar.set_postfix({"loss": loss.item(), "avg_loss": avg_loss})
-
-            if global_step >= args.max_train_steps:
-                break
+        progress_bar.update(1)
+        progress_bar.set_postfix({"loss": loss.item(), "avg_loss": avg_loss})
 
         if global_step >= args.max_train_steps:
             break
