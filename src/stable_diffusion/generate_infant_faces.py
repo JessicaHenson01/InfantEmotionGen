@@ -7,7 +7,7 @@ import os
 
 import torch
 import wandb
-from diffusers import StableDiffusionXLPipeline, DPMSolverMultistepScheduler
+from diffusers import StableDiffusionXLPipeline, DPMSolverMultistepScheduler, AutoencoderKL
 
 
 def main() -> None:
@@ -48,6 +48,25 @@ def main() -> None:
         torch_dtype=torch.float16,
         variant="fp16",
     )
+
+    # ============================================================
+    # FIX: Load VAE in FP32 to prevent black images
+    # ============================================================
+    print("Loading VAE in FP32 for proper decoding...")
+    vae = AutoencoderKL.from_pretrained(
+        "madebyollin/sdxl-vae-fp16-fix",  # Fixed VAE for SDXL
+        torch_dtype=torch.float32,
+    )
+    pipe.vae = vae
+
+    # Or alternatively, load the original VAE in FP32:
+    # vae = AutoencoderKL.from_pretrained(
+    #     args.model_id,
+    #     subfolder="vae",
+    #     torch_dtype=torch.float32,
+    # )
+    # pipe.vae = vae
+
     pipe.to("cuda")
 
     # Try to enable xFormers, but continue if not available
@@ -59,6 +78,7 @@ def main() -> None:
         print("⚠️ Continuing without xFormers")
 
     # Load LoRA weights
+    print(f"Loading LoRA weights from: {args.lora_path}")
     pipe.load_lora_weights(args.lora_path)
 
     # Use DPM++ sampler for better quality
@@ -82,16 +102,17 @@ def main() -> None:
         print(f"Generating {args.num_images} {emotion} images...")
         for idx in range(args.num_images):
             generator = torch.Generator("cuda").manual_seed(args.seed + idx)
-            with torch.cuda.amp.autocast():
-                result = pipe(
-                    prompt=prompt,
-                    negative_prompt="cartoon, drawing, blurry, low quality, distorted, deformed",
-                    num_inference_steps=args.num_inference_steps,
-                    guidance_scale=args.guidance_scale,
-                    generator=generator,
-                    height=1024,
-                    width=1024,
-                )
+            
+            # Remove autocast - let the pipeline handle precision
+            result = pipe(
+                prompt=prompt,
+                negative_prompt="cartoon, drawing, blurry, low quality, distorted, deformed",
+                num_inference_steps=args.num_inference_steps,
+                guidance_scale=args.guidance_scale,
+                generator=generator,
+                height=1024,
+                width=1024,
+            )
 
             save_path = os.path.join(emotion_dir, f"{emotion}_{idx:04d}.png")
             result.images[0].save(save_path)
