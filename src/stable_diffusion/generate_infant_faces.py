@@ -7,7 +7,7 @@ import os
 
 import torch
 import wandb
-from diffusers import StableDiffusionXLPipeline, DPMSolverMultistepScheduler, AutoencoderKL
+from diffusers import AutoencoderKL, DPMSolverMultistepScheduler, StableDiffusionXLPipeline
 
 
 def main() -> None:
@@ -49,24 +49,13 @@ def main() -> None:
         variant="fp16",
     )
 
-    # ============================================================
-    # FIX: Load VAE in FP32 to prevent black images
-    # ============================================================
+    # Load VAE in FP32 to prevent black images
     print("Loading VAE in FP32 for proper decoding...")
     vae = AutoencoderKL.from_pretrained(
-        "madebyollin/sdxl-vae-fp16-fix",  # Fixed VAE for SDXL
+        "madebyollin/sdxl-vae-fp16-fix",
         torch_dtype=torch.float32,
     )
     pipe.vae = vae
-
-    # Or alternatively, load the original VAE in FP32:
-    # vae = AutoencoderKL.from_pretrained(
-    #     args.model_id,
-    #     subfolder="vae",
-    #     torch_dtype=torch.float32,
-    # )
-    # pipe.vae = vae
-
     pipe.to("cuda")
 
     # Try to enable xFormers, but continue if not available
@@ -102,20 +91,36 @@ def main() -> None:
         print(f"Generating {args.num_images} {emotion} images...")
         for idx in range(args.num_images):
             generator = torch.Generator("cuda").manual_seed(args.seed + idx)
-            
-            # Remove autocast - let the pipeline handle precision
-            result = pipe(
-                prompt=prompt,
-                negative_prompt="cartoon, drawing, blurry, low quality, distorted, deformed",
-                num_inference_steps=args.num_inference_steps,
-                guidance_scale=args.guidance_scale,
-                generator=generator,
-                height=1024,
-                width=1024,
-            )
+
+            with torch.no_grad():
+                # Run pipeline with output_type="latent" to get latents
+                result = pipe(
+                    prompt=prompt,
+                    negative_prompt="cartoon, drawing, blurry, low quality, distorted, deformed",
+                    num_inference_steps=args.num_inference_steps,
+                    guidance_scale=args.guidance_scale,
+                    generator=generator,
+                    height=1024,
+                    width=1024,
+                    output_type="latent",
+                )
+
+                # Convert latents to float32 and decode
+                latents = result.images[0].to(torch.float32)
+                decoded = pipe.vae.decode(
+                    latents / pipe.vae.config.scaling_factor, return_dict=False
+                )[0]
+
+                # Convert to PIL image
+                decoded = (decoded / 2 + 0.5).clamp(0, 1)
+                decoded = decoded.cpu().permute(0, 2, 3, 1).float().numpy()
+                decoded = (decoded * 255).round().astype("uint8")
+
+                from PIL import Image
+                image = Image.fromarray(decoded[0])
 
             save_path = os.path.join(emotion_dir, f"{emotion}_{idx:04d}.png")
-            result.images[0].save(save_path)
+            image.save(save_path)
 
             if (idx + 1) % 10 == 0:
                 print(f"  Generated {idx + 1}/{args.num_images}")
