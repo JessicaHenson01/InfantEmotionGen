@@ -245,13 +245,15 @@ def _load_models(args: argparse.Namespace, device: torch.device):
         torch_dtype=torch.float16,
     ).to(device)
 
-    # Apply LoRA to UNet
+    # Apply LoRA to UNet - correct target modules for SDXL
     lora_config = LoraConfig(
         r=16,
         lora_alpha=16,
         target_modules=[
             "to_q", "to_k", "to_v", "to_out.0",
-            "proj_in", "proj_out",
+            "add_proj",
+            "ff.net.0.proj",
+            "ff.net.2",
         ],
         lora_dropout=0.1,
         bias="none",
