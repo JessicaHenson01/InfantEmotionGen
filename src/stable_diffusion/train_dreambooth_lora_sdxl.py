@@ -344,7 +344,7 @@ def main() -> None:
                 noise_pred, noise, reduction="mean"
             )
 
-            accelerator.backward(loss)
+            accelerator.backward(loss.float())
             optimizer.step()
             optimizer.zero_grad()
 
