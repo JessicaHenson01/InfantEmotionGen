@@ -1,5 +1,5 @@
 """
-Training script for SDXL using diffusers' built-in methods.
+Training script for SDXL using diffusers' built-in methods with LoRA.
 """
 
 import argparse
@@ -11,6 +11,7 @@ import torch
 import wandb
 from accelerate import Accelerator
 from diffusers import AutoencoderKL, StableDiffusionXLPipeline, UNet2DConditionModel
+from peft import LoraConfig, get_peft_model
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
@@ -73,7 +74,7 @@ def collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Train SDXL")
+    parser = argparse.ArgumentParser(description="Train SDXL with LoRA")
     parser.add_argument(
         "--pretrained_model_name_or_path",
         type=str,
@@ -119,13 +120,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--learning_rate",
         type=float,
-        default=1e-5,
+        default=5e-6,
         help="Learning rate"
     )
     parser.add_argument(
         "--max_train_steps",
         type=int,
-        default=500,
+        default=1500,
         help="Maximum training steps"
     )
     parser.add_argument(
@@ -205,6 +206,9 @@ def check_tensor(
 def main() -> None:
     """Main training function."""
     args = parse_args()
+
+    # Set memory optimization
+    os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
     torch.manual_seed(args.seed)
 
     wandb.init(
@@ -215,35 +219,58 @@ def main() -> None:
         config=vars(args),
     )
 
-    # Use FP32 for stability
+    # Initialize accelerator with FP16
     accelerator = Accelerator(
         gradient_accumulation_steps=args.gradient_accumulation_steps,
-        mixed_precision="no",
+        mixed_precision="fp16",
     )
     device = accelerator.device
 
     print("Loading models...")
 
-    # Load VAE separately in FP32
+    # Load VAE in FP16
     vae = AutoencoderKL.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="vae",
-        torch_dtype=torch.float32,
+        torch_dtype=torch.float16,
     ).to(device)
     vae.requires_grad_(False)
 
-    # Load UNet in FP32
+    # Load UNet in FP16
     unet = UNet2DConditionModel.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="unet",
-        torch_dtype=torch.float32,
+        torch_dtype=torch.float16,
     ).to(device)
+
+    # ============================================================
+    # CRITICAL: Apply LoRA to UNet - ONLY cross-attention layers
+    # This avoids dimension mismatch errors in SDXL
+    # ============================================================
+    lora_config = LoraConfig(
+        r=16,
+        lora_alpha=16,
+        target_modules=[
+            "attn2.to_q",
+            "attn2.to_k",
+            "attn2.to_v",
+            "attn2.to_out.0",
+        ],
+        lora_dropout=0.1,
+        bias="none",
+    )
+    unet = get_peft_model(unet, lora_config)
+    unet.print_trainable_parameters()
 
     # Load text encoders from pipeline
     pipe = StableDiffusionXLPipeline.from_pretrained(
         args.pretrained_model_name_or_path,
-        torch_dtype=torch.float32,
+        torch_dtype=torch.float16,
+        variant="fp16",
     )
+
+    # Enable memory-efficient attention
+    pipe.enable_xformers_memory_efficient_attention()
 
     text_encoder = pipe.text_encoder.to(device)
     text_encoder_2 = pipe.text_encoder_2.to(device)
@@ -251,7 +278,7 @@ def main() -> None:
     tokenizer_2 = pipe.tokenizer_2
     noise_scheduler = pipe.scheduler
 
-    # Freeze everything except UNet
+    # Freeze everything except UNet (LoRA params are trainable)
     text_encoder.requires_grad_(False)
     text_encoder_2.requires_grad_(False)
 
@@ -277,7 +304,12 @@ def main() -> None:
         num_workers=0,
     )
 
-    optimizer = torch.optim.AdamW(unet.parameters(), lr=args.learning_rate)
+    # Optimizer only for LoRA parameters (they are the only trainable ones)
+    optimizer = torch.optim.AdamW(
+        unet.parameters(),
+        lr=args.learning_rate,
+    )
+
     unet, optimizer, dataloader = accelerator.prepare(unet, optimizer, dataloader)
 
     print("Starting training...")
@@ -287,7 +319,8 @@ def main() -> None:
 
     for _step in progress_bar:
         for batch in dataloader:
-            images = batch["images"].to(device, dtype=torch.float32)
+            # Move to device - FP16 for memory efficiency
+            images = batch["images"].to(device, dtype=torch.float16)
             prompts = batch["prompts"]
 
             # Check input images
@@ -344,7 +377,7 @@ def main() -> None:
             batch_size = images.shape[0]
             text_embeds = text_embeddings_2.mean(dim=1)
             time_ids = torch.zeros(
-                batch_size, 6, device=device, dtype=torch.float32
+                batch_size, 6, device=device, dtype=torch.float16
             )
 
             added_cond_kwargs = {
@@ -352,6 +385,7 @@ def main() -> None:
                 "time_ids": time_ids,
             }
 
+            # Predict noise
             noise_pred = unet(
                 noisy_latents,
                 timesteps,
@@ -364,8 +398,9 @@ def main() -> None:
                 optimizer.zero_grad()
                 continue
 
+            # Compute loss in FP32 for stability
             loss = torch.nn.functional.mse_loss(
-                noise_pred, noise, reduction="mean"
+                noise_pred.float(), noise.float(), reduction="mean"
             )
 
             if torch.isnan(loss) or torch.isinf(loss):
@@ -373,8 +408,10 @@ def main() -> None:
                 optimizer.zero_grad()
                 continue
 
+            # Backward
             accelerator.backward(loss)
 
+            # Gradient clipping
             if accelerator.sync_gradients:
                 accelerator.clip_grad_norm_(unet.parameters(), max_norm=1.0)
 
