@@ -327,18 +327,6 @@ def _run_training_loop(
 ) -> None:
     """
     Run the main training loop.
-
-    Args:
-        args: Command line arguments
-        accelerator: Accelerator for distributed training
-        unet: UNet model with LoRA
-        optimizer: Optimizer
-        dataloader: Training dataloader
-        text_encoder: CLIP text encoder
-        tokenizer: CLIP tokenizer
-        vae: VAE model
-        noise_scheduler: Noise scheduler
-        device: Torch device
     """
     print("Starting training...")
     global_step = 0
@@ -375,10 +363,18 @@ def _run_training_loop(
             noise = torch.randn_like(latents)
             noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
 
+            # Fix: For SDXL, we need added_cond_kwargs
+            batch_size = images.shape[0]
+            added_cond_kwargs = {
+                "text_embeds": text_embeddings,
+                "time_ids": torch.zeros(batch_size, 6, device=device, dtype=torch.float16),
+            }
+
             noise_pred = unet(
                 noisy_latents,
                 timesteps,
                 encoder_hidden_states=text_embeddings,
+                added_cond_kwargs=added_cond_kwargs,
             ).sample
 
             loss = torch.nn.functional.mse_loss(noise_pred, noise, reduction="mean")
