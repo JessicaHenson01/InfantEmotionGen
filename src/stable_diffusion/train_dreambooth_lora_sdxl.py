@@ -247,14 +247,11 @@ def _load_models(args: argparse.Namespace, device: torch.device):
 
     # Apply LoRA to UNet - CORRECT target modules for SDXL
     # These are the attention layers in SDXL's UNet
+    # Apply LoRA to UNet - ONLY cross-attention layers for SDXL
     lora_config = LoraConfig(
         r=16,
         lora_alpha=16,
         target_modules=[
-            "attn1.to_q",
-            "attn1.to_k",
-            "attn1.to_v",
-            "attn1.to_out.0",
             "attn2.to_q",
             "attn2.to_k",
             "attn2.to_v",
