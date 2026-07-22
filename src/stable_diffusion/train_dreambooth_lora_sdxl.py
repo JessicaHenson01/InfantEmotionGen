@@ -340,11 +340,13 @@ def main() -> None:
             )[0]
 
             # Compute loss
+            # Compute loss in float32
             loss = torch.nn.functional.mse_loss(
-                noise_pred, noise, reduction="mean"
+                noise_pred.float(), noise.float(), reduction="mean"
             )
 
-            loss.float().backward()
+            # Backward
+            loss.backward()
             optimizer.step()
             optimizer.zero_grad()
 
