@@ -41,15 +41,14 @@ def main() -> None:
     # Create output directory
     os.makedirs(args.output_dir, exist_ok=True)
 
-    # Load pipeline
+    # Load pipeline in FP32 for maximum compatibility
     print("Loading SDXL pipeline...")
     pipe = StableDiffusionXLPipeline.from_pretrained(
         args.model_id,
-        torch_dtype=torch.float16,
-        variant="fp16",
+        torch_dtype=torch.float32,
     )
 
-    # Load VAE in FP32 to prevent black images
+    # Load the fixed VAE in FP32
     print("Loading VAE in FP32 for proper decoding...")
     vae = AutoencoderKL.from_pretrained(
         "madebyollin/sdxl-vae-fp16-fix",
@@ -58,13 +57,12 @@ def main() -> None:
     pipe.vae = vae
     pipe.to("cuda")
 
-    # Try to enable xFormers, but continue if not available
+    # Try to enable xFormers
     try:
         pipe.enable_xformers_memory_efficient_attention()
         print("✅ xFormers enabled")
     except (ModuleNotFoundError, ImportError) as error:
         print(f"⚠️ xFormers not available: {error}")
-        print("⚠️ Continuing without xFormers")
 
     # Load LoRA weights
     print(f"Loading LoRA weights from: {args.lora_path}")
@@ -92,35 +90,19 @@ def main() -> None:
         for idx in range(args.num_images):
             generator = torch.Generator("cuda").manual_seed(args.seed + idx)
 
-            with torch.no_grad():
-                # Run pipeline with output_type="latent" to get latents
-                result = pipe(
-                    prompt=prompt,
-                    negative_prompt="cartoon, drawing, blurry, low quality, distorted, deformed",
-                    num_inference_steps=args.num_inference_steps,
-                    guidance_scale=args.guidance_scale,
-                    generator=generator,
-                    height=1024,
-                    width=1024,
-                    output_type="latent",
-                )
-
-                # Convert latents to float32 and decode
-                latents = result.images[0].to(torch.float32)
-                decoded = pipe.vae.decode(
-                    latents / pipe.vae.config.scaling_factor, return_dict=False
-                )[0]
-
-                # Convert to PIL image
-                decoded = (decoded / 2 + 0.5).clamp(0, 1)
-                decoded = decoded.cpu().permute(0, 2, 3, 1).float().numpy()
-                decoded = (decoded * 255).round().astype("uint8")
-
-                from PIL import Image
-                image = Image.fromarray(decoded[0])
+            # Generate with FP32 pipeline
+            result = pipe(
+                prompt=prompt,
+                negative_prompt="cartoon, drawing, blurry, low quality, distorted, deformed",
+                num_inference_steps=args.num_inference_steps,
+                guidance_scale=args.guidance_scale,
+                generator=generator,
+                height=1024,
+                width=1024,
+            )
 
             save_path = os.path.join(emotion_dir, f"{emotion}_{idx:04d}.png")
-            image.save(save_path)
+            result.images[0].save(save_path)
 
             if (idx + 1) % 10 == 0:
                 print(f"  Generated {idx + 1}/{args.num_images}")
