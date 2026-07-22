@@ -119,7 +119,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--learning_rate",
         type=float,
-        default=1e-4,
+        default=5e-6,  # Reduced from 1e-4 for FP16 stability
         help="Learning rate"
     )
     parser.add_argument(
@@ -294,7 +294,7 @@ def main() -> None:
                     truncation=True,
                     return_tensors="pt",
                 ).input_ids.to(device)
-                # FIX: Use last_hidden_state to get 3D tensor (batch, 77, 1280)
+                # Use last_hidden_state to get 3D tensor (batch, 77, 1280)
                 text_embeddings_2 = (
                     text_encoder_2(tokenized_prompts_2).last_hidden_state
                 )
@@ -350,8 +350,18 @@ def main() -> None:
                 noise_pred.float(), noise.float(), reduction="mean"
             )
 
-            # FIX: Use accelerator.backward()
+            # Check for NaN
+            if torch.isnan(loss):
+                print(f"⚠️ NaN loss detected at step {global_step}! Skipping...")
+                optimizer.zero_grad()
+                continue
+
+            # Backward
             accelerator.backward(loss)
+
+            # Gradient clipping to prevent exploding gradients
+            accelerator.clip_grad_norm_(unet.parameters(), max_norm=1.0)
+
             optimizer.step()
             optimizer.zero_grad()
 
