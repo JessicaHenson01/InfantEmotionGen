@@ -228,11 +228,13 @@ def main() -> None:
 
     print("Loading models...")
 
-    # Load VAE in FP16
+    # ============================================================
+    # FIX 1: Load VAE in FP32 for stability (prevents NaN in latents)
+    # ============================================================
     vae = AutoencoderKL.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="vae",
-        torch_dtype=torch.float16,
+        torch_dtype=torch.float32,  # FP32 for stability
     ).to(device)
     vae.requires_grad_(False)
 
@@ -244,8 +246,7 @@ def main() -> None:
     ).to(device)
 
     # ============================================================
-    # CRITICAL: Apply LoRA to UNet - ONLY cross-attention layers
-    # This avoids dimension mismatch errors in SDXL
+    # Apply LoRA to UNet - ONLY cross-attention layers
     # ============================================================
     lora_config = LoraConfig(
         r=16,
@@ -269,8 +270,8 @@ def main() -> None:
         variant="fp16",
     )
 
-    # Enable memory-efficient attention
-    pipe.enable_xformers_memory_efficient_attention()
+    # FIX 2: Disable xFormers to avoid installation issues
+    # pipe.enable_xformers_memory_efficient_attention()
 
     text_encoder = pipe.text_encoder.to(device)
     text_encoder_2 = pipe.text_encoder_2.to(device)
@@ -354,9 +355,11 @@ def main() -> None:
                     [text_embeddings, text_embeddings_2], dim=-1
                 )
 
-            # Encode images to latents
+            # ============================================================
+            # FIX 3: Convert images to FP32 before VAE encoding
+            # ============================================================
             with torch.no_grad():
-                latents = vae.encode(images).latent_dist.sample()
+                latents = vae.encode(images.float()).latent_dist.sample()
                 latents = latents * 0.18215
 
                 if check_tensor(latents, "latents", global_step):
