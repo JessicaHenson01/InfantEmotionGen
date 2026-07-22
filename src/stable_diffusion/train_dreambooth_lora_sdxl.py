@@ -339,14 +339,13 @@ def main() -> None:
                 return_dict=False,
             )[0]
 
-            # Compute loss
             # Compute loss in float32
             loss = torch.nn.functional.mse_loss(
                 noise_pred.float(), noise.float(), reduction="mean"
             )
 
-            # Backward
-            loss.backward()
+            # Use accelerator.backward() for proper gradient scaling
+            accelerator.backward(loss)
             optimizer.step()
             optimizer.zero_grad()
 
