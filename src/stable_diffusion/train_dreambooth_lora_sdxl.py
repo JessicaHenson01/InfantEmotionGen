@@ -252,13 +252,14 @@ def _load_models(args: argparse.Namespace, device: torch.device):
         r=16,
         lora_alpha=16,
         target_modules=[
-            "attn2.to_q",
-            "attn2.to_k",
-            "attn2.to_v",
-            "attn2.to_out.0",
+            "to_q",
+            "to_k", 
+            "to_v",
+            "to_out.0"
         ],
         lora_dropout=0.1,
         bias="none",
+        modules_to_save=["time_embedding", "conv_in", "conv_out"],
     )
     unet = get_peft_model(unet, lora_config)
     unet.print_trainable_parameters()
