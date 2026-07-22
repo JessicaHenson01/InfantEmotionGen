@@ -269,7 +269,7 @@ def main() -> None:
 
             # Encode prompts with both text encoders (SDXL has two)
             with torch.no_grad():
-                # First text encoder - CLIP (768 dims) - full sequence output
+                # First text encoder - CLIP (768 dims)
                 tokenized_prompts = tokenizer(
                     prompts,
                     padding="max_length",
@@ -279,7 +279,7 @@ def main() -> None:
                 ).input_ids.to(device)
                 text_embeddings = text_encoder(tokenized_prompts)[0]  # (batch, 77, 768)
 
-                # Second text encoder - CLIP (1280 dims) - full sequence output
+                # Second text encoder - CLIP (1280 dims)
                 tokenized_prompts_2 = tokenizer_2(
                     prompts,
                     padding="max_length",
@@ -287,11 +287,7 @@ def main() -> None:
                     truncation=True,
                     return_tensors="pt",
                 ).input_ids.to(device)
-                # IMPORTANT: Use .last_hidden_state to get the full sequence (3D)
-                text_embeddings_2 = text_encoder_2(
-                    tokenized_prompts_2,
-                    output_hidden_states=True
-                ).last_hidden_state  # (batch, 77, 1280)
+                text_embeddings_2 = text_encoder_2(tokenized_prompts_2)[0]  # (batch, 77, 1280)
 
                 # Concatenate along the last dimension for SDXL
                 # Result: (batch, 77, 2048)
@@ -318,11 +314,8 @@ def main() -> None:
             batch_size = images.shape[0]
 
             # Create proper text_embeds for SDXL (pooled output from second encoder)
-            # Get pooled output (first token / [CLS] token) from second text encoder
-            text_embeds = text_encoder_2(
-                tokenized_prompts_2,
-                output_hidden_states=True
-            ).pooler_output  # (batch, 1280)
+            # Use the mean of the second text encoder's sequence output
+            text_embeds = text_embeddings_2.mean(dim=1)  # (batch, 1280)
 
             time_ids = torch.zeros(batch_size, 6, device=device, dtype=torch.float16)
 
