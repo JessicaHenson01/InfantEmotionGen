@@ -10,7 +10,7 @@ from typing import Any, Dict, List
 import torch
 import wandb
 from accelerate import Accelerator
-from diffusers import StableDiffusionXLPipeline
+from diffusers import StableDiffusionXLPipeline, UNet2DConditionModel
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
@@ -208,7 +208,13 @@ def main() -> None:
 
     # Extract components
     vae = pipe.vae.to(device)
-    unet = pipe.unet.to(device)
+    # UNet should be in FP32 for training with gradient scaling
+    unet = UNet2DConditionModel.from_pretrained(
+        args.pretrained_model_name_or_path,
+        subfolder="unet",
+        torch_dtype=torch.float32,
+    ).to(device)
+
     text_encoder = pipe.text_encoder.to(device)
     text_encoder_2 = pipe.text_encoder_2.to(device)
     tokenizer = pipe.tokenizer
@@ -341,11 +347,11 @@ def main() -> None:
 
             # Compute loss in float32
             loss = torch.nn.functional.mse_loss(
-                noise_pred.float(), noise.float(), reduction="mean"
+                noise_pred, noise, reduction="mean"
             )
 
-            # FIX: Use accelerator.backward() with float32 loss
-            accelerator.backward(loss.float())
+            # FIX: Use accelerator.backward()
+            accelerator.backward(loss)
             optimizer.step()
             optimizer.zero_grad()
 
