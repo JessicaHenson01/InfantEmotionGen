@@ -28,24 +28,16 @@ class DreamBoothDataset(torch.utils.data.Dataset):
     """Dataset wrapper for DreamBooth training with instance prompts."""
 
     def __init__(self, base_dataset: InfantEmotionDataset, instance_prompt_template: str) -> None:
-        """
-        Initialize DreamBooth dataset.
-
-        Args:
-            base_dataset: Base infant emotion dataset
-            instance_prompt_template: Template for instance prompts
-        """
         self.base_dataset = base_dataset
         self.instance_prompt_template = instance_prompt_template
 
     def __len__(self) -> int:
-        """Return the number of samples."""
         return len(self.base_dataset)
 
     def __getitem__(self, index: int) -> Dict[str, Any]:
-        """Get an item with formatted prompt."""
         item = self.base_dataset[index]
-        prompt = self.instance_prompt_template.format(emotion=item["emotion"])
+        # Use positional formatting if template has {}
+        prompt = self.instance_prompt_template.format(item["emotion"])
         return {
             "image": item["image"],
             "prompt": prompt,
@@ -119,10 +111,11 @@ def parse_args() -> argparse.Namespace:
         default="./data/labels_formatted.json",
         help="Path to JSON labels file"
     )
+    # In the parse_args() function, change the default template
     parser.add_argument(
         "--instance_prompt_template",
         type=str,
-        default="a photo of a {} sks infant",
+        default="a photo of a {emotion} sks infant",  # Changed {} to {emotion}
         help="Template for instance prompts"
     )
     parser.add_argument(
