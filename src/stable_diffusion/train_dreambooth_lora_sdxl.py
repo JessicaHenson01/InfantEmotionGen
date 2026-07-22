@@ -191,7 +191,7 @@ def main() -> None:
         config=vars(args),
     )
 
-    # Initialize accelerator
+    # Initialize accelerator with mixed precision
     accelerator = Accelerator(
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         mixed_precision="fp16",
@@ -344,8 +344,8 @@ def main() -> None:
                 noise_pred.float(), noise.float(), reduction="mean"
             )
 
-            # Use accelerator.backward() for proper gradient scaling
-            accelerator.backward(loss)
+            # FIX: Use accelerator.backward() with float32 loss
+            accelerator.backward(loss.float())
             optimizer.step()
             optimizer.zero_grad()
 
