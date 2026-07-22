@@ -10,7 +10,7 @@ from typing import Any, Dict, List
 import torch
 import wandb
 from accelerate import Accelerator
-from diffusers import StableDiffusionXLPipeline, UNet2DConditionModel
+from diffusers import AutoencoderKL, StableDiffusionXLPipeline, UNet2DConditionModel
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
@@ -101,7 +101,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--resolution",
         type=int,
-        default=1024,
+        default=512,
         help="Image resolution"
     )
     parser.add_argument(
@@ -119,13 +119,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--learning_rate",
         type=float,
-        default=5e-6,  # Reduced from 1e-4 for FP16 stability
+        default=1e-5,
         help="Learning rate"
     )
     parser.add_argument(
         "--max_train_steps",
         type=int,
-        default=1500,
+        default=500,
         help="Maximum training steps"
     )
     parser.add_argument(
@@ -177,12 +177,36 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def check_tensor(
+    tensor: torch.Tensor,
+    name: str,
+    step: int
+) -> bool:
+    """
+    Debug helper to check for NaN/Inf in tensors.
+
+    Args:
+        tensor: Tensor to check
+        name: Name of the tensor for logging
+        step: Current training step
+
+    Returns:
+        True if NaN/Inf found, False otherwise
+    """
+    if torch.isnan(tensor).any():
+        print(f"⚠️ NaN in {name} at step {step}!")
+        return True
+    if torch.isinf(tensor).any():
+        print(f"⚠️ Inf in {name} at step {step}!")
+        return True
+    return False
+
+
 def main() -> None:
     """Main training function."""
     args = parse_args()
     torch.manual_seed(args.seed)
 
-    # Initialize wandb
     wandb.init(
         project=args.wandb_project,
         entity=args.wandb_entity,
@@ -191,29 +215,35 @@ def main() -> None:
         config=vars(args),
     )
 
-    # Initialize accelerator with mixed precision
+    # Use FP32 for stability
     accelerator = Accelerator(
         gradient_accumulation_steps=args.gradient_accumulation_steps,
-        mixed_precision="fp16",
+        mixed_precision="no",
     )
     device = accelerator.device
 
-    # Load the pipeline to get all components
     print("Loading models...")
-    pipe = StableDiffusionXLPipeline.from_pretrained(
-        args.pretrained_model_name_or_path,
-        torch_dtype=torch.float16,
-        variant="fp16",
-    )
 
-    # Extract components
-    vae = pipe.vae.to(device)
-    # UNet should be in FP32 for training with gradient scaling
+    # Load VAE separately in FP32
+    vae = AutoencoderKL.from_pretrained(
+        args.pretrained_model_name_or_path,
+        subfolder="vae",
+        torch_dtype=torch.float32,
+    ).to(device)
+    vae.requires_grad_(False)
+
+    # Load UNet in FP32
     unet = UNet2DConditionModel.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="unet",
         torch_dtype=torch.float32,
     ).to(device)
+
+    # Load text encoders from pipeline
+    pipe = StableDiffusionXLPipeline.from_pretrained(
+        args.pretrained_model_name_or_path,
+        torch_dtype=torch.float32,
+    )
 
     text_encoder = pipe.text_encoder.to(device)
     text_encoder_2 = pipe.text_encoder_2.to(device)
@@ -222,14 +252,11 @@ def main() -> None:
     noise_scheduler = pipe.scheduler
 
     # Freeze everything except UNet
-    vae.requires_grad_(False)
     text_encoder.requires_grad_(False)
     text_encoder_2.requires_grad_(False)
 
-    # Enable gradient checkpointing for UNet
     unet.enable_gradient_checkpointing()
 
-    # Create dataset
     print("Loading dataset...")
     base_dataset = InfantEmotionDataset(
         data_dir=args.data_dir,
@@ -250,18 +277,9 @@ def main() -> None:
         num_workers=0,
     )
 
-    # Set up optimizer
-    optimizer = torch.optim.AdamW(
-        unet.parameters(),
-        lr=args.learning_rate,
-    )
+    optimizer = torch.optim.AdamW(unet.parameters(), lr=args.learning_rate)
+    unet, optimizer, dataloader = accelerator.prepare(unet, optimizer, dataloader)
 
-    # Prepare with accelerator
-    unet, optimizer, dataloader = accelerator.prepare(
-        unet, optimizer, dataloader
-    )
-
-    # Training loop
     print("Starting training...")
     global_step = 0
     running_loss = 0.0
@@ -269,13 +287,17 @@ def main() -> None:
 
     for _step in progress_bar:
         for batch in dataloader:
-            # Move to device
-            images = batch["images"].to(device, dtype=torch.float16)
+            images = batch["images"].to(device, dtype=torch.float32)
             prompts = batch["prompts"]
 
-            # Encode prompts with both text encoders (SDXL has two)
+            # Check input images
+            if check_tensor(images, "images", global_step):
+                print(f"   Images range: min={images.min():.4f}, max={images.max():.4f}")
+                optimizer.zero_grad()
+                continue
+
+            # Encode prompts
             with torch.no_grad():
-                # First text encoder - CLIP (768 dims) - full sequence output
                 tokenized_prompts = tokenizer(
                     prompts,
                     padding="max_length",
@@ -283,10 +305,8 @@ def main() -> None:
                     truncation=True,
                     return_tensors="pt",
                 ).input_ids.to(device)
-                # (batch, 77, 768)
                 text_embeddings = text_encoder(tokenized_prompts)[0]
 
-                # Second text encoder - CLIP (1280 dims) - full sequence output
                 tokenized_prompts_2 = tokenizer_2(
                     prompts,
                     padding="max_length",
@@ -294,13 +314,9 @@ def main() -> None:
                     truncation=True,
                     return_tensors="pt",
                 ).input_ids.to(device)
-                # Use last_hidden_state to get 3D tensor (batch, 77, 1280)
-                text_embeddings_2 = (
-                    text_encoder_2(tokenized_prompts_2).last_hidden_state
-                )
-
-                # Concatenate along the last dimension for SDXL
-                # Result: (batch, 77, 2048)
+                text_embeddings_2 = text_encoder_2(
+                    tokenized_prompts_2
+                ).last_hidden_state
                 text_embeddings = torch.cat(
                     [text_embeddings, text_embeddings_2], dim=-1
                 )
@@ -310,7 +326,11 @@ def main() -> None:
                 latents = vae.encode(images).latent_dist.sample()
                 latents = latents * 0.18215
 
-            # Sample random timestep
+                if check_tensor(latents, "latents", global_step):
+                    print("   VAE produced NaN! Skipping...")
+                    optimizer.zero_grad()
+                    continue
+
             timesteps = torch.randint(
                 0,
                 noise_scheduler.config.num_train_timesteps,
@@ -318,17 +338,13 @@ def main() -> None:
                 device=device,
             ).long()
 
-            # Add noise
             noise = torch.randn_like(latents)
             noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
 
-            # SDXL requires added_cond_kwargs
             batch_size = images.shape[0]
-
-            # Pooled text_embeds from second encoder
-            text_embeds = text_embeddings_2.mean(dim=1)  # (batch, 1280)
+            text_embeds = text_embeddings_2.mean(dim=1)
             time_ids = torch.zeros(
-                batch_size, 6, device=device, dtype=torch.float16
+                batch_size, 6, device=device, dtype=torch.float32
             )
 
             added_cond_kwargs = {
@@ -336,7 +352,6 @@ def main() -> None:
                 "time_ids": time_ids,
             }
 
-            # Predict noise
             noise_pred = unet(
                 noisy_latents,
                 timesteps,
@@ -345,22 +360,23 @@ def main() -> None:
                 return_dict=False,
             )[0]
 
-            # Compute loss in float32
-            loss = torch.nn.functional.mse_loss(
-                noise_pred.float(), noise.float(), reduction="mean"
-            )
-
-            # Check for NaN
-            if torch.isnan(loss):
-                print(f"⚠️ NaN loss detected at step {global_step}! Skipping...")
+            if check_tensor(noise_pred, "noise_pred", global_step):
                 optimizer.zero_grad()
                 continue
 
-            # Backward
+            loss = torch.nn.functional.mse_loss(
+                noise_pred, noise, reduction="mean"
+            )
+
+            if torch.isnan(loss) or torch.isinf(loss):
+                print(f"⚠️ NaN/Inf loss at step {global_step}! Skipping...")
+                optimizer.zero_grad()
+                continue
+
             accelerator.backward(loss)
 
-            # Gradient clipping to prevent exploding gradients
-            accelerator.clip_grad_norm_(unet.parameters(), max_norm=1.0)
+            if accelerator.sync_gradients:
+                accelerator.clip_grad_norm_(unet.parameters(), max_norm=1.0)
 
             optimizer.step()
             optimizer.zero_grad()
@@ -373,7 +389,6 @@ def main() -> None:
                 "train/loss": loss.item(),
                 "train/avg_loss": avg_loss,
                 "train/global_step": global_step,
-                "train/learning_rate": optimizer.param_groups[0]['lr'],
             })
 
             progress_bar.set_postfix({"loss": loss.item(), "avg_loss": avg_loss})
@@ -384,17 +399,13 @@ def main() -> None:
         if global_step >= args.max_train_steps:
             break
 
-    # Save final model
     print("Saving final model...")
     accelerator.wait_for_everyone()
     if accelerator.is_main_process:
         final_dir = os.path.join(args.output_dir, "unet_lora_final")
         os.makedirs(final_dir, exist_ok=True)
-
-        # Save the UNet
         unwrapped_unet = accelerator.unwrap_model(unet)
         unwrapped_unet.save_pretrained(final_dir)
-
         print(f"Training complete! Final model saved to {final_dir}")
 
     wandb.finish()
