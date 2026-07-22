@@ -269,7 +269,7 @@ def main() -> None:
 
             # Encode prompts with both text encoders (SDXL has two)
             with torch.no_grad():
-                # First text encoder
+                # First text encoder - CLIP (768 dims)
                 tokenized_prompts = tokenizer(
                     prompts,
                     padding="max_length",
@@ -277,9 +277,9 @@ def main() -> None:
                     truncation=True,
                     return_tensors="pt",
                 ).input_ids.to(device)
-                text_embeddings = text_encoder(tokenized_prompts)[0]
+                text_embeddings = text_encoder(tokenized_prompts)[0]  # (batch, 77, 768)
 
-                # Second text encoder
+                # Second text encoder - CLIP (1280 dims)
                 tokenized_prompts_2 = tokenizer_2(
                     prompts,
                     padding="max_length",
@@ -287,9 +287,10 @@ def main() -> None:
                     truncation=True,
                     return_tensors="pt",
                 ).input_ids.to(device)
-                text_embeddings_2 = text_encoder_2(tokenized_prompts_2)[0]
+                text_embeddings_2 = text_encoder_2(tokenized_prompts_2)[0]  # (batch, 77, 1280)
 
-                # Concatenate for SDXL
+                # Concatenate along the last dimension for SDXL
+                # Result: (batch, 77, 2048)
                 text_embeddings = torch.cat([text_embeddings, text_embeddings_2], dim=-1)
 
             # Encode images to latents
@@ -312,7 +313,7 @@ def main() -> None:
             # SDXL requires added_cond_kwargs
             batch_size = images.shape[0]
 
-            # Create proper text_embeds for SDXL
+            # Create proper text_embeds for SDXL (pooled output)
             text_embeds = text_encoder_2(
                 tokenizer_2(
                     prompts,
@@ -321,7 +322,10 @@ def main() -> None:
                     truncation=True,
                     return_tensors="pt",
                 ).input_ids.to(device)
-            )[0]
+            )[0]  # (batch, 77, 1280)
+
+            # Pool the text embeddings (mean over sequence dimension)
+            text_embeds = text_embeds.mean(dim=1)  # (batch, 1280)
 
             time_ids = torch.zeros(batch_size, 6, device=device, dtype=torch.float16)
 
