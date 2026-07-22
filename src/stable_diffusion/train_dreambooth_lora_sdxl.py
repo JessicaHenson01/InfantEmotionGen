@@ -347,7 +347,7 @@ def main() -> None:
 
             # Compute loss in float32
             loss = torch.nn.functional.mse_loss(
-                noise_pred, noise, reduction="mean"
+                noise_pred.float(), noise.float(), reduction="mean"
             )
 
             # FIX: Use accelerator.backward()
