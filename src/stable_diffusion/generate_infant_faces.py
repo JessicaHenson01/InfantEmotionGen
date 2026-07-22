@@ -1,11 +1,22 @@
-import torch
-import os
+"""
+Image generation script for SDXL with LoRA weights.
+"""
+
 import argparse
-from diffusers import StableDiffusionXLPipeline, DPMSolverMultistepScheduler
+import os
+
+import torch
 import wandb
+from diffusers import StableDiffusionXLPipeline, DPMSolverMultistepScheduler
 
 
-def main():
+def main() -> None:
+    """
+    Main function to generate infant emotion images using SDXL with LoRA weights.
+
+    Generates images for each emotion (angry, crying, happy) using the trained
+    LoRA weights and saves them to the specified output directory.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_id", type=str, default="stabilityai/stable-diffusion-xl-base-1.0")
     parser.add_argument("--lora_path", type=str, default="./models/infant_lora/unet_lora_final")
@@ -38,8 +49,19 @@ def main():
         variant="fp16",
     )
     pipe.to("cuda")
-    pipe.enable_xformers_memory_efficient_attention()
+
+    # Try to enable xFormers, but continue if not available
+    try:
+        pipe.enable_xformers_memory_efficient_attention()
+        print("✅ xFormers enabled")
+    except (ModuleNotFoundError, ImportError) as error:
+        print(f"⚠️ xFormers not available: {error}")
+        print("⚠️ Continuing without xFormers")
+
+    # Load LoRA weights
     pipe.load_lora_weights(args.lora_path)
+
+    # Use DPM++ sampler for better quality
     pipe.scheduler = DPMSolverMultistepScheduler.from_config(
         pipe.scheduler.config,
         use_karras_sigmas=True,
@@ -58,8 +80,8 @@ def main():
         os.makedirs(emotion_dir, exist_ok=True)
 
         print(f"Generating {args.num_images} {emotion} images...")
-        for i in range(args.num_images):
-            generator = torch.Generator("cuda").manual_seed(args.seed + i)
+        for idx in range(args.num_images):
+            generator = torch.Generator("cuda").manual_seed(args.seed + idx)
             with torch.cuda.amp.autocast():
                 result = pipe(
                     prompt=prompt,
@@ -70,12 +92,12 @@ def main():
                     height=1024,
                     width=1024,
                 )
-            
-            save_path = os.path.join(emotion_dir, f"{emotion}_{i:04d}.png")
+
+            save_path = os.path.join(emotion_dir, f"{emotion}_{idx:04d}.png")
             result.images[0].save(save_path)
-            
-            if (i + 1) % 10 == 0:
-                print(f"  Generated {i + 1}/{args.num_images}")
+
+            if (idx + 1) % 10 == 0:
+                print(f"  Generated {idx + 1}/{args.num_images}")
 
     # Log to wandb
     artifact = wandb.Artifact(
