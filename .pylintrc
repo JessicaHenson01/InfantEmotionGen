@@ -1,6 +1,17 @@
 [MESSAGES CONTROL]
-# Disable import-error (false positives for local modules)
-disable=E0401
+# Disable these warnings:
+# - wrong-import-position: needed because we add sys.path before imports
+# - import-outside-toplevel: huggingface_hub import inside function is intentional
+# - too-many-arguments: training loop needs many arguments
+# - too-many-positional-arguments: same as above
+# - too-many-locals: training loop needs many local variables
+disable=
+    wrong-import-position,
+    import-outside-toplevel,
+    too-many-arguments,
+    too-many-positional-arguments,
+    too-many-locals,
+    import-error
 
 [FORMAT]
 max-line-length=100

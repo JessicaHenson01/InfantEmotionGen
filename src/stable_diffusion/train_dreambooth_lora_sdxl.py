@@ -19,7 +19,7 @@ from transformers import CLIPTextModel, CLIPTokenizer
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import local modules (pylint: disable=wrong-import-position)
+# Import local modules
 from data_utils import InfantEmotionDataset
 from save_utils import save_checkpoint_local
 
@@ -28,20 +28,30 @@ class DreamBoothDataset(torch.utils.data.Dataset):
     """Dataset wrapper for DreamBooth training with instance prompts."""
 
     def __init__(self, base_dataset: InfantEmotionDataset, instance_prompt_template: str) -> None:
+        """
+        Initialize DreamBooth dataset.
+
+        Args:
+            base_dataset: Base infant emotion dataset
+            instance_prompt_template: Template for instance prompts
+        """
         self.base_dataset = base_dataset
         self.instance_prompt_template = instance_prompt_template
 
     def __len__(self) -> int:
+        """Return the number of samples."""
         return len(self.base_dataset)
 
     def __getitem__(self, index: int) -> Dict[str, Any]:
+        """Get an item with formatted prompt."""
         item = self.base_dataset[index]
-        # Use positional formatting if template has {}
-        prompt = self.instance_prompt_template.format(item["emotion"])
+        emotion = item["emotion"]
+        # Use positional formatting with {}
+        prompt = self.instance_prompt_template.format(emotion)
         return {
             "image": item["image"],
             "prompt": prompt,
-            "emotion": item["emotion"],
+            "emotion": emotion,
         }
 
 
@@ -74,7 +84,6 @@ def _upload_to_huggingface(final_dir: str, hf_repo: str) -> None:
         hf_repo: Hugging Face repository name
     """
     try:
-        # pylint: disable=import-outside-toplevel
         from huggingface_hub import upload_folder
         print(f"📤 Uploading to Hugging Face: {hf_repo}")
         upload_folder(
@@ -111,11 +120,10 @@ def parse_args() -> argparse.Namespace:
         default="./data/labels_formatted.json",
         help="Path to JSON labels file"
     )
-    # In the parse_args() function, change the default template
     parser.add_argument(
         "--instance_prompt_template",
         type=str,
-        default="a photo of a {emotion} sks infant",  # Changed {} to {emotion}
+        default="a photo of a {} sks infant",
         help="Template for instance prompts"
     )
     parser.add_argument(
@@ -238,7 +246,6 @@ def _load_models(args: argparse.Namespace, device: torch.device):
     ).to(device)
 
     # Apply LoRA to UNet
-    # Note: task_type is not needed for UNet in newer PEFT versions
     lora_config = LoraConfig(
         r=16,
         lora_alpha=16,
@@ -306,7 +313,6 @@ def _setup_dataloader(args: argparse.Namespace) -> DataLoader:
     )
 
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments, too-many-locals
 def _run_training_loop(
     args: argparse.Namespace,
     accelerator: Accelerator,
@@ -409,7 +415,6 @@ def _run_training_loop(
 
         if global_step >= args.max_train_steps:
             break
-# pylint: enable=too-many-arguments, too-many-positional-arguments, too-many-locals
 
 
 def _save_final_model(
@@ -451,6 +456,9 @@ def _save_final_model(
 
 def main() -> None:
     """Main training function."""
+    # Disable torchao in PEFT
+    os.environ["PEFT_DISABLE_TORCHAO"] = "1"
+
     args = parse_args()
 
     # Set seed
