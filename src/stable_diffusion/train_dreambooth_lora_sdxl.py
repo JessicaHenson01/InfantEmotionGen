@@ -84,7 +84,7 @@ def _upload_to_huggingface(final_dir: str, hf_repo: str) -> None:
         hf_repo: Hugging Face repository name
     """
     try:
-        from huggingface_hub import upload_folder
+        from huggingface_hub import upload_folder  # pylint: disable=import-outside-toplevel
         print(f"📤 Uploading to Hugging Face: {hf_repo}")
         upload_folder(
             folder_path=final_dir,
@@ -313,6 +313,7 @@ def _setup_dataloader(args: argparse.Namespace) -> DataLoader:
     )
 
 
+# pylint: disable=too-many-arguments, too-many-positional-arguments, too-many-locals
 def _run_training_loop(
     args: argparse.Namespace,
     accelerator: Accelerator,
@@ -363,11 +364,26 @@ def _run_training_loop(
             noise = torch.randn_like(latents)
             noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
 
-            # Fix: For SDXL, we need added_cond_kwargs
+            # SDXL requires added_cond_kwargs
             batch_size = images.shape[0]
+
+            # text_embeds: pooled output from CLIP, shape (batch_size, 1280)
+            # For training with SDXL, we need to create proper text_embeds
+            # We'll use the mean of text_embeddings and expand to 1280
+            text_embeds = text_embeddings.mean(dim=1)  # (batch_size, 768)
+
+            # SDXL uses 1280 dims for text_embeds, expand to match
+            if text_embeds.shape[-1] != 1280:
+                # Pad or repeat to reach 1280
+                repeat_factor = (1280 + text_embeds.shape[-1] - 1) // text_embeds.shape[-1]
+                text_embeds = text_embeds.repeat(1, repeat_factor)[:, :1280]
+
+            # time_ids: (batch_size, 6) with original_size, crops_coords_top_left, target_size
+            time_ids = torch.zeros(batch_size, 6, device=device, dtype=torch.float16)
+
             added_cond_kwargs = {
-                "text_embeds": text_embeddings,
-                "time_ids": torch.zeros(batch_size, 6, device=device, dtype=torch.float16),
+                "text_embeds": text_embeds,
+                "time_ids": time_ids,
             }
 
             noise_pred = unet(
@@ -411,6 +427,7 @@ def _run_training_loop(
 
         if global_step >= args.max_train_steps:
             break
+# pylint: enable=too-many-arguments, too-many-positional-arguments, too-many-locals
 
 
 def _save_final_model(
