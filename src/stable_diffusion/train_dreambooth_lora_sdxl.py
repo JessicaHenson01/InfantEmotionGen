@@ -245,6 +245,7 @@ def _load_models(args: argparse.Namespace, device: torch.device):
     ).to(device)
 
     # Apply LoRA to UNet
+    # Note: task_type is not needed for UNet in newer PEFT versions
     lora_config = LoraConfig(
         r=16,
         lora_alpha=16,
@@ -254,7 +255,6 @@ def _load_models(args: argparse.Namespace, device: torch.device):
         ],
         lora_dropout=0.1,
         bias="none",
-        task_type="UNET",
     )
     unet = get_peft_model(unet, lora_config)
     unet.print_trainable_parameters()
