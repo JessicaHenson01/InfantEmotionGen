@@ -2,7 +2,7 @@ torch>=2.0.0
 torchvision>=0.15.0
 diffusers>=0.24.0
 transformers>=4.30.0
-peft==0.10.0
+peft>=0.17.0
 accelerate>=0.20.0
 bitsandbytes>=0.41.0
 datasets>=2.12.0
