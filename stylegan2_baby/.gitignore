@@ -20,3 +20,7 @@ configs/class_names.json
 __pycache__/
 *.py[cod]
 .venv/
+
+# StyleGAN2 generated artifacts
+generated/
+outputs_mps/
