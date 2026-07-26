@@ -1,0 +1,22 @@
+# Private data and downloaded Hub snapshot
+data/*
+!data/.gitkeep
+
+# NVIDIA source checkout
+vendor/
+
+# Training artifacts
+outputs/*
+!outputs/.gitkeep
+*.pkl
+*.pt
+*.pth
+
+# Credentials and local configuration
+.env
+configs/class_names.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/

@@ -1,0 +1,11 @@
+click
+requests
+tqdm
+pyspng
+ninja
+imageio-ffmpeg==0.4.3
+pillow
+huggingface_hub
+wandb
+psutil
+scipy
