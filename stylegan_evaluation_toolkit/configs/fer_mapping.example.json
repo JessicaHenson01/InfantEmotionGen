@@ -1,0 +1,14 @@
+{
+  "class_0": {
+    "target_name": "EDIT_CLASS_0",
+    "accepted_model_labels": ["EDIT_MODEL_LABEL"]
+  },
+  "class_1": {
+    "target_name": "EDIT_CLASS_1",
+    "accepted_model_labels": ["EDIT_MODEL_LABEL"]
+  },
+  "class_2": {
+    "target_name": "EDIT_CLASS_2",
+    "accepted_model_labels": ["EDIT_MODEL_LABEL"]
+  }
+}

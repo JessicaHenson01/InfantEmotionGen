@@ -1,0 +1,11 @@
+torch
+torchvision
+torchmetrics[image]
+torch-fidelity
+open-clip-torch
+transformers
+accelerate
+scikit-learn
+pandas
+pillow
+tqdm
