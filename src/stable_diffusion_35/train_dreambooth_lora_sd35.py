@@ -328,11 +328,14 @@ def main() -> None:
 
     print("Loading SD 3.5 Medium model (T5-XXL excluded)...")
 
-    # Load pipeline without T5-XXL
+    # ============================================================
+    # FIX: Load pipeline with token for gated model
+    # ============================================================
     pipe = AutoPipelineForText2Image.from_pretrained(
         args.model_id,
         torch_dtype=torch.float16,
         variant="fp16",
+        token=True,  # <-- ADDED: Uses the token from huggingface-cli login
     )
     pipe.to(device)
 
