@@ -9,6 +9,7 @@ Key differences from SDXL:
 5. Training resolution matches SDXL at 512×512
 6. Full WandB logging integration
 7. Checkpoint saving matching SDXL
+8. Uses DDPM scheduler instead of FlowMatchEulerDiscreteScheduler for training compatibility
 """
 
 import argparse
@@ -25,7 +26,7 @@ os.environ["PEFT_DISABLE_TORCHAO"] = "1"
 import torch
 import wandb
 from accelerate import Accelerator
-from diffusers import AutoPipelineForText2Image, AutoencoderKL
+from diffusers import AutoPipelineForText2Image, DDPMScheduler
 from peft import LoraConfig, get_peft_model
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
@@ -275,8 +276,6 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
     with torch.no_grad():
         for emotion, prompt in emotion_prompts.items():
             generator = torch.Generator(device).manual_seed(42)
-            
-            # Generate image directly with pipeline
             result = pipe(
                 prompt=prompt,
                 negative_prompt="cartoon, drawing, blurry, low quality, distorted, deformed",
@@ -286,8 +285,6 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
                 height=512,
                 width=512,
             )
-            
-            # Save image
             img = result.images[0]
             save_path = f"{output_dir}/samples/step_{step}_{emotion}.png"
             img.save(save_path)
@@ -354,6 +351,13 @@ def main() -> None:
         text_encoder_3=None,
     )
     pipe.to(device)
+
+    # ============================================================
+    # FIX: Replace FlowMatchEulerDiscreteScheduler with DDPM for training
+    # ============================================================
+    print("Switching to DDPM scheduler for training compatibility...")
+    pipe.scheduler = DDPMScheduler.from_config(pipe.scheduler.config)
+    print("✅ Using DDPM scheduler for training")
 
     # Access MMDiT Transformer (replaces UNet)
     transformer = pipe.transformer
