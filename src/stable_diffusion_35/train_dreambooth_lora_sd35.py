@@ -25,7 +25,7 @@ os.environ["PEFT_DISABLE_TORCHAO"] = "1"
 import torch
 import wandb
 from accelerate import Accelerator
-from diffusers import AutoPipelineForText2Image
+from diffusers import AutoPipelineForText2Image, AutoencoderKL
 from peft import LoraConfig, get_peft_model
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
@@ -339,7 +339,9 @@ def main() -> None:
 
     print("Loading SD 3.5 Medium model (T5-XXL excluded)...")
 
-    # Load pipeline with T5 disabled and VAE in FP32
+    # ============================================================
+    # FIX: Load pipeline, then manually replace VAE with FP32 version
+    # ============================================================
     token = args.token or True
     pipe = AutoPipelineForText2Image.from_pretrained(
         args.model_id,
@@ -348,8 +350,17 @@ def main() -> None:
         token=token,
         tokenizer_3=None,
         text_encoder_3=None,
-        vae_dtype=torch.float32,  # <-- FIX: Load VAE in FP32 to avoid dtype mismatch
     )
+
+    # Load VAE separately in FP32
+    print("Loading VAE in FP32...")
+    vae = AutoencoderKL.from_pretrained(
+        args.model_id,
+        subfolder="vae",
+        torch_dtype=torch.float32,
+    )
+    pipe.vae = vae
+
     pipe.to(device)
 
     # Access MMDiT Transformer (replaces UNet)
@@ -437,8 +448,7 @@ def main() -> None:
     log_sample_images(pipe, transformer, device, 0, emotion_prompts, args.output_dir)
 
     for batch in dataloader:
-        # Move images to device with correct dtype for VAE
-        # VAE is FP32, so we pass FP32 images
+        # Move images to device (FP32 to match VAE)
         images = batch["images"].to(device, dtype=torch.float32)
         prompts = batch["prompts"]
 
@@ -475,7 +485,7 @@ def main() -> None:
             # Concatenate embeddings
             text_embeddings = torch.cat([text_embeddings, text_embeddings_2], dim=-1)
 
-        # Encode images to latents (VAE is FP32, images are FP32)
+        # Encode images to latents (VAE is FP32)
         with torch.no_grad():
             latents = pipe.vae.encode(images).latent_dist.sample()
             latents = latents * 0.18215
