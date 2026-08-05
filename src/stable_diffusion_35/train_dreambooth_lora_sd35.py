@@ -281,6 +281,21 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
     wandb.log({f"samples/step_{step}": sample_images})
 
 
+def find_attention_modules(model, prefix=""):
+    """Find all attention module names in the model."""
+    module_names = []
+    for name, module in model.named_modules():
+        if "attn" in name.lower() or "attention" in name.lower():
+            # Look for linear layers inside attention modules
+            for sub_name, sub_module in module.named_modules():
+                if isinstance(sub_module, torch.nn.Linear):
+                    full_name = f"{name}.{sub_name}" if name else sub_name
+                    if prefix:
+                        full_name = f"{prefix}.{full_name}"
+                    module_names.append(full_name)
+    return module_names
+
+
 def main() -> None:
     args = parse_args()
 
@@ -343,16 +358,61 @@ def main() -> None:
     total_params = sum(p.numel() for p in transformer.parameters())
     print(f"📊 Total transformer parameters: {total_params:,}")
 
+    # ============================================================
+    # CRITICAL FIX: Find actual attention module names
+    # ============================================================
+    print("\n🔍 Finding attention modules in model...")
+    
+    # Try to find all linear layers within attention modules
+    attention_modules = []
+    for name, module in transformer.named_modules():
+        # Look for attention-related module names
+        if any(x in name.lower() for x in ['attn', 'attention', 'q_proj', 'k_proj', 'v_proj', 'out_proj', 'to_q', 'to_k', 'to_v', 'to_out']):
+            # Check if this module has linear submodules
+            for sub_name, sub_module in module.named_modules():
+                if isinstance(sub_module, torch.nn.Linear):
+                    full_name = f"{name}.{sub_name}" if name else sub_name
+                    if full_name not in attention_modules:
+                        attention_modules.append(full_name)
+    
+    # Also look for direct linear layers with attention-related names
+    for name, module in transformer.named_modules():
+        if isinstance(module, torch.nn.Linear):
+            if any(x in name.lower() for x in ['attn', 'attention', 'q', 'k', 'v', 'out']):
+                if name not in attention_modules:
+                    attention_modules.append(name)
+    
+    print(f"Found {len(attention_modules)} attention modules")
+    
+    # If we found modules, use the first few as targets (limit to avoid too many)
+    if attention_modules:
+        # Use the most common patterns
+        target_patterns = ['q', 'k', 'v', 'out']
+        target_modules = []
+        
+        for mod in attention_modules:
+            for pattern in target_patterns:
+                if pattern in mod.lower() and mod not in target_modules:
+                    target_modules.append(mod)
+        
+        # Limit to a reasonable number
+        if len(target_modules) > 20:
+            target_modules = target_modules[:20]
+        
+        print(f"Target modules: {target_modules}")
+    else:
+        # Fallback: use common patterns
+        target_modules = [
+            "to_q", "to_k", "to_v", "to_out.0",
+            "q_proj", "k_proj", "v_proj", "out_proj"
+        ]
+        print(f"Using fallback target modules: {target_modules}")
+
     # LoRA config for SD 3.5 Medium MMDiT
     lora_config = LoraConfig(
         r=CONFIG["lora_rank"],
         lora_alpha=CONFIG["lora_alpha"],
-        target_modules=[
-            "q_proj",
-            "k_proj",
-            "v_proj",
-            "out_proj",
-        ],
+        target_modules=target_modules,
         lora_dropout=CONFIG["lora_dropout"],
         bias="none",
     )
