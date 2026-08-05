@@ -275,6 +275,8 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
     with torch.no_grad():
         for emotion, prompt in emotion_prompts.items():
             generator = torch.Generator(device).manual_seed(42)
+            
+            # Get latents from pipeline (FP16)
             result = pipe(
                 prompt=prompt,
                 negative_prompt="cartoon, drawing, blurry, low quality, distorted, deformed",
@@ -283,8 +285,25 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
                 generator=generator,
                 height=512,
                 width=512,
+                output_type="latent",  # Return latents instead of image
             )
-            img = result.images[0]
+            
+            # ============================================================
+            # FIX: Convert latents from FP16 to FP32 before VAE decode
+            # ============================================================
+            latents = result.images[0].to(torch.float32)
+            
+            # Decode with VAE (FP32)
+            decoded = pipe.vae.decode(latents / pipe.vae.config.scaling_factor, return_dict=False)[0]
+            
+            # Convert to PIL image
+            decoded = (decoded / 2 + 0.5).clamp(0, 1)
+            decoded = decoded.cpu().permute(0, 2, 3, 1).float().numpy()
+            decoded = (decoded * 255).round().astype("uint8")
+            
+            from PIL import Image as PILImage
+            img = PILImage.fromarray(decoded[0])
+            
             save_path = f"{output_dir}/samples/step_{step}_{emotion}.png"
             img.save(save_path)
             sample_images.append(wandb.Image(save_path, caption=f"{emotion} baby"))
@@ -339,9 +358,7 @@ def main() -> None:
 
     print("Loading SD 3.5 Medium model (T5-XXL excluded)...")
 
-    # ============================================================
-    # FIX: Load pipeline, then manually replace VAE with FP32 version
-    # ============================================================
+    # Load pipeline with T5 disabled
     token = args.token or True
     pipe = AutoPipelineForText2Image.from_pretrained(
         args.model_id,
