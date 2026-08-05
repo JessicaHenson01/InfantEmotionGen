@@ -32,6 +32,7 @@ from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 from PIL import Image
 import numpy as np
+import time
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -281,21 +282,6 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
     wandb.log({f"samples/step_{step}": sample_images})
 
 
-def find_attention_modules(model, prefix=""):
-    """Find all attention module names in the model."""
-    module_names = []
-    for name, module in model.named_modules():
-        if "attn" in name.lower() or "attention" in name.lower():
-            # Look for linear layers inside attention modules
-            for sub_name, sub_module in module.named_modules():
-                if isinstance(sub_module, torch.nn.Linear):
-                    full_name = f"{name}.{sub_name}" if name else sub_name
-                    if prefix:
-                        full_name = f"{prefix}.{full_name}"
-                    module_names.append(full_name)
-    return module_names
-
-
 def main() -> None:
     args = parse_args()
 
@@ -359,72 +345,74 @@ def main() -> None:
     print(f"📊 Total transformer parameters: {total_params:,}")
 
     # ============================================================
-    # CRITICAL FIX: Find actual attention module names
+    # CRITICAL FIX: Use correct target modules for SD 3.5 Medium
     # ============================================================
-    print("\n🔍 Finding attention modules in model...")
+    # For SD 3.5 Medium, the attention layers are named differently
+    # We need to find all linear layers in attention blocks
     
-    # Try to find all linear layers within attention modules
-    attention_modules = []
-    for name, module in transformer.named_modules():
-        # Look for attention-related module names
-        if any(x in name.lower() for x in ['attn', 'attention', 'q_proj', 'k_proj', 'v_proj', 'out_proj', 'to_q', 'to_k', 'to_v', 'to_out']):
-            # Check if this module has linear submodules
-            for sub_name, sub_module in module.named_modules():
-                if isinstance(sub_module, torch.nn.Linear):
-                    full_name = f"{name}.{sub_name}" if name else sub_name
-                    if full_name not in attention_modules:
-                        attention_modules.append(full_name)
+    print("\n🔍 Finding attention modules...")
     
-    # Also look for direct linear layers with attention-related names
+    # First, print all module names to debug
+    print("Module names in transformer:")
+    module_names = []
+    for name, _ in transformer.named_modules():
+        if any(x in name for x in ['attn', 'attention', 'q', 'k', 'v', 'proj']):
+            module_names.append(name)
+            if len(module_names) < 30:  # Print first 30
+                print(f"  - {name}")
+    
+    # Common patterns for SD 3.5 Medium
+    target_modules = [
+        "attn.to_q",
+        "attn.to_k", 
+        "attn.to_v",
+        "attn.to_out.0",
+        "attn.add_q_proj",
+        "attn.add_k_proj",
+        "attn.add_v_proj",
+        "attn.add_out_proj"
+    ]
+    
+    # Also try to find any modules with these patterns
+    found_modules = []
     for name, module in transformer.named_modules():
         if isinstance(module, torch.nn.Linear):
-            if any(x in name.lower() for x in ['attn', 'attention', 'q', 'k', 'v', 'out']):
-                if name not in attention_modules:
-                    attention_modules.append(name)
+            for target in ["q", "k", "v", "out"]:
+                if target in name.lower() and any(x in name.lower() for x in ["attn", "proj"]):
+                    if name not in found_modules:
+                        found_modules.append(name)
     
-    print(f"Found {len(attention_modules)} attention modules")
+    if found_modules:
+        print(f"Found modules: {found_modules[:10]}")
+        target_modules = found_modules[:10]  # Use first 10 found modules
     
-    # If we found modules, use the first few as targets (limit to avoid too many)
-    if attention_modules:
-        # Use the most common patterns
-        target_patterns = ['q', 'k', 'v', 'out']
-        target_modules = []
-        
-        for mod in attention_modules:
-            for pattern in target_patterns:
-                if pattern in mod.lower() and mod not in target_modules:
-                    target_modules.append(mod)
-        
-        # Limit to a reasonable number
-        if len(target_modules) > 20:
-            target_modules = target_modules[:20]
-        
-        print(f"Target modules: {target_modules}")
-    else:
-        # Fallback: use common patterns
-        target_modules = [
-            "to_q", "to_k", "to_v", "to_out.0",
-            "q_proj", "k_proj", "v_proj", "out_proj"
-        ]
-        print(f"Using fallback target modules: {target_modules}")
+    print(f"Using target modules: {target_modules}")
 
-    # LoRA config for SD 3.5 Medium MMDiT
+    # LoRA config
     lora_config = LoraConfig(
         r=CONFIG["lora_rank"],
         lora_alpha=CONFIG["lora_alpha"],
         target_modules=target_modules,
         lora_dropout=CONFIG["lora_dropout"],
         bias="none",
+        modules_to_save=None,  # Don't save any extra modules
     )
 
     transformer = get_peft_model(transformer, lora_config)
-    trainable_params = sum(p.numel() for p in transformer.parameters() if p.requires_grad)
-    print(f"📊 Trainable parameters: {trainable_params:,} ({100 * trainable_params / total_params:.2f}%)")
-
+    
+    # CRITICAL: Print trainable parameters
+    trainable_params = 0
     print("\n🔍 Trainable parameters:")
     for name, param in transformer.named_parameters():
         if param.requires_grad:
+            trainable_params += param.numel()
             print(f"  - {name}: {param.numel():,} parameters")
+    
+    print(f"\n📊 Trainable parameters: {trainable_params:,} ({100 * trainable_params / total_params:.2f}%)")
+    
+    if trainable_params < 1000000:  # Less than 1M parameters
+        print("⚠️ WARNING: Very few trainable parameters! This might indicate LoRA isn't properly applied.")
+        print("   Expected: ~7-8 million parameters")
 
     wandb.config.update({
         "total_params": total_params,
@@ -461,14 +449,28 @@ def main() -> None:
     optimizer = torch.optim.AdamW(
         transformer.parameters(),
         lr=args.learning_rate,
+        weight_decay=0.01,
     )
 
+    # CRITICAL: Set model to training mode
     transformer.train()
     print("✅ Model set to training mode")
 
+    # CRITICAL: Verify model is in training mode
+    print(f"Model training mode: {transformer.training}")
+    
+    # Count trainable parameters after accelerator prepare
+    trainable_params_after = sum(p.numel() for p in transformer.parameters() if p.requires_grad)
+    print(f"Trainable parameters after prepare: {trainable_params_after:,}")
+
+    # Prepare with accelerator
     transformer, optimizer, dataloader = accelerator.prepare(
         transformer, optimizer, dataloader
     )
+    
+    # CRITICAL: Verify model is still in training mode after prepare
+    transformer.train()
+    print(f"Model training mode after prepare: {transformer.training}")
 
     emotion_prompts = {
         "angry": "a photo of an angry sks infant",
@@ -477,14 +479,22 @@ def main() -> None:
     }
 
     print("Starting training...")
+    print(f"Expected time: ~4-5 hours on A100")
+    print(f"Each step should take ~8-12 seconds")
+    
     global_step = 0
     running_loss = 0.0
     progress_bar = tqdm(range(args.max_train_steps))
+    
+    # Track time per step
+    step_times = []
 
     wandb.log({"status": "training_started"})
     log_sample_images(pipe, transformer, device, 0, emotion_prompts, args.output_dir)
 
     for batch in dataloader:
+        step_start_time = time.time()
+        
         images = batch["images"].to(device, dtype=torch.float16)
         prompts = batch["prompts"]
 
@@ -574,6 +584,11 @@ def main() -> None:
         text_embeddings = text_embeddings.to(device=device, dtype=torch.float16)
         pooled_projections = pooled_projections.to(device=device, dtype=torch.float16)
 
+        # CRITICAL: Ensure model is in training mode for forward pass
+        if not transformer.training:
+            transformer.train()
+            print("⚠️ Model was not in training mode, fixing...")
+
         noise_pred = transformer(
             hidden_states=noisy_latents,
             timestep=timesteps,
@@ -599,6 +614,7 @@ def main() -> None:
 
         loss = loss / args.gradient_accumulation_steps
 
+        # CRITICAL: Check if gradients are being computed
         with accelerator.accumulate(transformer):
             accelerator.backward(loss)
 
@@ -613,16 +629,26 @@ def main() -> None:
         actual_loss = loss.item() * args.gradient_accumulation_steps
         running_loss += actual_loss
         avg_loss = running_loss / global_step
+        
+        # Track step time
+        step_time = time.time() - step_start_time
+        step_times.append(step_time)
+        avg_step_time = sum(step_times[-10:]) / min(len(step_times), 10)
 
         wandb.log({
             "train/loss": actual_loss,
             "train/avg_loss": avg_loss,
             "train/global_step": global_step,
             "train/learning_rate": optimizer.param_groups[0]['lr'],
+            "train/step_time": step_time,
         })
 
         progress_bar.update(1)
-        progress_bar.set_postfix({"loss": actual_loss, "avg_loss": avg_loss})
+        progress_bar.set_postfix({
+            "loss": f"{actual_loss:.4f}", 
+            "avg_loss": f"{avg_loss:.4f}",
+            "time": f"{avg_step_time:.1f}s"
+        })
 
         if global_step % args.checkpoint_steps == 0:
             unwrapped_unet = accelerator.unwrap_model(transformer)
@@ -650,6 +676,16 @@ def main() -> None:
         unwrapped.save_pretrained(final_dir)
 
         print(f"Training complete! Final model saved to {final_dir}")
+        
+        # Print final stats
+        avg_time = sum(step_times) / len(step_times)
+        total_time = sum(step_times)
+        print(f"\n📊 Training Statistics:")
+        print(f"   Total steps: {global_step}")
+        print(f"   Total time: {total_time/60:.1f} minutes")
+        print(f"   Average time per step: {avg_time:.2f} seconds")
+        print(f"   Final loss: {actual_loss:.4f}")
+        print(f"   Final avg loss: {avg_loss:.4f}")
 
     wandb.log({"status": "training_complete"})
     wandb.finish()
