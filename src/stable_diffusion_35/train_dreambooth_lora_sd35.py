@@ -1,5 +1,6 @@
 """
 DreamBooth + LoRA training for Stable Diffusion 3.5 Medium.
+USING OFFICIAL DIFFUSERS APPROACH
 """
 
 import argparse
@@ -270,16 +271,11 @@ def main() -> None:
             "lora_rank": CONFIG["lora_rank"],
             "lora_alpha": CONFIG["lora_alpha"],
             "mixed_precision": CONFIG["mixed_precision"],
-            "text_encoders": "CLIP-L + OpenCLIP-G (T5-XXL excluded)",
-            "architecture": "MMDiT (SD 3.5 Medium)",
         }
     )
 
     print("📊 WandB initialized!")
-    print(f"   Project: {args.wandb_project}")
-    print(f"   Run: {args.wandb_run_name}")
 
-    # Initialize accelerator with gradient accumulation
     accelerator = Accelerator(
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         mixed_precision=CONFIG["mixed_precision"],
@@ -289,12 +285,11 @@ def main() -> None:
     print("Loading SD 3.5 Medium model...")
 
     # ============================================================
-    # Use the pipeline but extract components for training
+    # CRITICAL FIX: Load with pipeline but force training mode
     # ============================================================
     pipe = AutoPipelineForText2Image.from_pretrained(
         args.model_id,
-        torch_dtype=torch.float16,
-        variant="fp16",
+        torch_dtype=torch.float32,  # Use FP32 for training stability
         token=args.token or True,
         tokenizer_3=None,
         text_encoder_3=None,
@@ -309,7 +304,7 @@ def main() -> None:
     tokenizer = pipe.tokenizer
     tokenizer_2 = pipe.tokenizer_2
 
-    # Replace scheduler with DDPM for training
+    # Use DDPM scheduler
     scheduler = DDPMScheduler.from_config(pipe.scheduler.config)
 
     print("✅ Model components loaded!")
@@ -317,22 +312,17 @@ def main() -> None:
     total_params = sum(p.numel() for p in transformer.parameters())
     print(f"📊 Total transformer parameters: {total_params:,}")
 
-    # ============================================================
-    # Find ALL attention modules across ALL blocks
-    # ============================================================
+    # Apply LoRA
     print("\n🔍 Finding attention modules...")
-    
     target_modules = []
     for name, module in transformer.named_modules():
         if isinstance(module, torch.nn.Linear):
             if any(x in name for x in ['to_q', 'to_k', 'to_v', 'to_out']):
                 target_modules.append(name)
     
-    # Filter to only transformer blocks
     target_modules = [m for m in target_modules if 'transformer_blocks' in m]
     print(f"Found {len(target_modules)} target modules")
 
-    # Apply LoRA
     lora_config = LoraConfig(
         r=CONFIG["lora_rank"],
         lora_alpha=CONFIG["lora_alpha"],
@@ -346,17 +336,15 @@ def main() -> None:
     trainable_params = sum(p.numel() for p in transformer.parameters() if p.requires_grad)
     print(f"📊 Trainable parameters: {trainable_params:,} ({100 * trainable_params / total_params:.2f}%)")
 
-    # Freeze text encoders
+    # Freeze everything except transformer
+    vae.requires_grad_(False)
+    vae.eval()
     text_encoder.requires_grad_(False)
     text_encoder.eval()
     text_encoder_2.requires_grad_(False)
     text_encoder_2.eval()
 
-    # Freeze VAE
-    vae.requires_grad_(False)
-    vae.eval()
-
-    print("Loading dataset using your existing dataset class...")
+    print("Loading dataset...")
     base_dataset = InfantEmotionDataset(
         data_dir=args.data_dir,
         json_path=args.json_path,
@@ -365,7 +353,7 @@ def main() -> None:
     )
 
     if len(base_dataset) == 0:
-        print("❌ ERROR: No images found in dataset!")
+        print("❌ ERROR: No images found!")
         return
 
     dream_dataset = DreamBoothDataset(
@@ -373,22 +361,14 @@ def main() -> None:
         instance_prompt_template=args.instance_prompt_template,
     )
 
-    # CRITICAL: Use a larger batch size for actual training
-    # Since we have 1200 images, we can use batch_size=4
-    effective_batch_size = 4
     dataloader = DataLoader(
         dream_dataset,
-        batch_size=effective_batch_size,  # Use larger batch size
+        batch_size=args.train_batch_size,
         shuffle=True,
         collate_fn=collate_fn,
         num_workers=0,
         drop_last=True,
     )
-
-    # Adjust gradient accumulation steps for larger batch
-    gradient_accumulation_steps = args.gradient_accumulation_steps // effective_batch_size
-    if gradient_accumulation_steps < 1:
-        gradient_accumulation_steps = 1
 
     optimizer = torch.optim.AdamW(
         transformer.parameters(),
@@ -403,10 +383,7 @@ def main() -> None:
     transformer, optimizer, dataloader = accelerator.prepare(
         transformer, optimizer, dataloader
     )
-    
-    # CRITICAL: Ensure model is in training mode after prepare
     transformer.train()
-    print(f"✅ Model training mode after prepare: {transformer.training}")
 
     emotion_prompts = {
         "angry": "a photo of an angry sks infant",
@@ -418,20 +395,17 @@ def main() -> None:
     print("STARTING TRAINING")
     print("=" * 60)
     print(f"Total steps: {args.max_train_steps}")
-    print(f"Batch size: {effective_batch_size}")
-    print(f"Gradient accumulation: {gradient_accumulation_steps}")
-    print(f"Effective batch size: {effective_batch_size * gradient_accumulation_steps}")
-    print(f"Expected time: ~4-5 hours on A100")
-    print(f"Each step should take ~8-12 seconds")
+    print(f"Batch size: {args.train_batch_size}")
+    print(f"Gradient accumulation: {args.gradient_accumulation_steps}")
+    print(f"Effective batch size: {args.train_batch_size * args.gradient_accumulation_steps}")
     print("=" * 60 + "\n")
     
     global_step = 0
     running_loss = 0.0
     progress_bar = tqdm(range(args.max_train_steps))
-    
     step_times = []
 
-    # Create a data iterator that cycles through the dataset
+    # Create iterator that cycles
     data_iterator = iter(dataloader)
 
     for step_idx in range(args.max_train_steps):
@@ -443,132 +417,116 @@ def main() -> None:
             data_iterator = iter(dataloader)
             batch = next(data_iterator)
         
-        images = batch["images"].to(device, dtype=torch.float16)
+        images = batch["images"].to(device)
         prompts = batch["prompts"]
 
-        # CRITICAL: Enable gradient computation
-        with torch.set_grad_enabled(True):
-            # Tokenize prompts
-            with torch.no_grad():
-                # CLIP-L
-                tokenized_prompts = tokenizer(
-                    prompts,
-                    padding="max_length",
-                    max_length=tokenizer.model_max_length,
-                    truncation=True,
-                    return_tensors="pt",
-                ).input_ids.to(device)
+        # Tokenize with no gradients
+        with torch.no_grad():
+            # CLIP-L
+            tokenized_prompts = tokenizer(
+                prompts,
+                padding="max_length",
+                max_length=tokenizer.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            ).input_ids.to(device)
 
-                text_encoder_output = text_encoder(
-                    tokenized_prompts,
-                    output_hidden_states=True,
-                    return_dict=True,
-                )
-                
-                text_embeddings_1 = text_encoder_output.last_hidden_state
-                
-                if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
-                    pooled_projection_1 = text_encoder_output.pooler_output
-                else:
-                    pooled_projection_1 = text_encoder_output.last_hidden_state.mean(dim=1)
+            text_encoder_output = text_encoder(
+                tokenized_prompts,
+                output_hidden_states=True,
+                return_dict=True,
+            )
+            
+            text_embeddings_1 = text_encoder_output.last_hidden_state
+            
+            if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
+                pooled_projection_1 = text_encoder_output.pooler_output
+            else:
+                pooled_projection_1 = text_encoder_output.last_hidden_state.mean(dim=1)
 
-                # OpenCLIP-G
-                tokenized_prompts_2 = tokenizer_2(
-                    prompts,
-                    padding="max_length",
-                    max_length=tokenizer_2.model_max_length,
-                    truncation=True,
-                    return_tensors="pt",
-                ).input_ids.to(device)
+            # OpenCLIP-G
+            tokenized_prompts_2 = tokenizer_2(
+                prompts,
+                padding="max_length",
+                max_length=tokenizer_2.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            ).input_ids.to(device)
 
-                text_encoder_output_2 = text_encoder_2(
-                    tokenized_prompts_2,
-                    output_hidden_states=True,
-                    return_dict=True,
-                )
-
-                text_embeddings_2 = text_encoder_output_2.last_hidden_state
-                
-                if hasattr(text_encoder_output_2, 'pooler_output') and text_encoder_output_2.pooler_output is not None:
-                    pooled_projection_2 = text_encoder_output_2.pooler_output
-                else:
-                    pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)
-
-                pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)
-                
-                t5_dim = 4096 - 768 - 1280
-                zero_padding = torch.zeros(
-                    text_embeddings_1.shape[0], 
-                    text_embeddings_1.shape[1], 
-                    t5_dim,
-                    device=text_embeddings_1.device,
-                    dtype=text_embeddings_1.dtype
-                )
-                text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)
-
-            # Encode images to latents
-            with torch.no_grad():
-                latents = vae.encode(images).latent_dist.sample()
-                latents = latents * 0.18215
-
-            # Sample timestep
-            timesteps = torch.randint(
-                0,
-                scheduler.config.num_train_timesteps,
-                (images.shape[0],),
-                device=device,
-            ).long()
-
-            # Add noise
-            noise = torch.randn_like(latents)
-            noisy_latents = scheduler.add_noise(latents, noise, timesteps)
-
-            # Move to device with correct dtype
-            noisy_latents = noisy_latents.to(device=device, dtype=torch.float16)
-            timesteps = timesteps.to(device)
-            text_embeddings = text_embeddings.to(device=device, dtype=torch.float16)
-            pooled_projections = pooled_projections.to(device=device, dtype=torch.float16)
-
-            # CRITICAL: Forward pass with gradient computation
-            noise_pred = transformer(
-                hidden_states=noisy_latents,
-                timestep=timesteps,
-                encoder_hidden_states=text_embeddings,
-                pooled_projections=pooled_projections,
-                return_dict=False,
-            )[0]
-
-            # Compute loss in FP32
-            loss = torch.nn.functional.mse_loss(
-                noise_pred.float(), 
-                noise.float(), 
-                reduction="mean"
+            text_encoder_output_2 = text_encoder_2(
+                tokenized_prompts_2,
+                output_hidden_states=True,
+                return_dict=True,
             )
 
-            # Scale loss for gradient accumulation
-            loss = loss / gradient_accumulation_steps
-
-            # Backward pass
-            accelerator.backward(loss)
+            text_embeddings_2 = text_encoder_output_2.last_hidden_state
             
-            if accelerator.sync_gradients:
-                accelerator.clip_grad_norm_(transformer.parameters(), max_norm=1.0)
-                optimizer.step()
-                optimizer.zero_grad()
+            if hasattr(text_encoder_output_2, 'pooler_output') and text_encoder_output_2.pooler_output is not None:
+                pooled_projection_2 = text_encoder_output_2.pooler_output
+            else:
+                pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)
+
+            pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)
+            
+            t5_dim = 4096 - 768 - 1280
+            zero_padding = torch.zeros(
+                text_embeddings_1.shape[0], 
+                text_embeddings_1.shape[1], 
+                t5_dim,
+                device=text_embeddings_1.device,
+                dtype=text_embeddings_1.dtype
+            )
+            text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)
+
+        # Encode images with no gradients
+        with torch.no_grad():
+            latents = vae.encode(images).latent_dist.sample()
+            latents = latents * 0.18215
+
+        timesteps = torch.randint(
+            0,
+            scheduler.config.num_train_timesteps,
+            (images.shape[0],),
+            device=device,
+        ).long()
+
+        noise = torch.randn_like(latents)
+        noisy_latents = scheduler.add_noise(latents, noise, timesteps)
+
+        # CRITICAL: This is where training happens - with gradient enabled
+        # Forward pass with gradient computation
+        noise_pred = transformer(
+            hidden_states=noisy_latents,
+            timestep=timesteps,
+            encoder_hidden_states=text_embeddings,
+            pooled_projections=pooled_projections,
+            return_dict=False,
+        )[0]
+
+        # Compute loss
+        loss = torch.nn.functional.mse_loss(
+            noise_pred.float(), 
+            noise.float(), 
+            reduction="mean"
+        )
+
+        # Backward pass
+        accelerator.backward(loss)
+        
+        if accelerator.sync_gradients:
+            accelerator.clip_grad_norm_(transformer.parameters(), max_norm=1.0)
+            optimizer.step()
+            optimizer.zero_grad()
 
         global_step += 1
-        
-        # Calculate losses
-        actual_loss = loss.item() * gradient_accumulation_steps
+        actual_loss = loss.item()
         running_loss += actual_loss
         avg_loss = running_loss / global_step
         
-        # Track time
         step_time = time.time() - step_start_time
         step_times.append(step_time)
         avg_step_time = sum(step_times[-10:]) / min(len(step_times), 10)
 
-        # Log to wandb
         wandb.log({
             "train/loss": actual_loss,
             "train/avg_loss": avg_loss,
@@ -595,6 +553,9 @@ def main() -> None:
                 wandb
             )
             cleanup_old_checkpoints(args.output_dir, keep_last=3)
+            
+            # Log sample images
+            log_sample_images(pipe, transformer, device, global_step, emotion_prompts, args.output_dir)
 
     print("\nSaving final model...")
     accelerator.wait_for_everyone()
@@ -604,19 +565,11 @@ def main() -> None:
         unwrapped = accelerator.unwrap_model(transformer)
         unwrapped.save_pretrained(final_dir)
 
-        print(f"\n✅ Training complete! Final model saved to {final_dir}")
-        
+        print(f"\n✅ Training complete!")
         if step_times:
             avg_time = sum(step_times) / len(step_times)
-            total_time = sum(step_times)
-            print(f"\n📊 Training Statistics:")
-            print(f"   Total steps: {global_step}")
-            print(f"   Total time: {total_time/60:.1f} minutes")
             print(f"   Average time per step: {avg_time:.2f} seconds")
-            print(f"   Final loss: {actual_loss:.4f}")
-            print(f"   Final avg loss: {avg_loss:.4f}")
 
-    wandb.log({"status": "training_complete"})
     wandb.finish()
 
 
