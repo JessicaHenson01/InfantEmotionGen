@@ -33,6 +33,7 @@ from tqdm.auto import tqdm
 from PIL import Image
 import numpy as np
 import time
+import re
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -345,48 +346,62 @@ def main() -> None:
     print(f"📊 Total transformer parameters: {total_params:,}")
 
     # ============================================================
-    # CRITICAL FIX: Use correct target modules for SD 3.5 Medium
+    # CRITICAL FIX: Find ALL attention modules across ALL blocks
     # ============================================================
-    # For SD 3.5 Medium, the attention layers are named differently
-    # We need to find all linear layers in attention blocks
+    print("\n🔍 Finding ALL attention modules...")
     
-    print("\n🔍 Finding attention modules...")
+    # Find all linear layers in attention blocks
+    target_modules = []
     
-    # First, print all module names to debug
-    print("Module names in transformer:")
-    module_names = []
-    for name, _ in transformer.named_modules():
-        if any(x in name for x in ['attn', 'attention', 'q', 'k', 'v', 'proj']):
-            module_names.append(name)
-            if len(module_names) < 30:  # Print first 30
-                print(f"  - {name}")
-    
-    # Common patterns for SD 3.5 Medium
-    target_modules = [
-        "attn.to_q",
-        "attn.to_k", 
-        "attn.to_v",
-        "attn.to_out.0",
-        "attn.add_q_proj",
-        "attn.add_k_proj",
-        "attn.add_v_proj",
-        "attn.add_out_proj"
-    ]
-    
-    # Also try to find any modules with these patterns
-    found_modules = []
+    # Get all module names
+    all_modules = []
     for name, module in transformer.named_modules():
-        if isinstance(module, torch.nn.Linear):
-            for target in ["q", "k", "v", "out"]:
-                if target in name.lower() and any(x in name.lower() for x in ["attn", "proj"]):
-                    if name not in found_modules:
-                        found_modules.append(name)
+        all_modules.append(name)
     
-    if found_modules:
-        print(f"Found modules: {found_modules[:10]}")
-        target_modules = found_modules[:10]  # Use first 10 found modules
+    # Look for patterns: transformer_blocks.X.attn.*
+    # We want ALL blocks, not just block 0
+    for name in all_modules:
+        # Check if it's a linear layer in an attention module
+        if any(x in name for x in ['attn.to_q', 'attn.to_k', 'attn.to_v', 
+                                   'attn.add_q_proj', 'attn.add_k_proj', 'attn.add_v_proj',
+                                   'attn.to_out.0', 'attn.to_add_out',
+                                   'attn2.to_q', 'attn2.to_k', 'attn2.to_v']):
+            # Make sure we're not just getting block 0
+            if 'transformer_blocks' in name:
+                # Extract block number
+                match = re.search(r'transformer_blocks\.(\d+)', name)
+                if match:
+                    block_num = int(match.group(1))
+                    # Include ALL blocks (we'll limit to reasonable number)
+                    if name not in target_modules:
+                        target_modules.append(name)
+            else:
+                # For non-block modules (like pos_embed, etc.)
+                pass
     
-    print(f"Using target modules: {target_modules}")
+    # If we have too many, filter to specific patterns
+    if len(target_modules) > 50:
+        # Keep only the most important ones
+        filtered = []
+        for name in target_modules:
+            if any(x in name for x in ['to_q', 'to_k', 'to_v', 'to_out.0']):
+                filtered.append(name)
+        if filtered:
+            target_modules = filtered
+    
+    print(f"Found {len(target_modules)} target modules across ALL blocks")
+    print(f"First 10 targets: {target_modules[:10]}")
+    
+    if not target_modules:
+        # Fallback: use patterns to find all
+        print("No modules found, using fallback patterns...")
+        target_modules = [
+            "attn.to_q", "attn.to_k", "attn.to_v", 
+            "attn.add_q_proj", "attn.add_k_proj", "attn.add_v_proj",
+            "attn.to_out.0", "attn.to_add_out",
+            "attn2.to_q", "attn2.to_k", "attn2.to_v"
+        ]
+        print(f"Fallback targets: {target_modules}")
 
     # LoRA config
     lora_config = LoraConfig(
@@ -395,24 +410,32 @@ def main() -> None:
         target_modules=target_modules,
         lora_dropout=CONFIG["lora_dropout"],
         bias="none",
-        modules_to_save=None,  # Don't save any extra modules
+        modules_to_save=None,
     )
 
     transformer = get_peft_model(transformer, lora_config)
     
-    # CRITICAL: Print trainable parameters
+    # Count trainable parameters
     trainable_params = 0
-    print("\n🔍 Trainable parameters:")
+    print("\n🔍 Trainable parameters (first 20):")
+    count = 0
     for name, param in transformer.named_parameters():
         if param.requires_grad:
             trainable_params += param.numel()
-            print(f"  - {name}: {param.numel():,} parameters")
+            if count < 20:
+                print(f"  - {name}: {param.numel():,} parameters")
+                count += 1
     
     print(f"\n📊 Trainable parameters: {trainable_params:,} ({100 * trainable_params / total_params:.2f}%)")
     
-    if trainable_params < 1000000:  # Less than 1M parameters
-        print("⚠️ WARNING: Very few trainable parameters! This might indicate LoRA isn't properly applied.")
-        print("   Expected: ~7-8 million parameters")
+    if trainable_params < 1000000:
+        print("⚠️ WARNING: Very few trainable parameters! Expected: ~7-8 million parameters")
+        print("   This might cause fast training but poor results.")
+        print("   Consider increasing lora_rank or target_modules.")
+    
+    if trainable_params < 10000000:  # Less than 10M
+        print("⚠️ WARNING: Trainable parameters ({}) is less than expected (7-8M)".format(trainable_params))
+        print("   Training will still work but may be too fast.")
 
     wandb.config.update({
         "total_params": total_params,
@@ -452,25 +475,15 @@ def main() -> None:
         weight_decay=0.01,
     )
 
-    # CRITICAL: Set model to training mode
     transformer.train()
     print("✅ Model set to training mode")
 
-    # CRITICAL: Verify model is in training mode
-    print(f"Model training mode: {transformer.training}")
-    
-    # Count trainable parameters after accelerator prepare
-    trainable_params_after = sum(p.numel() for p in transformer.parameters() if p.requires_grad)
-    print(f"Trainable parameters after prepare: {trainable_params_after:,}")
-
-    # Prepare with accelerator
     transformer, optimizer, dataloader = accelerator.prepare(
         transformer, optimizer, dataloader
     )
     
-    # CRITICAL: Verify model is still in training mode after prepare
     transformer.train()
-    print(f"Model training mode after prepare: {transformer.training}")
+    print(f"✅ Model ready. Trainable params after prepare: {sum(p.numel() for p in transformer.parameters() if p.requires_grad):,}")
 
     emotion_prompts = {
         "angry": "a photo of an angry sks infant",
@@ -486,7 +499,6 @@ def main() -> None:
     running_loss = 0.0
     progress_bar = tqdm(range(args.max_train_steps))
     
-    # Track time per step
     step_times = []
 
     wandb.log({"status": "training_started"})
@@ -584,10 +596,9 @@ def main() -> None:
         text_embeddings = text_embeddings.to(device=device, dtype=torch.float16)
         pooled_projections = pooled_projections.to(device=device, dtype=torch.float16)
 
-        # CRITICAL: Ensure model is in training mode for forward pass
+        # Ensure training mode
         if not transformer.training:
             transformer.train()
-            print("⚠️ Model was not in training mode, fixing...")
 
         noise_pred = transformer(
             hidden_states=noisy_latents,
@@ -614,7 +625,6 @@ def main() -> None:
 
         loss = loss / args.gradient_accumulation_steps
 
-        # CRITICAL: Check if gradients are being computed
         with accelerator.accumulate(transformer):
             accelerator.backward(loss)
 
@@ -630,7 +640,6 @@ def main() -> None:
         running_loss += actual_loss
         avg_loss = running_loss / global_step
         
-        # Track step time
         step_time = time.time() - step_start_time
         step_times.append(step_time)
         avg_step_time = sum(step_times[-10:]) / min(len(step_times), 10)
@@ -677,15 +686,15 @@ def main() -> None:
 
         print(f"Training complete! Final model saved to {final_dir}")
         
-        # Print final stats
-        avg_time = sum(step_times) / len(step_times)
-        total_time = sum(step_times)
-        print(f"\n📊 Training Statistics:")
-        print(f"   Total steps: {global_step}")
-        print(f"   Total time: {total_time/60:.1f} minutes")
-        print(f"   Average time per step: {avg_time:.2f} seconds")
-        print(f"   Final loss: {actual_loss:.4f}")
-        print(f"   Final avg loss: {avg_loss:.4f}")
+        if step_times:
+            avg_time = sum(step_times) / len(step_times)
+            total_time = sum(step_times)
+            print(f"\n📊 Training Statistics:")
+            print(f"   Total steps: {global_step}")
+            print(f"   Total time: {total_time/60:.1f} minutes")
+            print(f"   Average time per step: {avg_time:.2f} seconds")
+            print(f"   Final loss: {actual_loss:.4f}")
+            print(f"   Final avg loss: {avg_loss:.4f}")
 
     wandb.log({"status": "training_complete"})
     wandb.finish()
