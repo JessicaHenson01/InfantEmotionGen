@@ -384,6 +384,12 @@ def main() -> None:
     trainable_params = sum(p.numel() for p in transformer.parameters() if p.requires_grad)
     print(f"📊 Trainable parameters: {trainable_params:,} ({100 * trainable_params / total_params:.2f}%)")
 
+    # CRITICAL FIX: Print trainable parameters for debugging
+    print("\n🔍 Trainable parameters:")
+    for name, param in transformer.named_parameters():
+        if param.requires_grad:
+            print(f"  - {name}: {param.numel():,} parameters")
+
     wandb.config.update({
         "total_params": total_params,
         "trainable_params": trainable_params,
@@ -420,7 +426,12 @@ def main() -> None:
         transformer.parameters(),
         lr=args.learning_rate,
     )
+
+    # CRITICAL FIX: Set model to training mode BEFORE accelerator.prepare
     transformer.train()
+    print("✅ Model set to training mode")
+
+    # Prepare with accelerator
     transformer, optimizer, dataloader = accelerator.prepare(
         transformer, optimizer, dataloader
     )
@@ -504,16 +515,21 @@ def main() -> None:
                 pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)  # (batch, 1280)
 
             # ============================================================
-            # CRITICAL FIX: 
-            # - pooled_projections should be 2048 dims (CLIP-L + OpenCLIP-G)
-            # - encoder_hidden_states should be 4096 dims (CLIP-L + OpenCLIP-G + padded T5)
+            # CRITICAL FIX: SD 3.5 Medium expects:
+            # - pooled_projections: (batch, 2048) for text_embedder
+            # - encoder_hidden_states: (batch, 77, 4096) for context_embedder
             # ============================================================
             
             # Pooled projections: concatenate CLIP-L and OpenCLIP-G (no padding)
+            # This goes to text_embedder which expects 2048 dims
             pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)  # (batch, 2048)
             
-            # Encoder hidden states: pad to 4096 to match T5 dimension
+            # Encoder hidden states: concatenate and pad to 4096
+            # This goes to context_embedder which expects 4096 dims
+            # CLIP-L: 768 + OpenCLIP-G: 1280 = 2048, need to pad to 4096
             t5_dim = 4096 - 768 - 1280  # 2048
+            
+            # Pad with zeros to match T5-XXL dimension
             zero_padding = torch.zeros(
                 text_embeddings_1.shape[0], 
                 text_embeddings_1.shape[1], 
@@ -546,10 +562,14 @@ def main() -> None:
         noisy_latents = pipe.scheduler.add_noise(latents, noise, timesteps)
 
         # ============================================================
-        # MMDiT forward pass with proper dimensions
-        # - encoder_hidden_states: (batch, 77, 4096)
-        # - pooled_projections: (batch, 2048)
+        # CRITICAL FIX: Ensure all tensors are on the correct device
         # ============================================================
+        noisy_latents = noisy_latents.to(device)
+        timesteps = timesteps.to(device)
+        text_embeddings = text_embeddings.to(device)
+        pooled_projections = pooled_projections.to(device)
+
+        # MMDiT forward pass with proper dimensions
         noise_pred = transformer(
             hidden_states=noisy_latents,
             timestep=timesteps,
@@ -572,6 +592,9 @@ def main() -> None:
             optimizer.zero_grad()
             continue
 
+        # CRITICAL FIX: Normalize loss by gradient accumulation steps
+        loss = loss / args.gradient_accumulation_steps
+
         # Backward pass with gradient accumulation
         with accelerator.accumulate(transformer):
             accelerator.backward(loss)
@@ -583,19 +606,19 @@ def main() -> None:
             optimizer.zero_grad()
 
         global_step += 1
-        running_loss += loss.item()
+        running_loss += loss.item() * args.gradient_accumulation_steps
         avg_loss = running_loss / global_step
 
         # Log to WandB
         wandb.log({
-            "train/loss": loss.item(),
+            "train/loss": loss.item() * args.gradient_accumulation_steps,
             "train/avg_loss": avg_loss,
             "train/global_step": global_step,
             "train/learning_rate": optimizer.param_groups[0]['lr'],
         })
 
         progress_bar.update(1)
-        progress_bar.set_postfix({"loss": loss.item(), "avg_loss": avg_loss})
+        progress_bar.set_postfix({"loss": loss.item() * args.gradient_accumulation_steps, "avg_loss": avg_loss})
 
         # Log sample images every 500 steps
         if global_step % args.checkpoint_steps == 0:
@@ -643,13 +666,18 @@ def main() -> None:
         if args.colab:
             from huggingface_hub import upload_folder
             print(f"📤 Uploading to Hugging Face: {args.hf_repo}")
-            upload_folder(
-                folder_path=final_dir,
-                repo_id=args.hf_repo,
-                repo_type="model",
-                path_in_repo=".",
-            )
-            print("✅ Model uploaded to Hugging Face!")
+            try:
+                upload_folder(
+                    folder_path=final_dir,
+                    repo_id=args.hf_repo,
+                    repo_type="model",
+                    path_in_repo=".",
+                    ignore_patterns=["*.pt", "optimizer.pt"],  # Skip optimizer files
+                )
+                print("✅ Model uploaded to Hugging Face!")
+            except Exception as e:
+                print(f"⚠️ Upload failed: {e}")
+                print("Model saved locally at:", final_dir)
 
         print(f"Training complete! Final model saved to {final_dir}")
 
