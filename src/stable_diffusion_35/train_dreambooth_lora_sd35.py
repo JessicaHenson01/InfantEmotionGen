@@ -58,6 +58,103 @@ def collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
+@torch.no_grad()
+def generate_preview_image(
+    prompt: str,
+    transformer,
+    vae,
+    tokenizer,
+    tokenizer_2,
+    text_encoder,
+    text_encoder_2,
+    device,
+    resolution: int,
+    vae_scaling_factor: float,
+    vae_shift_factor: float,
+    num_inference_steps: int = 15,
+    seed: int = 0,
+):
+    """
+    Cheap in-training preview: runs a short Euler integration of the learned
+    velocity field (same flow-matching convention used in the training loop)
+    and decodes it through the VAE with the *correct* SD3.5 scale/shift.
+    This exists purely so you can eyeball training progress in WandB instead
+    of waiting for the full run to finish before seeing any image.
+    """
+    was_training = transformer.training
+    transformer.eval()
+
+    # Text conditioning (mirrors the training-loop encoding path)
+    tokenized = tokenizer(
+        [prompt], padding="max_length", max_length=tokenizer.model_max_length,
+        truncation=True, return_tensors="pt",
+    ).input_ids.to(device)
+    out1 = text_encoder(tokenized, output_hidden_states=True, return_dict=True)
+    emb1 = out1.last_hidden_state
+    pooled1 = out1.pooler_output if getattr(out1, "pooler_output", None) is not None else emb1.mean(dim=1)
+
+    tokenized_2 = tokenizer_2(
+        [prompt], padding="max_length", max_length=tokenizer_2.model_max_length,
+        truncation=True, return_tensors="pt",
+    ).input_ids.to(device)
+    out2 = text_encoder_2(tokenized_2, output_hidden_states=True, return_dict=True)
+    emb2 = out2.last_hidden_state
+    pooled2 = out2.pooler_output if getattr(out2, "pooler_output", None) is not None else emb2.mean(dim=1)
+
+    pooled_projections = torch.cat([pooled1, pooled2], dim=-1).to(dtype=torch.float16)
+    t5_dim = 4096 - 768 - 1280
+    zero_padding = torch.zeros(emb1.shape[0], emb1.shape[1], t5_dim, device=device, dtype=emb1.dtype)
+    text_embeddings = torch.cat([emb1, emb2, zero_padding], dim=-1).to(dtype=torch.float16)
+
+    # Latent spatial size for this resolution (VAE downsamples by 8x)
+    latent_size = resolution // 8
+    generator = torch.Generator(device=device).manual_seed(seed)
+    x = torch.randn(
+        (1, transformer.config.in_channels, latent_size, latent_size),
+        device=device, dtype=torch.float16, generator=generator,
+    )
+
+    dt = 1.0 / num_inference_steps
+    for step in range(num_inference_steps):
+        t_val = 1.0 - step * dt
+        timestep = torch.full((1,), t_val, device=device, dtype=torch.float16)
+        velocity = transformer(
+            hidden_states=x,
+            timestep=timestep,
+            encoder_hidden_states=text_embeddings,
+            pooled_projections=pooled_projections,
+            return_dict=False,
+        )[0]
+        x = x - velocity * dt
+
+    # Undo SD3.5's latent normalization before decoding
+    latents = (x.float() / vae_scaling_factor) + vae_shift_factor
+    image = vae.decode(latents, return_dict=False)[0]
+    image = (image / 2 + 0.5).clamp(0, 1)
+    image = (image[0].permute(1, 2, 0).cpu().numpy() * 255).astype("uint8")
+
+    if was_training:
+        transformer.train()
+
+    from PIL import Image
+    return Image.fromarray(image)
+
+
+def check_tensor(tensor: torch.Tensor, name: str, step: int) -> bool:
+    """
+    Debug helper to check for NaN/Inf in tensors.
+    Mirrors the SDXL script's check_tensor() so both pipelines fail loudly
+    at the same points instead of one silently training through a NaN.
+    """
+    if torch.isnan(tensor).any():
+        print(f"⚠️ NaN in {name} at step {step}!")
+        return True
+    if torch.isinf(tensor).any():
+        print(f"⚠️ Inf in {name} at step {step}!")
+        return True
+    return False
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--pretrained_model_name_or_path", type=str, default="stabilityai/stable-diffusion-3.5-medium")
@@ -77,6 +174,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--wandb_offline", action="store_true")
     parser.add_argument("--token", type=str, default=None)
     parser.add_argument("--checkpoint_steps", type=int, default=500)
+    parser.add_argument("--sample_steps", type=int, default=250,
+                         help="Log a quick preview image to WandB every N steps (0 to disable)")
+    parser.add_argument("--sample_inference_steps", type=int, default=15,
+                         help="Number of Euler steps used for the quick in-training preview sampler")
     return parser.parse_args()
 
 
@@ -120,6 +221,13 @@ def main() -> None:
     vae.requires_grad_(False)
     vae.eval()
 
+    # SD3.5's 16-channel VAE uses its own scaling/shift factors — NOT the
+    # SDXL/SD1.5 constant (0.18215). Pull them from the loaded VAE config so
+    # this stays correct even if the base model changes.
+    vae_scaling_factor = vae.config.scaling_factor
+    vae_shift_factor = vae.config.shift_factor
+    print(f"VAE scaling_factor={vae_scaling_factor}, shift_factor={vae_shift_factor}")
+
     # Load MMDiT Transformer
     transformer = SD3Transformer2DModel.from_pretrained(
         args.pretrained_model_name_or_path,
@@ -138,6 +246,11 @@ def main() -> None:
     )
     transformer = get_peft_model(transformer, lora_config)
     transformer.print_trainable_parameters()
+
+    # Gradient checkpointing (matches unet.enable_gradient_checkpointing() in
+    # the SDXL script). config.py's "gradient_checkpointing": True flag was
+    # never actually wired up before — this makes it real.
+    transformer.enable_gradient_checkpointing()
 
     # Load text encoders
     text_encoder = CLIPTextModel.from_pretrained(
@@ -205,7 +318,6 @@ def main() -> None:
         shuffle=True,
         collate_fn=collate_fn,
         num_workers=0,
-        drop_last=True,
     )
 
     optimizer = torch.optim.AdamW(
@@ -221,7 +333,6 @@ def main() -> None:
     transformer.train()
 
     print("Starting training...")
-    print("Expected: ~8-12 seconds per step on A100")
     
     global_step = 0
     running_loss = 0.0
@@ -237,6 +348,11 @@ def main() -> None:
         
         images = batch["images"].to(device, dtype=torch.float16)
         prompts = batch["prompts"]
+
+        if check_tensor(images, "images", global_step):
+            print(f"   Images range: min={images.min():.4f}, max={images.max():.4f}")
+            optimizer.zero_grad()
+            continue
 
         # Encode text
         with torch.no_grad():
@@ -302,7 +418,12 @@ def main() -> None:
         # Encode images
         with torch.no_grad():
             latents = vae.encode(images.float()).latent_dist.sample()
-            latents = latents * 0.18215
+            latents = (latents - vae_shift_factor) * vae_scaling_factor
+
+            if check_tensor(latents, "latents", global_step):
+                print("   VAE produced NaN! Skipping...")
+                optimizer.zero_grad()
+                continue
 
         # ============================================================
         # FLOW MATCHING IMPLEMENTATION
@@ -340,16 +461,29 @@ def main() -> None:
             return_dict=False,
         )[0]
 
+        if check_tensor(predicted_velocity, "predicted_velocity", global_step):
+            optimizer.zero_grad()
+            continue
+
         # Compute loss
         loss = torch.nn.functional.mse_loss(
             predicted_velocity.float(), target_velocity.float(), reduction="mean"
         )
 
-        # Backward pass
-        accelerator.backward(loss)
-        
-        if (step_idx + 1) % args.gradient_accumulation_steps == 0:
-            accelerator.clip_grad_norm_(transformer.parameters(), max_norm=1.0)
+        if torch.isnan(loss) or torch.isinf(loss):
+            print(f"⚠️ NaN/Inf loss at step {global_step}! Skipping...")
+            optimizer.zero_grad()
+            continue
+
+        # Backward pass with gradient accumulation — accelerator.accumulate
+        # handles the accumulate/sync boundary automatically, matching the
+        # SDXL script instead of manually gating on step_idx.
+        with accelerator.accumulate(transformer):
+            accelerator.backward(loss)
+
+            if accelerator.sync_gradients:
+                accelerator.clip_grad_norm_(transformer.parameters(), max_norm=1.0)
+
             optimizer.step()
             optimizer.zero_grad()
 
@@ -373,6 +507,34 @@ def main() -> None:
             os.makedirs(checkpoint_dir, exist_ok=True)
             unwrapped.save_pretrained(checkpoint_dir)
             print(f"\n✅ Checkpoint saved at step {global_step}")
+
+        if args.sample_steps > 0 and global_step % args.sample_steps == 0 and accelerator.is_main_process:
+            print(f"\n🖼️  Logging preview samples at step {global_step}...")
+            unwrapped = accelerator.unwrap_model(transformer)
+            for emotion in ["angry", "crying", "happy"]:
+                preview_prompt = args.instance_prompt_template.format(emotion)
+                try:
+                    preview_img = generate_preview_image(
+                        prompt=preview_prompt,
+                        transformer=unwrapped,
+                        vae=vae,
+                        tokenizer=tokenizer,
+                        tokenizer_2=tokenizer_2,
+                        text_encoder=text_encoder,
+                        text_encoder_2=text_encoder_2,
+                        device=device,
+                        resolution=args.resolution,
+                        vae_scaling_factor=vae_scaling_factor,
+                        vae_shift_factor=vae_shift_factor,
+                        num_inference_steps=args.sample_inference_steps,
+                        seed=args.seed,
+                    )
+                    wandb.log({
+                        f"preview/{emotion}": wandb.Image(preview_img, caption=f"{emotion} @ step {global_step}"),
+                        "train/global_step": global_step,
+                    })
+                except Exception as preview_error:
+                    print(f"⚠️ Preview generation failed for '{emotion}': {preview_error}")
 
     # Save final model
     print("Saving final model...")
