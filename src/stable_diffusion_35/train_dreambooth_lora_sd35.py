@@ -483,7 +483,7 @@ def main() -> None:
             )
             
             # Get the pooled output (CLS token) from the second encoder
-            pooled_projections = text_encoder_output_2.pooler_output  # (batch, 1280)
+            pooled_projections = text_encoder_output_2.last_hidden_state.mean(dim=1)  # (batch, 1280)
             
             # If pooler_output doesn't exist, use the mean of the last hidden state
             if pooled_projections is None:
