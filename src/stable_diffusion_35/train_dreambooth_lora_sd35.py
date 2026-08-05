@@ -7,12 +7,7 @@ COMPARABLE TO SDXL:
 - Same dataset (1200 images, 400 per emotion)
 - Same LoRA rank (16)
 - Same prompt template ("a photo of a {} sks infant")
-- Same loss function (MSE, but applied to Flow Matching objective)
-
-DIFFERENT:
-- Uses Flow Matching instead of DDPM (native to SD3.5)
-- Uses FlowMatchEulerDiscreteScheduler
-- Uses different sampling/training logic
+- Same loss function (MSE)
 """
 
 import argparse
@@ -152,7 +147,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--wandb_run_name",
         type=str,
-        default="sd35-training",
+        default="sd35-flow-matching",
         help="WandB run name"
     )
     parser.add_argument(
@@ -166,6 +161,12 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Hugging Face token for gated models"
     )
+    parser.add_argument(
+        "--checkpoint_steps",
+        type=int,
+        default=500,
+        help="Save checkpoint every N steps"
+    )
     return parser.parse_args()
 
 
@@ -178,7 +179,6 @@ def compute_density_for_timestep_sampling(
 ) -> torch.Tensor:
     """Compute density for timestep sampling (Flow Matching)."""
     if weighting_scheme == "logit_normal":
-        # See: https://arxiv.org/abs/2309.02883
         u = torch.normal(mean=logit_mean, std=logit_std, size=(batch_size,))
         return torch.sigmoid(u)
     elif weighting_scheme == "mode":
@@ -186,6 +186,57 @@ def compute_density_for_timestep_sampling(
         return 1 - u ** (1 / mode_scale)
     else:
         return torch.rand(size=(batch_size,))
+
+
+def check_tensor(tensor: torch.Tensor, name: str, step: int) -> bool:
+    """Check for NaN/Inf in tensors."""
+    if torch.isnan(tensor).any():
+        print(f"⚠️ NaN in {name} at step {step}!")
+        return True
+    if torch.isinf(tensor).any():
+        print(f"⚠️ Inf in {name} at step {step}!")
+        return True
+    return False
+
+
+def save_checkpoint(transformer, optimizer, global_step, output_dir, wandb_run=None):
+    """Save checkpoint locally and log to wandb."""
+    checkpoint_dir = os.path.join(output_dir, f"checkpoint-{global_step}")
+    os.makedirs(checkpoint_dir, exist_ok=True)
+    
+    unwrapped = transformer
+    if hasattr(transformer, 'unwrap'):
+        unwrapped = transformer.unwrap()
+    elif hasattr(transformer, 'module'):
+        unwrapped = transformer.module
+    
+    unwrapped.save_pretrained(checkpoint_dir)
+    
+    torch.save({
+        'optimizer_state_dict': optimizer.state_dict(),
+        'global_step': global_step,
+    }, os.path.join(checkpoint_dir, "optimizer.pt"))
+    
+    print(f"Checkpoint saved at step {global_step}: {checkpoint_dir}")
+    return checkpoint_dir
+
+
+def cleanup_old_checkpoints(output_dir, keep_last=3):
+    """Keep only the last N checkpoints."""
+    import shutil
+    checkpoint_dirs = []
+    for item in os.listdir(output_dir):
+        if item.startswith("checkpoint-") and os.path.isdir(os.path.join(output_dir, item)):
+            step = int(item.split("-")[1])
+            checkpoint_dirs.append((step, item))
+    
+    checkpoint_dirs.sort(key=lambda x: x[0])
+    
+    if len(checkpoint_dirs) > keep_last:
+        for step, dir_name in checkpoint_dirs[:-keep_last]:
+            dir_path = os.path.join(output_dir, dir_name)
+            shutil.rmtree(dir_path)
+            print(f"Removed old checkpoint: {dir_name}")
 
 
 def main() -> None:
@@ -229,7 +280,6 @@ def main() -> None:
     print(f"Batch size: {args.train_batch_size}")
     print(f"Gradient accumulation: {args.gradient_accumulation_steps}")
     print(f"Max steps: {args.max_train_steps}")
-    print(f"Training objective: Flow Matching (native to SD3.5)")
     print("=" * 60)
 
     print("Loading SD 3.5 Medium models...")
@@ -332,6 +382,10 @@ def main() -> None:
         size=args.resolution,
     )
 
+    if len(base_dataset) == 0:
+        print("❌ ERROR: No images found in dataset!")
+        return
+
     dream_dataset = DreamBoothDataset(
         base_dataset=base_dataset,
         instance_prompt_template=args.instance_prompt_template,
@@ -343,6 +397,7 @@ def main() -> None:
         shuffle=True,
         collate_fn=collate_fn,
         num_workers=0,
+        drop_last=True,
     )
 
     # ============================================================
@@ -351,17 +406,27 @@ def main() -> None:
     optimizer = torch.optim.AdamW(
         transformer.parameters(),
         lr=args.learning_rate,
+        weight_decay=0.01,
     )
 
-    # Prepare with accelerator
+    # ============================================================
+    # CRITICAL: Prepare with accelerator but be explicit about training
+    # ============================================================
     transformer, optimizer, dataloader = accelerator.prepare(
         transformer, optimizer, dataloader
     )
     
     # Ensure training mode
     transformer.train()
+    
+    # Verify training mode
+    print(f"Transformer training mode: {transformer.training}")
+    print(f"Gradients enabled: {torch.is_grad_enabled()}")
 
     print("Starting training...")
+    print(f"Expected time: ~4-5 hours on A100")
+    print(f"Each step should take ~8-12 seconds")
+    
     global_step = 0
     running_loss = 0.0
     progress_bar = tqdm(range(args.max_train_steps))
@@ -369,11 +434,20 @@ def main() -> None:
     # ============================================================
     # Training Loop (Flow Matching - native to SD3.5)
     # ============================================================
-    for batch in dataloader:
+    data_iterator = iter(dataloader)
+    
+    for step_idx in range(args.max_train_steps):
+        try:
+            batch = next(data_iterator)
+        except StopIteration:
+            data_iterator = iter(dataloader)
+            batch = next(data_iterator)
+        
+        # Move data to device
         images = batch["images"].to(device, dtype=torch.float16)
         prompts = batch["prompts"]
 
-        # ----- Encode text prompts -----
+        # ----- Encode text prompts (no gradients) -----
         with torch.no_grad():
             # CLIP-L
             tokenized_prompts = tokenizer(
@@ -433,13 +507,12 @@ def main() -> None:
             )
             text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)
 
-        # ----- Encode images to latents -----
+        # ----- Encode images to latents (no gradients) -----
         with torch.no_grad():
             latents = vae.encode(images.float()).latent_dist.sample()
             latents = latents * 0.18215
 
         # ----- Flow Matching: Sample timestep with density -----
-        # This is the key difference from DDPM
         timesteps = compute_density_for_timestep_sampling(
             weighting_scheme="logit_normal",
             batch_size=images.shape[0],
@@ -449,60 +522,81 @@ def main() -> None:
         noise = torch.randn_like(latents)
         
         # For flow matching, we interpolate between noise and latents
-        # timesteps represent the interpolation factor
+        timesteps = timesteps.view(-1, 1, 1, 1)
         noisy_latents = (1.0 - timesteps) * latents + timesteps * noise
 
+        # Move to device with correct dtype
         noisy_latents = noisy_latents.to(device=device, dtype=torch.float16)
-        timesteps = timesteps.to(device)
+        timesteps_flat = timesteps.view(-1).to(device)
         text_embeddings = text_embeddings.to(device=device, dtype=torch.float16)
         pooled_projections = pooled_projections.to(device=device, dtype=torch.float16)
 
-        # ----- Forward pass through MMDiT -----
+        # Ensure transformer is in training mode
+        if not transformer.training:
+            transformer.train()
+            print(f"⚠️ Step {global_step}: Transformer was not in training mode, fixed!")
+
+        # ----- Forward pass (WITH gradients) -----
         # The model predicts the "velocity" (noise - latents) in flow matching
         predicted_velocity = transformer(
             hidden_states=noisy_latents,
-            timestep=timesteps,
+            timestep=timesteps_flat,
             encoder_hidden_states=text_embeddings,
             pooled_projections=pooled_projections,
             return_dict=False,
         )[0]
 
-        # ----- Compute MSE loss (same as SDXL, but on velocity) -----
         # Target: noise - latents (the flow direction)
         target_velocity = noise - latents
         
+        # Compute loss
         loss = torch.nn.functional.mse_loss(
             predicted_velocity.float(), target_velocity.float(), reduction="mean"
         )
 
-        # ----- Backward pass (same as SDXL) -----
-        with accelerator.accumulate(transformer):
-            accelerator.backward(loss)
+        # Scale loss for gradient accumulation
+        loss = loss / args.gradient_accumulation_steps
 
-            if accelerator.sync_gradients:
-                accelerator.clip_grad_norm_(transformer.parameters(), max_norm=1.0)
-
+        # ----- Backward pass -----
+        accelerator.backward(loss)
+        
+        # Step optimizer when we've accumulated enough gradients
+        if (step_idx + 1) % args.gradient_accumulation_steps == 0:
+            accelerator.clip_grad_norm_(transformer.parameters(), max_norm=1.0)
             optimizer.step()
             optimizer.zero_grad()
 
         global_step += 1
-        running_loss += loss.item()
+        
+        # Track loss (unscaled)
+        unscaled_loss = loss.item() * args.gradient_accumulation_steps
+        running_loss += unscaled_loss
         avg_loss = running_loss / global_step
 
         wandb.log({
-            "train/loss": loss.item(),
+            "train/loss": unscaled_loss,
             "train/avg_loss": avg_loss,
             "train/global_step": global_step,
+            "train/learning_rate": optimizer.param_groups[0]['lr'],
         })
 
         progress_bar.update(1)
-        progress_bar.set_postfix({"loss": loss.item(), "avg_loss": avg_loss})
+        progress_bar.set_postfix({"loss": unscaled_loss, "avg_loss": avg_loss})
 
-        if global_step >= args.max_train_steps:
-            break
+        # Save checkpoint
+        if global_step % args.checkpoint_steps == 0:
+            unwrapped = accelerator.unwrap_model(transformer)
+            save_checkpoint(
+                unwrapped,
+                optimizer,
+                global_step,
+                args.output_dir,
+                wandb
+            )
+            cleanup_old_checkpoints(args.output_dir, keep_last=3)
 
     # ============================================================
-    # Save Model (same as SDXL)
+    # Save Final Model
     # ============================================================
     print("Saving final model...")
     accelerator.wait_for_everyone()
@@ -512,6 +606,15 @@ def main() -> None:
         unwrapped_transformer = accelerator.unwrap_model(transformer)
         unwrapped_transformer.save_pretrained(final_dir)
         print(f"Training complete! Final model saved to {final_dir}")
+        
+        # Log to wandb
+        artifact = wandb.Artifact(
+            name="sd35_lora_weights",
+            type="model",
+            description=f"SD 3.5 Medium LoRA weights after {args.max_train_steps} steps",
+        )
+        artifact.add_dir(final_dir)
+        wandb.log_artifact(artifact)
 
     wandb.finish()
 
