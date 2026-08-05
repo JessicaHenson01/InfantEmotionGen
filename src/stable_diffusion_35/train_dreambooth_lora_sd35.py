@@ -1,6 +1,13 @@
 """
 Training script for SD 3.5 Medium using diffusers' built-in methods with LoRA.
-Mirrors the SDXL training setup but adapted for SD 3.5 Medium architecture.
+Mirrors the SDXL training setup for fair comparison.
+
+COMPARABLE TO SDXL:
+- Same hyperparameters (lr=5e-6, batch_size=1, grad_accum=4, steps=1500)
+- Same dataset (1200 images, 400 per emotion)
+- Same LoRA rank (16)
+- Same prompt template ("a photo of a {} sks infant")
+- Same loss function (MSE)
 """
 
 import argparse
@@ -57,8 +64,8 @@ def collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Train SD 3.5 Medium with LoRA")
+    """Parse command line arguments - matches SDXL setup."""
+    parser = argparse.ArgumentParser(description="Train SD 3.5 Medium with LoRA (comparable to SDXL)")
     parser.add_argument(
         "--pretrained_model_name_or_path",
         type=str,
@@ -81,37 +88,37 @@ def parse_args() -> argparse.Namespace:
         "--instance_prompt_template",
         type=str,
         default="a photo of a {} sks infant",
-        help="Template for instance prompts"
+        help="Template for instance prompts (same as SDXL)"
     )
     parser.add_argument(
         "--resolution",
         type=int,
         default=512,
-        help="Image resolution"
+        help="Image resolution (same as SDXL)"
     )
     parser.add_argument(
         "--train_batch_size",
         type=int,
         default=1,
-        help="Training batch size"
+        help="Training batch size (same as SDXL)"
     )
     parser.add_argument(
         "--gradient_accumulation_steps",
         type=int,
         default=4,
-        help="Gradient accumulation steps"
+        help="Gradient accumulation steps (same as SDXL)"
     )
     parser.add_argument(
         "--learning_rate",
         type=float,
         default=5e-6,
-        help="Learning rate"
+        help="Learning rate (same as SDXL)"
     )
     parser.add_argument(
         "--max_train_steps",
         type=int,
         default=1500,
-        help="Maximum training steps"
+        help="Maximum training steps (same as SDXL)"
     )
     parser.add_argument(
         "--output_dir",
@@ -123,13 +130,13 @@ def parse_args() -> argparse.Namespace:
         "--seed",
         type=int,
         default=42,
-        help="Random seed"
+        help="Random seed (same as SDXL)"
     )
     parser.add_argument(
         "--wandb_project",
         type=str,
         default="infant-emotion-generation",
-        help="WandB project name"
+        help="WandB project name (same as SDXL)"
     )
     parser.add_argument(
         "--wandb_entity",
@@ -140,24 +147,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--wandb_run_name",
         type=str,
-        default=None,
+        default="sd35-training",
         help="WandB run name"
     )
     parser.add_argument(
         "--wandb_offline",
         action="store_true",
         help="Run wandb in offline mode"
-    )
-    parser.add_argument(
-        "--hf_repo",
-        type=str,
-        default="InfantEmotionGen/SD35Primary",
-        help="Hugging Face repository name"
-    )
-    parser.add_argument(
-        "--colab",
-        action="store_true",
-        help="Run in Colab mode"
     )
     parser.add_argument(
         "--token",
@@ -189,7 +185,17 @@ def main() -> None:
         entity=args.wandb_entity,
         name=args.wandb_run_name,
         mode="offline" if args.wandb_offline else "online",
-        config=vars(args),
+        config={
+            "model": "SD3.5-Medium",
+            "resolution": args.resolution,
+            "learning_rate": args.learning_rate,
+            "max_train_steps": args.max_train_steps,
+            "train_batch_size": args.train_batch_size,
+            "gradient_accumulation_steps": args.gradient_accumulation_steps,
+            "lora_rank": 16,
+            "dataset_size": 1200,
+            "emotions": ["angry", "crying", "happy"],
+        }
     )
 
     accelerator = Accelerator(
@@ -198,10 +204,19 @@ def main() -> None:
     )
     device = accelerator.device
 
+    print("=" * 60)
+    print("SD 3.5 Medium Training (Comparable to SDXL)")
+    print("=" * 60)
+    print(f"Learning rate: {args.learning_rate}")
+    print(f"Batch size: {args.train_batch_size}")
+    print(f"Gradient accumulation: {args.gradient_accumulation_steps}")
+    print(f"Max steps: {args.max_train_steps}")
+    print("=" * 60)
+
     print("Loading SD 3.5 Medium models...")
 
     # ============================================================
-    # Step 1: Load VAE (FP32 for stability)
+    # Load VAE (FP32 for stability - same as SDXL)
     # ============================================================
     vae = AutoencoderKL.from_pretrained(
         args.pretrained_model_name_or_path,
@@ -213,7 +228,7 @@ def main() -> None:
     vae.eval()
 
     # ============================================================
-    # Step 2: Load MMDiT Transformer (FP16 for memory)
+    # Load MMDiT Transformer (FP16 for memory)
     # ============================================================
     transformer = SD3Transformer2DModel.from_pretrained(
         args.pretrained_model_name_or_path,
@@ -223,11 +238,11 @@ def main() -> None:
     ).to(device)
 
     # ============================================================
-    # Step 3: Apply LoRA to MMDiT
+    # Apply LoRA to MMDiT (rank=16, same as SDXL)
     # ============================================================
     lora_config = LoraConfig(
-        r=16,
-        lora_alpha=16,
+        r=16,  # Same rank as SDXL
+        lora_alpha=16,  # Same alpha as SDXL
         target_modules=[
             "to_q",
             "to_k", 
@@ -245,7 +260,7 @@ def main() -> None:
     transformer.print_trainable_parameters()
 
     # ============================================================
-    # Step 4: Load Text Encoders and Tokenizers
+    # Load Text Encoders and Tokenizers (same as SDXL approach)
     # ============================================================
     text_encoder = CLIPTextModel.from_pretrained(
         args.pretrained_model_name_or_path,
@@ -273,14 +288,14 @@ def main() -> None:
         token=args.token or True,
     )
 
-    # Freeze text encoders
+    # Freeze text encoders (same as SDXL)
     text_encoder.requires_grad_(False)
     text_encoder.eval()
     text_encoder_2.requires_grad_(False)
     text_encoder_2.eval()
 
     # ============================================================
-    # Step 5: Load Scheduler (DDPM for training)
+    # Use DDPM scheduler (same as SDXL)
     # ============================================================
     scheduler = DDPMScheduler.from_pretrained(
         args.pretrained_model_name_or_path,
@@ -289,7 +304,7 @@ def main() -> None:
     )
 
     # ============================================================
-    # Step 6: Load Dataset
+    # Load Dataset (same dataset as SDXL)
     # ============================================================
     print("Loading dataset...")
     base_dataset = InfantEmotionDataset(
@@ -312,29 +327,20 @@ def main() -> None:
     )
 
     # ============================================================
-    # Step 7: Setup Optimizer
+    # Setup Optimizer (AdamW, same as SDXL)
     # ============================================================
     optimizer = torch.optim.AdamW(
         transformer.parameters(),
         lr=args.learning_rate,
     )
 
-    # ============================================================
-    # Step 8: CRITICAL - Force Training Mode
-    # ============================================================
-    transformer.train()
-    print("✅ Transformer set to training mode")
-    print(f"   Transformer training mode: {transformer.training}")
-    print(f"   Gradient computation enabled: {torch.is_grad_enabled()}")
-
     # Prepare with accelerator
     transformer, optimizer, dataloader = accelerator.prepare(
         transformer, optimizer, dataloader
     )
     
-    # CRITICAL: Force training mode AFTER accelerator.prepare
+    # Ensure training mode
     transformer.train()
-    print(f"✅ After accelerator.prepare - training mode: {transformer.training}")
 
     print("Starting training...")
     global_step = 0
@@ -342,161 +348,152 @@ def main() -> None:
     progress_bar = tqdm(range(args.max_train_steps))
 
     # ============================================================
-    # Step 9: Training Loop with Explicit Gradient Computation
+    # Training Loop (same structure as SDXL)
     # ============================================================
     for batch in dataloader:
-        # CRITICAL: Ensure gradients are enabled for this step
-        with torch.set_grad_enabled(True):
-            images = batch["images"].to(device, dtype=torch.float16)
-            prompts = batch["prompts"]
+        images = batch["images"].to(device, dtype=torch.float16)
+        prompts = batch["prompts"]
 
-            if check_tensor(images, "images", global_step):
-                optimizer.zero_grad()
-                continue
+        if check_tensor(images, "images", global_step):
+            optimizer.zero_grad()
+            continue
 
-            # ----- Text encoding (no gradients) -----
-            with torch.no_grad():
-                # CLIP-L
-                tokenized_prompts = tokenizer(
-                    prompts,
-                    padding="max_length",
-                    max_length=tokenizer.model_max_length,
-                    truncation=True,
-                    return_tensors="pt",
-                ).input_ids.to(device)
-                
-                text_encoder_output = text_encoder(
-                    tokenized_prompts,
-                    output_hidden_states=True,
-                    return_dict=True,
-                )
-                
-                text_embeddings_1 = text_encoder_output.last_hidden_state
-                
-                if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
-                    pooled_projection_1 = text_encoder_output.pooler_output
-                else:
-                    pooled_projection_1 = text_encoder_output.last_hidden_state.mean(dim=1)
-
-                # OpenCLIP-G
-                tokenized_prompts_2 = tokenizer_2(
-                    prompts,
-                    padding="max_length",
-                    max_length=tokenizer_2.model_max_length,
-                    truncation=True,
-                    return_tensors="pt",
-                ).input_ids.to(device)
-
-                text_encoder_output_2 = text_encoder_2(
-                    tokenized_prompts_2,
-                    output_hidden_states=True,
-                    return_dict=True,
-                )
-
-                text_embeddings_2 = text_encoder_output_2.last_hidden_state
-                
-                if hasattr(text_encoder_output_2, 'pooler_output') and text_encoder_output_2.pooler_output is not None:
-                    pooled_projection_2 = text_encoder_output_2.pooler_output
-                else:
-                    pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)
-
-                # Concatenate pooled projections (2048 dims)
-                pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)
-                
-                # Pad text embeddings to 4096
-                t5_dim = 4096 - 768 - 1280
-                zero_padding = torch.zeros(
-                    text_embeddings_1.shape[0], 
-                    text_embeddings_1.shape[1], 
-                    t5_dim,
-                    device=text_embeddings_1.device,
-                    dtype=text_embeddings_1.dtype
-                )
-                text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)
-
-            # ----- VAE encoding (no gradients) -----
-            with torch.no_grad():
-                latents = vae.encode(images.float()).latent_dist.sample()
-                latents = latents * 0.18215
-
-                if check_tensor(latents, "latents", global_step):
-                    optimizer.zero_grad()
-                    continue
-
-            # ----- Sample timestep and add noise -----
-            timesteps = torch.randint(
-                0,
-                scheduler.config.num_train_timesteps,
-                (images.shape[0],),
-                device=device,
-            ).long()
-
-            noise = torch.randn_like(latents)
-            noisy_latents = scheduler.add_noise(latents, noise, timesteps)
-
-            # ----- CRITICAL: Forward pass with gradient computation -----
-            # Ensure model is in training mode
-            if not transformer.training:
-                transformer.train()
-                print("⚠️ Transformer was not in training mode, fixed!")
+        # ----- Encode text prompts (same as SDXL) -----
+        with torch.no_grad():
+            # CLIP-L
+            tokenized_prompts = tokenizer(
+                prompts,
+                padding="max_length",
+                max_length=tokenizer.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            ).input_ids.to(device)
             
-            # Move to device with correct dtype
-            noisy_latents = noisy_latents.to(device=device, dtype=torch.float16)
-            timesteps = timesteps.to(device)
-            text_embeddings = text_embeddings.to(device=device, dtype=torch.float16)
-            pooled_projections = pooled_projections.to(device=device, dtype=torch.float16)
+            text_encoder_output = text_encoder(
+                tokenized_prompts,
+                output_hidden_states=True,
+                return_dict=True,
+            )
+            
+            text_embeddings_1 = text_encoder_output.last_hidden_state
+            
+            if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
+                pooled_projection_1 = text_encoder_output.pooler_output
+            else:
+                pooled_projection_1 = text_encoder_output.last_hidden_state.mean(dim=1)
 
-            # Forward pass - THIS SHOULD COMPUTE GRADIENTS
-            noise_pred = transformer(
-                hidden_states=noisy_latents,
-                timestep=timesteps,
-                encoder_hidden_states=text_embeddings,
-                pooled_projections=pooled_projections,
-                return_dict=False,
-            )[0]
+            # OpenCLIP-G
+            tokenized_prompts_2 = tokenizer_2(
+                prompts,
+                padding="max_length",
+                max_length=tokenizer_2.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            ).input_ids.to(device)
 
-            if check_tensor(noise_pred, "noise_pred", global_step):
-                optimizer.zero_grad()
-                continue
-
-            # Compute loss
-            loss = torch.nn.functional.mse_loss(
-                noise_pred.float(), noise.float(), reduction="mean"
+            text_encoder_output_2 = text_encoder_2(
+                tokenized_prompts_2,
+                output_hidden_states=True,
+                return_dict=True,
             )
 
-            if torch.isnan(loss) or torch.isinf(loss):
-                print(f"⚠️ NaN/Inf loss at step {global_step}! Skipping...")
+            text_embeddings_2 = text_encoder_output_2.last_hidden_state
+            
+            if hasattr(text_encoder_output_2, 'pooler_output') and text_encoder_output_2.pooler_output is not None:
+                pooled_projection_2 = text_encoder_output_2.pooler_output
+            else:
+                pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)
+
+            # Concatenate pooled projections for MMDiT
+            pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)
+            
+            # Pad text embeddings to 4096 (T5-XXL excluded)
+            t5_dim = 4096 - 768 - 1280
+            zero_padding = torch.zeros(
+                text_embeddings_1.shape[0], 
+                text_embeddings_1.shape[1], 
+                t5_dim,
+                device=text_embeddings_1.device,
+                dtype=text_embeddings_1.dtype
+            )
+            text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)
+
+        # ----- Encode images to latents (same as SDXL) -----
+        with torch.no_grad():
+            latents = vae.encode(images.float()).latent_dist.sample()
+            latents = latents * 0.18215
+
+            if check_tensor(latents, "latents", global_step):
                 optimizer.zero_grad()
                 continue
 
-            # ----- Backward pass -----
-            with accelerator.accumulate(transformer):
-                accelerator.backward(loss)
+        # ----- Sample timestep and add noise (same as SDXL) -----
+        timesteps = torch.randint(
+            0,
+            scheduler.config.num_train_timesteps,
+            (images.shape[0],),
+            device=device,
+        ).long()
 
-                if accelerator.sync_gradients:
-                    accelerator.clip_grad_norm_(transformer.parameters(), max_norm=1.0)
+        noise = torch.randn_like(latents)
+        noisy_latents = scheduler.add_noise(latents, noise, timesteps)
 
-                optimizer.step()
-                optimizer.zero_grad()
+        noisy_latents = noisy_latents.to(device=device, dtype=torch.float16)
+        timesteps = timesteps.to(device)
+        text_embeddings = text_embeddings.to(device=device, dtype=torch.float16)
+        pooled_projections = pooled_projections.to(device=device, dtype=torch.float16)
 
-            global_step += 1
-            running_loss += loss.item()
-            avg_loss = running_loss / global_step
+        # ----- Forward pass through MMDiT -----
+        noise_pred = transformer(
+            hidden_states=noisy_latents,
+            timestep=timesteps,
+            encoder_hidden_states=text_embeddings,
+            pooled_projections=pooled_projections,
+            return_dict=False,
+        )[0]
 
-            wandb.log({
-                "train/loss": loss.item(),
-                "train/avg_loss": avg_loss,
-                "train/global_step": global_step,
-            })
+        if check_tensor(noise_pred, "noise_pred", global_step):
+            optimizer.zero_grad()
+            continue
 
-            progress_bar.update(1)
-            progress_bar.set_postfix({"loss": loss.item(), "avg_loss": avg_loss})
+        # ----- Compute MSE loss (same as SDXL) -----
+        loss = torch.nn.functional.mse_loss(
+            noise_pred.float(), noise.float(), reduction="mean"
+        )
 
-            if global_step >= args.max_train_steps:
-                break
+        if torch.isnan(loss) or torch.isinf(loss):
+            print(f"⚠️ NaN/Inf loss at step {global_step}! Skipping...")
+            optimizer.zero_grad()
+            continue
+
+        # ----- Backward pass (same as SDXL) -----
+        with accelerator.accumulate(transformer):
+            accelerator.backward(loss)
+
+            if accelerator.sync_gradients:
+                accelerator.clip_grad_norm_(transformer.parameters(), max_norm=1.0)
+
+            optimizer.step()
+            optimizer.zero_grad()
+
+        global_step += 1
+        running_loss += loss.item()
+        avg_loss = running_loss / global_step
+
+        wandb.log({
+            "train/loss": loss.item(),
+            "train/avg_loss": avg_loss,
+            "train/global_step": global_step,
+        })
+
+        progress_bar.update(1)
+        progress_bar.set_postfix({"loss": loss.item(), "avg_loss": avg_loss})
+
+        if global_step >= args.max_train_steps:
+            break
 
     # ============================================================
-    # Step 10: Save Model
+    # Save Model (same as SDXL)
     # ============================================================
     print("Saving final model...")
     accelerator.wait_for_everyone()
