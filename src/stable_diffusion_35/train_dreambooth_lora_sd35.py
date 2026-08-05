@@ -491,7 +491,7 @@ def main() -> None:
             )
             
             # Get CLIP-L embeddings (use sequence for per-token features)
-            text_embeddings = text_encoder_output.last_hidden_state  # (batch, 77, 768)
+            text_embeddings_1 = text_encoder_output.last_hidden_state  # (batch, 77, 768)
             
             # Get CLIP-L pooled embedding (for MMDiT conditioning)
             if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
@@ -523,13 +523,31 @@ def main() -> None:
             else:
                 pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)  # (batch, 1280)
 
-            # Concatenate pooled projections for MMDiT conditioning
-            # SD 3.5 expects (batch, 2048) where 2048 = 768 + 1280
-            pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)  # (batch, 2048)
-
-            # Concatenate embeddings along feature dimension
-            # Both are (batch, 77, dim) -> concatenated to (batch, 77, 2048)
-            text_embeddings = torch.cat([text_embeddings, text_embeddings_2], dim=-1)  # (batch, 77, 2048)
+            # ============================================================
+            # CRITICAL FIX: SD 3.5 Medium expects 4096 dims (CLIP-L + OpenCLIP-G + T5)
+            # Since we excluded T5, we need to pad to 4096 or use a different approach
+            # ============================================================
+            
+            # Option 1: Pad to 4096 with zeros (T5 is excluded)
+            # CLIP-L (768) + OpenCLIP-G (1280) = 2048, need to pad to 4096
+            t5_dim = 4096 - 768 - 1280  # 2048
+            zero_padding = torch.zeros(
+                text_embeddings_1.shape[0], 
+                text_embeddings_1.shape[1], 
+                t5_dim,
+                device=text_embeddings_1.device,
+                dtype=text_embeddings_1.dtype
+            )
+            text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)  # (batch, 77, 4096)
+            
+            # Also pad pooled projections
+            pooled_zero_padding = torch.zeros(
+                pooled_projection_1.shape[0],
+                t5_dim,
+                device=pooled_projection_1.device,
+                dtype=pooled_projection_1.dtype
+            )
+            pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2, pooled_zero_padding], dim=-1)  # (batch, 4096)
 
         # Encode images to latents (VAE is in FP16)
         with torch.no_grad():
@@ -554,7 +572,7 @@ def main() -> None:
         noisy_latents = pipe.scheduler.add_noise(latents, noise, timesteps)
 
         # ============================================================
-        # FIX: MMDiT forward pass with pooled projections
+        # MMDiT forward pass with proper dimensions
         # ============================================================
         noise_pred = transformer(
             hidden_states=noisy_latents,
