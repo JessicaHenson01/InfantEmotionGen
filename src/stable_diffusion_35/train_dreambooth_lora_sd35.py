@@ -6,10 +6,7 @@ import argparse
 import os
 import sys
 import shutil
-import json
 from typing import Any, Dict, List
-from PIL import Image
-from collections import Counter
 
 # ============================================================
 # FIX: Disable torchao in PEFT BEFORE importing peft
@@ -21,123 +18,19 @@ import wandb
 from accelerate import Accelerator
 from diffusers import DDPMScheduler
 from peft import LoraConfig, get_peft_model
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
-import numpy as np
 import time
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import local modules
+# Import local modules - using your existing dataset
+from data_utils import InfantEmotionDataset
 from stable_diffusion_35.config import CONFIG
 
 
-class InfantEmotionDataset(Dataset):
-    """Dataset for infant emotion images."""
-    
-    def __init__(self, data_dir: str, json_path: str, size: int = 512):
-        self.data_dir = data_dir
-        self.size = size
-        self.image_paths = []
-        self.emotions = []
-        
-        print(f"Loading dataset from: {data_dir}")
-        print(f"JSON labels from: {json_path}")
-        
-        # Load labels
-        if os.path.exists(json_path):
-            with open(json_path, 'r') as f:
-                self.labels = json.load(f)
-            print(f"Loaded {len(self.labels)} labels from JSON")
-        else:
-            print(f"⚠️ JSON file not found: {json_path}")
-            self.labels = {}
-        
-        # Method 1: Look for images in subdirectories (angry/, crying/, happy/)
-        print("\nLooking for images in subdirectories...")
-        emotion_dirs = ['angry', 'crying', 'happy']
-        for emotion in emotion_dirs:
-            emotion_path = os.path.join(data_dir, emotion)
-            if os.path.exists(emotion_path):
-                print(f"  Found {emotion}/ directory")
-                for file in os.listdir(emotion_path):
-                    if file.endswith(('.jpg', '.jpeg', '.png')):
-                        self.image_paths.append(os.path.join(emotion_path, file))
-                        self.emotions.append(emotion)
-                print(f"    Found {len([f for f in os.listdir(emotion_path) if f.endswith(('.jpg', '.jpeg', '.png'))])} images in {emotion}/")
-        
-        # Method 2: If no images found, look in root directory
-        if not self.image_paths:
-            print("\nNo images found in subdirectories. Looking in root directory...")
-            for file in os.listdir(data_dir):
-                if file.endswith(('.jpg', '.jpeg', '.png')):
-                    img_name = os.path.splitext(file)[0]
-                    # Try to match with JSON labels
-                    if img_name in self.labels:
-                        self.image_paths.append(os.path.join(data_dir, file))
-                        self.emotions.append(self.labels[img_name])
-                    else:
-                        # Try to infer emotion from filename
-                        for emotion in ['angry', 'crying', 'happy']:
-                            if emotion in file.lower() or emotion in img_name.lower():
-                                self.image_paths.append(os.path.join(data_dir, file))
-                                self.emotions.append(emotion)
-                                break
-        
-        # Method 3: If still no images, try to find any images in subdirectories with different names
-        if not self.image_paths:
-            print("\nSearching all subdirectories for images...")
-            for root, dirs, files in os.walk(data_dir):
-                for file in files:
-                    if file.endswith(('.jpg', '.jpeg', '.png')):
-                        # Try to determine emotion from parent directory name
-                        parent_dir = os.path.basename(root)
-                        for emotion in ['angry', 'crying', 'happy']:
-                            if emotion in parent_dir.lower():
-                                self.image_paths.append(os.path.join(root, file))
-                                self.emotions.append(emotion)
-                                break
-                        else:
-                            # If no emotion found in path, use 'unknown'
-                            self.image_paths.append(os.path.join(root, file))
-                            self.emotions.append('unknown')
-        
-        print(f"\n✅ Loaded {len(self.image_paths)} images")
-        
-        # Print distribution
-        emotion_counts = Counter(self.emotions)
-        print(f"Distribution: {dict(emotion_counts)}")
-        
-        # Show sample paths
-        if self.image_paths:
-            print(f"\nSample paths:")
-            for i in range(min(3, len(self.image_paths))):
-                print(f"  {self.image_paths[i]} -> {self.emotions[i]}")
-    
-    def __len__(self) -> int:
-        return len(self.image_paths)
-    
-    def __getitem__(self, index: int) -> Dict[str, Any]:
-        img_path = self.image_paths[index]
-        emotion = self.emotions[index]
-        
-        # Load and preprocess image
-        image = Image.open(img_path).convert('RGB')
-        image = image.resize((self.size, self.size), Image.Resampling.LANCZOS)
-        
-        # Convert to tensor and normalize to [-1, 1]
-        image = np.array(image).astype(np.float32) / 127.5 - 1.0
-        image = torch.from_numpy(image).permute(2, 0, 1)
-        
-        return {
-            "image": image,
-            "emotion": emotion,
-            "image_path": img_path,
-        }
-
-
-class DreamBoothDataset(Dataset):
+class DreamBoothDataset(torch.utils.data.Dataset):
     """Dataset wrapper for DreamBooth training with instance prompts."""
 
     def __init__(self, base_dataset: InfantEmotionDataset, instance_prompt_template: str) -> None:
@@ -281,6 +174,80 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def save_checkpoint(transformer, optimizer, global_step, output_dir, wandb_run=None):
+    """Save checkpoint locally."""
+    checkpoint_dir = os.path.join(output_dir, f"checkpoint-{global_step}")
+    os.makedirs(checkpoint_dir, exist_ok=True)
+    
+    unwrapped = transformer
+    if hasattr(transformer, 'unwrap'):
+        unwrapped = transformer.unwrap()
+    elif hasattr(transformer, 'module'):
+        unwrapped = transformer.module
+    
+    unwrapped.save_pretrained(checkpoint_dir)
+    
+    torch.save({
+        'optimizer_state_dict': optimizer.state_dict(),
+        'global_step': global_step,
+    }, os.path.join(checkpoint_dir, "optimizer.pt"))
+    
+    print(f"Checkpoint saved at step {global_step}: {checkpoint_dir}")
+    return checkpoint_dir
+
+
+def cleanup_old_checkpoints(output_dir, keep_last=3):
+    """Keep only the last N checkpoints."""
+    checkpoint_dirs = []
+    for item in os.listdir(output_dir):
+        if item.startswith("checkpoint-") and os.path.isdir(os.path.join(output_dir, item)):
+            step = int(item.split("-")[1])
+            checkpoint_dirs.append((step, item))
+    
+    checkpoint_dirs.sort(key=lambda x: x[0])
+    
+    if len(checkpoint_dirs) > keep_last:
+        for step, dir_name in checkpoint_dirs[:-keep_last]:
+            dir_path = os.path.join(output_dir, dir_name)
+            shutil.rmtree(dir_path)
+            print(f"Removed old checkpoint: {dir_name}")
+
+
+def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_dir):
+    """Generate and log sample images to WandB."""
+    os.makedirs(f"{output_dir}/samples", exist_ok=True)
+
+    sample_images = []
+    
+    # Handle wrapped transformer
+    model_to_eval = transformer
+    if hasattr(transformer, 'unwrap'):
+        model_to_eval = transformer.unwrap()
+    elif hasattr(transformer, 'module'):
+        model_to_eval = transformer.module
+    
+    model_to_eval.eval()
+    with torch.no_grad():
+        for emotion, prompt in emotion_prompts.items():
+            generator = torch.Generator(device).manual_seed(42)
+            result = pipe(
+                prompt=prompt,
+                negative_prompt="cartoon, drawing, blurry, low quality, distorted, deformed",
+                num_inference_steps=30,
+                guidance_scale=7.0,
+                generator=generator,
+                height=512,
+                width=512,
+            )
+            img = result.images[0]
+            save_path = f"{output_dir}/samples/step_{step}_{emotion}.png"
+            img.save(save_path)
+            sample_images.append(wandb.Image(save_path, caption=f"{emotion} baby"))
+    
+    model_to_eval.train()
+    wandb.log({f"samples/step_{step}": sample_images})
+
+
 def main() -> None:
     args = parse_args()
 
@@ -418,17 +385,16 @@ def main() -> None:
     text_encoder_2.requires_grad_(False)
     text_encoder_2.eval()
 
-    print("Loading dataset...")
+    print("Loading dataset using your existing dataset class...")
     base_dataset = InfantEmotionDataset(
         data_dir=args.data_dir,
         json_path=args.json_path,
         size=args.resolution,
+        center_crop=False,
     )
 
     if len(base_dataset) == 0:
         print("❌ ERROR: No images found in dataset!")
-        print(f"   Please check that images exist in: {args.data_dir}")
-        print(f"   Expected structure: {args.data_dir}/angry/, {args.data_dir}/crying/, {args.data_dir}/happy/")
         return
 
     dream_dataset = DreamBoothDataset(
