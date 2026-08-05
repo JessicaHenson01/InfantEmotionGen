@@ -1,88 +1,32 @@
 """
 FIXED: SD 3.5 Training with Emotion-Specific Prompts
-Uses official Diffusers Flow Matching implementation
+Uses your existing data_utils for dataset loading
 """
 
 import argparse
 import os
 import sys
-import json
 from typing import Any, Dict, List
-from collections import Counter
 
 import torch
 import wandb
-import numpy as np
-from PIL import Image
-from torch.utils.data import DataLoader, Dataset
-from tqdm.auto import tqdm
 from accelerate import Accelerator
 from diffusers import FlowMatchEulerDiscreteScheduler, SD3Transformer2DModel, AutoencoderKL
 from peft import LoraConfig, get_peft_model
+from torch.utils.data import DataLoader
+from tqdm.auto import tqdm
 from transformers import CLIPTextModel, CLIPTokenizer
-from diffusers.utils.torch_utils import randn_tensor
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
-class InfantEmotionDataset(Dataset):
-    """Dataset for infant emotion images."""
-    
-    def __init__(self, data_dir: str, json_path: str, size: int = 512):
-        self.data_dir = data_dir
-        self.size = size
-        
-        with open(json_path, 'r') as f:
-            self.labels = json.load(f)
-        
-        self.image_paths = []
-        self.emotions = []
-        
-        # Look for images in subdirectories
-        emotion_dirs = ['angry', 'crying', 'happy']
-        for emotion in emotion_dirs:
-            emotion_path = os.path.join(data_dir, emotion)
-            if os.path.exists(emotion_path):
-                for file in os.listdir(emotion_path):
-                    if file.endswith(('.jpg', '.jpeg', '.png', '.webp')):
-                        self.image_paths.append(os.path.join(emotion_path, file))
-                        self.emotions.append(emotion)
-        
-        # If no images found, try root directory
-        if not self.image_paths:
-            for file in os.listdir(data_dir):
-                if file.endswith(('.jpg', '.jpeg', '.png', '.webp')):
-                    img_name = os.path.splitext(file)[0]
-                    if img_name in self.labels:
-                        self.image_paths.append(os.path.join(data_dir, file))
-                        self.emotions.append(self.labels[img_name])
-        
-        print(f"Loaded {len(self.image_paths)} images")
-        emotion_counts = Counter(self.emotions)
-        print(f"Distribution: {dict(emotion_counts)}")
-    
-    def __len__(self) -> int:
-        return len(self.image_paths)
-    
-    def __getitem__(self, index: int) -> Dict[str, Any]:
-        img_path = self.image_paths[index]
-        emotion = self.emotions[index]
-        
-        image = Image.open(img_path).convert('RGB')
-        image = image.resize((self.size, self.size), Image.Resampling.LANCZOS)
-        
-        image = np.array(image).astype(np.float32) / 127.5 - 1.0
-        image = torch.from_numpy(image).permute(2, 0, 1)
-        
-        return {
-            "image": image,
-            "emotion": emotion,
-            "image_path": img_path,
-        }
+# ============================================================
+# IMPORT YOUR EXISTING DATASET CLASS
+# ============================================================
+from data_utils import InfantEmotionDataset
 
 
-class DreamBoothDataset(Dataset):
+class DreamBoothDataset(torch.utils.data.Dataset):
     """Dataset wrapper with emotion-specific prompts."""
     
     def __init__(self, base_dataset: InfantEmotionDataset, instance_prompt_template: str) -> None:
@@ -136,11 +80,6 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def compute_padding(shape, pad, dtype, device):
-    """Compute padding for text embeddings."""
-    return torch.zeros(shape, dtype=dtype, device=device)
-
-
 def main() -> None:
     args = parse_args()
 
@@ -162,8 +101,8 @@ def main() -> None:
     device = accelerator.device
 
     print("=" * 60)
-    print("SD 3.5 Medium Training (FIXED - Flow Matching)")
-    print("With Emotion-Specific Prompts")
+    print("SD 3.5 Medium Training (Flow Matching)")
+    print("With Emotion-Specific Prompts - FAIR COMPARISON with SDXL")
     print("=" * 60)
     print(f"Learning rate: {args.learning_rate}")
     print(f"Batch size: {args.train_batch_size}")
@@ -189,7 +128,7 @@ def main() -> None:
         token=args.token or True,
     ).to(device)
 
-    # Apply LoRA
+    # Apply LoRA (rank=16, same as SDXL)
     lora_config = LoraConfig(
         r=16,
         lora_alpha=16,
@@ -240,12 +179,15 @@ def main() -> None:
         token=args.token or True,
     )
 
-    # Load dataset
-    print("Loading dataset...")
+    # ============================================================
+    # USE YOUR EXISTING DATASET CLASS
+    # ============================================================
+    print("Loading dataset using your existing data_utils...")
     base_dataset = InfantEmotionDataset(
         data_dir=args.data_dir,
         json_path=args.json_path,
         size=args.resolution,
+        center_crop=False,
     )
 
     if len(base_dataset) == 0:
@@ -296,7 +238,7 @@ def main() -> None:
         images = batch["images"].to(device, dtype=torch.float16)
         prompts = batch["prompts"]
 
-        # CRITICAL: Encode text with proper gradient handling
+        # Encode text
         with torch.no_grad():
             # CLIP-L
             tokenized_prompts = tokenizer(
@@ -363,16 +305,12 @@ def main() -> None:
             latents = latents * 0.18215
 
         # ============================================================
-        # CRITICAL FIX: Correct Flow Matching implementation
-        # Based on official Diffusers SD3 training
+        # FLOW MATCHING IMPLEMENTATION
         # ============================================================
         
         # Sample random timesteps with logit-normal distribution
-        # This is the official way to sample timesteps for SD3
         u = torch.normal(mean=0.0, std=1.0, size=(images.shape[0],), device=device)
         timesteps = torch.sigmoid(u)
-        
-        # Ensure timesteps are in [0, 1] range
         timesteps = timesteps.clamp(0.0, 1.0)
         
         # Expand timesteps for broadcasting
@@ -381,10 +319,10 @@ def main() -> None:
         # Sample noise
         noise = torch.randn_like(latents)
         
-        # Flow Matching interpolation (official implementation)
+        # Flow Matching interpolation
         noisy_latents = (1.0 - timesteps_expanded) * latents + timesteps_expanded * noise
         
-        # Target velocity (official implementation)
+        # Target velocity
         target_velocity = noise - latents
 
         # Convert to correct dtype
@@ -393,11 +331,7 @@ def main() -> None:
         text_embeddings = text_embeddings.to(dtype=torch.float16)
         pooled_projections = pooled_projections.to(dtype=torch.float16)
 
-        # ============================================================
-        # CRITICAL: Forward pass with proper gradient computation
-        # ============================================================
-        # The model predicts velocity (noise - latents)
-        # This must be done with gradient tracking
+        # Forward pass
         predicted_velocity = transformer(
             hidden_states=noisy_latents,
             timestep=timesteps,
@@ -406,14 +340,12 @@ def main() -> None:
             return_dict=False,
         )[0]
 
-        # Compute loss (same as SDXL)
+        # Compute loss
         loss = torch.nn.functional.mse_loss(
             predicted_velocity.float(), target_velocity.float(), reduction="mean"
         )
 
-        # ============================================================
         # Backward pass
-        # ============================================================
         accelerator.backward(loss)
         
         if (step_idx + 1) % args.gradient_accumulation_steps == 0:
@@ -425,7 +357,6 @@ def main() -> None:
         running_loss += loss.item()
         avg_loss = running_loss / global_step
 
-        # Log metrics
         wandb.log({
             "train/loss": loss.item(),
             "train/avg_loss": avg_loss,
@@ -436,7 +367,6 @@ def main() -> None:
         progress_bar.update(1)
         progress_bar.set_postfix({"loss": loss.item(), "avg_loss": avg_loss})
 
-        # Save checkpoint
         if global_step % args.checkpoint_steps == 0:
             unwrapped = accelerator.unwrap_model(transformer)
             checkpoint_dir = os.path.join(args.output_dir, f"checkpoint-{global_step}")
