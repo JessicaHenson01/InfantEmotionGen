@@ -294,25 +294,6 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
     wandb.log({f"samples/step_{step}": sample_images})
 
 
-def get_pooled_embedding(text_encoder_output, fallback_to_mean=True):
-    """Extract pooled embedding from text encoder output."""
-    # Try to get pooler_output
-    if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
-        return text_encoder_output.pooler_output
-    
-    # Try dictionary access
-    if isinstance(text_encoder_output, dict) and 'pooler_output' in text_encoder_output:
-        return text_encoder_output['pooler_output']
-    
-    # Fallback: mean of last hidden state
-    if hasattr(text_encoder_output, 'last_hidden_state'):
-        return text_encoder_output.last_hidden_state.mean(dim=1)
-    if isinstance(text_encoder_output, dict) and 'last_hidden_state' in text_encoder_output:
-        return text_encoder_output['last_hidden_state'].mean(dim=1)
-    
-    raise ValueError("Could not extract pooled embedding from text encoder output")
-
-
 def main() -> None:
     args = parse_args()
 
@@ -524,12 +505,15 @@ def main() -> None:
                 pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)  # (batch, 1280)
 
             # ============================================================
-            # CRITICAL FIX: SD 3.5 Medium expects 4096 dims (CLIP-L + OpenCLIP-G + T5)
-            # Since we excluded T5, we need to pad to 4096 or use a different approach
+            # CRITICAL FIX: 
+            # - pooled_projections should be 2048 dims (CLIP-L + OpenCLIP-G)
+            # - encoder_hidden_states should be 4096 dims (CLIP-L + OpenCLIP-G + padded T5)
             # ============================================================
             
-            # Option 1: Pad to 4096 with zeros (T5 is excluded)
-            # CLIP-L (768) + OpenCLIP-G (1280) = 2048, need to pad to 4096
+            # Pooled projections: concatenate CLIP-L and OpenCLIP-G (no padding)
+            pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)  # (batch, 2048)
+            
+            # Encoder hidden states: pad to 4096 to match T5 dimension
             t5_dim = 4096 - 768 - 1280  # 2048
             zero_padding = torch.zeros(
                 text_embeddings_1.shape[0], 
@@ -539,15 +523,6 @@ def main() -> None:
                 dtype=text_embeddings_1.dtype
             )
             text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)  # (batch, 77, 4096)
-            
-            # Also pad pooled projections
-            pooled_zero_padding = torch.zeros(
-                pooled_projection_1.shape[0],
-                t5_dim,
-                device=pooled_projection_1.device,
-                dtype=pooled_projection_1.dtype
-            )
-            pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2, pooled_zero_padding], dim=-1)  # (batch, 4096)
 
         # Encode images to latents (VAE is in FP16)
         with torch.no_grad():
@@ -573,6 +548,8 @@ def main() -> None:
 
         # ============================================================
         # MMDiT forward pass with proper dimensions
+        # - encoder_hidden_states: (batch, 77, 4096)
+        # - pooled_projections: (batch, 2048)
         # ============================================================
         noise_pred = transformer(
             hidden_states=noisy_latents,
