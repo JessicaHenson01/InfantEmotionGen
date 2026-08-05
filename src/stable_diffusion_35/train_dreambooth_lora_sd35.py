@@ -504,12 +504,16 @@ def main() -> None:
         noisy_latents = pipe.scheduler.add_noise(latents, noise, timesteps)
 
         # ============================================================
-        # FIX: Use explicit keyword arguments for transformer forward
+        # FIX: Compute pooled projections and pass to transformer
         # ============================================================
+        pooled_projections = text_embeddings_2.mean(dim=1)  # (batch, 1280)
+
+        # MMDiT forward pass with pooled projections
         noise_pred = transformer(
             hidden_states=noisy_latents,
             timestep=timesteps,
             encoder_hidden_states=text_embeddings,
+            pooled_projections=pooled_projections,
             return_dict=False,
         )[0]
 
