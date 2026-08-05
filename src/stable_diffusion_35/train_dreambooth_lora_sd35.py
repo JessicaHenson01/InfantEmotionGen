@@ -420,8 +420,7 @@ def main() -> None:
         transformer.parameters(),
         lr=args.learning_rate,
     )
-
-    # Prepare with accelerator
+    transformer.train()
     transformer, optimizer, dataloader = accelerator.prepare(
         transformer, optimizer, dataloader
     )
