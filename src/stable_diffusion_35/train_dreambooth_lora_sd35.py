@@ -1,5 +1,5 @@
 """
-Training script for SD 3.5 Medium using diffusers' built-in methods with LoRA.
+Training script for SD 3.5 Medium using Flow Matching (native training objective).
 Mirrors the SDXL training setup for fair comparison.
 
 COMPARABLE TO SDXL:
@@ -7,7 +7,12 @@ COMPARABLE TO SDXL:
 - Same dataset (1200 images, 400 per emotion)
 - Same LoRA rank (16)
 - Same prompt template ("a photo of a {} sks infant")
-- Same loss function (MSE)
+- Same loss function (MSE, but applied to Flow Matching objective)
+
+DIFFERENT:
+- Uses Flow Matching instead of DDPM (native to SD3.5)
+- Uses FlowMatchEulerDiscreteScheduler
+- Uses different sampling/training logic
 """
 
 import argparse
@@ -18,7 +23,7 @@ from typing import Any, Dict, List
 import torch
 import wandb
 from accelerate import Accelerator
-from diffusers import DDPMScheduler, SD3Transformer2DModel, AutoencoderKL
+from diffusers import FlowMatchEulerDiscreteScheduler, SD3Transformer2DModel, AutoencoderKL
 from peft import LoraConfig, get_peft_model
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
@@ -65,7 +70,7 @@ def collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments - matches SDXL setup."""
-    parser = argparse.ArgumentParser(description="Train SD 3.5 Medium with LoRA (comparable to SDXL)")
+    parser = argparse.ArgumentParser(description="Train SD 3.5 Medium with LoRA (Flow Matching)")
     parser.add_argument(
         "--pretrained_model_name_or_path",
         type=str,
@@ -164,14 +169,23 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def check_tensor(tensor: torch.Tensor, name: str, step: int) -> bool:
-    if torch.isnan(tensor).any():
-        print(f"⚠️ NaN in {name} at step {step}!")
-        return True
-    if torch.isinf(tensor).any():
-        print(f"⚠️ Inf in {name} at step {step}!")
-        return True
-    return False
+def compute_density_for_timestep_sampling(
+    weighting_scheme: str,
+    batch_size: int,
+    logit_mean: float = 0.0,
+    logit_std: float = 1.0,
+    mode_scale: float = 1.29,
+) -> torch.Tensor:
+    """Compute density for timestep sampling (Flow Matching)."""
+    if weighting_scheme == "logit_normal":
+        # See: https://arxiv.org/abs/2309.02883
+        u = torch.normal(mean=logit_mean, std=logit_std, size=(batch_size,))
+        return torch.sigmoid(u)
+    elif weighting_scheme == "mode":
+        u = torch.rand(size=(batch_size,))
+        return 1 - u ** (1 / mode_scale)
+    else:
+        return torch.rand(size=(batch_size,))
 
 
 def main() -> None:
@@ -187,6 +201,8 @@ def main() -> None:
         mode="offline" if args.wandb_offline else "online",
         config={
             "model": "SD3.5-Medium",
+            "architecture": "MMDiT",
+            "training_objective": "Flow Matching",
             "resolution": args.resolution,
             "learning_rate": args.learning_rate,
             "max_train_steps": args.max_train_steps,
@@ -195,6 +211,7 @@ def main() -> None:
             "lora_rank": 16,
             "dataset_size": 1200,
             "emotions": ["angry", "crying", "happy"],
+            "weighting_scheme": "logit_normal",
         }
     )
 
@@ -205,12 +222,14 @@ def main() -> None:
     device = accelerator.device
 
     print("=" * 60)
-    print("SD 3.5 Medium Training (Comparable to SDXL)")
+    print("SD 3.5 Medium Training (Flow Matching)")
+    print("Comparable to SDXL Training")
     print("=" * 60)
     print(f"Learning rate: {args.learning_rate}")
     print(f"Batch size: {args.train_batch_size}")
     print(f"Gradient accumulation: {args.gradient_accumulation_steps}")
     print(f"Max steps: {args.max_train_steps}")
+    print(f"Training objective: Flow Matching (native to SD3.5)")
     print("=" * 60)
 
     print("Loading SD 3.5 Medium models...")
@@ -260,7 +279,7 @@ def main() -> None:
     transformer.print_trainable_parameters()
 
     # ============================================================
-    # Load Text Encoders and Tokenizers (same as SDXL approach)
+    # Load Text Encoders and Tokenizers
     # ============================================================
     text_encoder = CLIPTextModel.from_pretrained(
         args.pretrained_model_name_or_path,
@@ -295,9 +314,9 @@ def main() -> None:
     text_encoder_2.eval()
 
     # ============================================================
-    # Use DDPM scheduler (same as SDXL)
+    # Use FlowMatchEulerDiscreteScheduler (native to SD3.5)
     # ============================================================
-    scheduler = DDPMScheduler.from_pretrained(
+    scheduler = FlowMatchEulerDiscreteScheduler.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="scheduler",
         token=args.token or True,
@@ -348,17 +367,13 @@ def main() -> None:
     progress_bar = tqdm(range(args.max_train_steps))
 
     # ============================================================
-    # Training Loop (same structure as SDXL)
+    # Training Loop (Flow Matching - native to SD3.5)
     # ============================================================
     for batch in dataloader:
         images = batch["images"].to(device, dtype=torch.float16)
         prompts = batch["prompts"]
 
-        if check_tensor(images, "images", global_step):
-            optimizer.zero_grad()
-            continue
-
-        # ----- Encode text prompts (same as SDXL) -----
+        # ----- Encode text prompts -----
         with torch.no_grad():
             # CLIP-L
             tokenized_prompts = tokenizer(
@@ -418,25 +433,24 @@ def main() -> None:
             )
             text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)
 
-        # ----- Encode images to latents (same as SDXL) -----
+        # ----- Encode images to latents -----
         with torch.no_grad():
             latents = vae.encode(images.float()).latent_dist.sample()
             latents = latents * 0.18215
 
-            if check_tensor(latents, "latents", global_step):
-                optimizer.zero_grad()
-                continue
+        # ----- Flow Matching: Sample timestep with density -----
+        # This is the key difference from DDPM
+        timesteps = compute_density_for_timestep_sampling(
+            weighting_scheme="logit_normal",
+            batch_size=images.shape[0],
+        ).to(device)
 
-        # ----- Sample timestep and add noise (same as SDXL) -----
-        timesteps = torch.randint(
-            0,
-            scheduler.config.num_train_timesteps,
-            (images.shape[0],),
-            device=device,
-        ).long()
-
+        # ----- Sample noise and apply flow matching -----
         noise = torch.randn_like(latents)
-        noisy_latents = scheduler.add_noise(latents, noise, timesteps)
+        
+        # For flow matching, we interpolate between noise and latents
+        # timesteps represent the interpolation factor
+        noisy_latents = (1.0 - timesteps) * latents + timesteps * noise
 
         noisy_latents = noisy_latents.to(device=device, dtype=torch.float16)
         timesteps = timesteps.to(device)
@@ -444,7 +458,8 @@ def main() -> None:
         pooled_projections = pooled_projections.to(device=device, dtype=torch.float16)
 
         # ----- Forward pass through MMDiT -----
-        noise_pred = transformer(
+        # The model predicts the "velocity" (noise - latents) in flow matching
+        predicted_velocity = transformer(
             hidden_states=noisy_latents,
             timestep=timesteps,
             encoder_hidden_states=text_embeddings,
@@ -452,19 +467,13 @@ def main() -> None:
             return_dict=False,
         )[0]
 
-        if check_tensor(noise_pred, "noise_pred", global_step):
-            optimizer.zero_grad()
-            continue
-
-        # ----- Compute MSE loss (same as SDXL) -----
+        # ----- Compute MSE loss (same as SDXL, but on velocity) -----
+        # Target: noise - latents (the flow direction)
+        target_velocity = noise - latents
+        
         loss = torch.nn.functional.mse_loss(
-            noise_pred.float(), noise.float(), reduction="mean"
+            predicted_velocity.float(), target_velocity.float(), reduction="mean"
         )
-
-        if torch.isnan(loss) or torch.isinf(loss):
-            print(f"⚠️ NaN/Inf loss at step {global_step}! Skipping...")
-            optimizer.zero_grad()
-            continue
 
         # ----- Backward pass (same as SDXL) -----
         with accelerator.accumulate(transformer):
