@@ -1,11 +1,6 @@
 """
 Training script for SD 3.5 Medium using diffusers' built-in methods with LoRA.
 Mirrors the SDXL training setup but adapted for SD 3.5 Medium architecture.
-
-This script fine-tunes a pretrained Stable Diffusion 3.5 Medium model on an infant 
-facial expression dataset using DreamBooth and Low-Rank Adaptation (LoRA). 
-The model is trained to generate synthetic infant faces with controlled 
-emotions (angry, crying, happy) conditioned on text prompts.
 """
 
 import argparse
@@ -30,32 +25,18 @@ from data_utils import InfantEmotionDataset
 
 
 class DreamBoothDataset(torch.utils.data.Dataset):
-    """Dataset wrapper for DreamBooth training with instance prompts.
-
-    This class wraps the base dataset and generates instance-specific prompts
-    for each image, such as "a photo of a happy sks infant".
-    """
+    """Dataset wrapper for DreamBooth training with instance prompts."""
 
     def __init__(self, base_dataset: InfantEmotionDataset, instance_prompt_template: str) -> None:
-        """
-        Initialize DreamBooth dataset.
-
-        Args:
-            base_dataset: Base infant emotion dataset containing images and labels
-            instance_prompt_template: Template string with {} placeholder for emotion
-        """
         self.base_dataset = base_dataset
         self.instance_prompt_template = instance_prompt_template
 
     def __len__(self) -> int:
-        """Return the number of samples."""
         return len(self.base_dataset)
 
     def __getitem__(self, index: int) -> Dict[str, Any]:
-        """Get an item with formatted prompt."""
         item = self.base_dataset[index]
         emotion = item["emotion"]
-        # Create prompt like "a photo of a happy sks infant"
         prompt = self.instance_prompt_template.format(emotion)
         return {
             "image": item["image"],
@@ -65,15 +46,6 @@ class DreamBoothDataset(torch.utils.data.Dataset):
 
 
 def collate_fn(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """
-    Collate function for dataloader.
-
-    Args:
-        batch: List of samples
-
-    Returns:
-        Dictionary with batched tensors and prompts
-    """
     images = torch.stack([item["image"] for item in batch])
     prompts = [item["prompt"] for item in batch]
     emotions = [item["emotion"] for item in batch]
@@ -196,22 +168,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def check_tensor(
-    tensor: torch.Tensor,
-    name: str,
-    step: int
-) -> bool:
-    """
-    Debug helper to check for NaN/Inf in tensors.
-
-    Args:
-        tensor: Tensor to check
-        name: Name of the tensor for logging
-        step: Current training step
-
-    Returns:
-        True if NaN/Inf found, False otherwise
-    """
+def check_tensor(tensor: torch.Tensor, name: str, step: int) -> bool:
     if torch.isnan(tensor).any():
         print(f"⚠️ NaN in {name} at step {step}!")
         return True
@@ -222,13 +179,8 @@ def check_tensor(
 
 
 def main() -> None:
-    """Main training function."""
     args = parse_args()
 
-    # ============================================================
-    # Step 1: Environment Setup
-    # ============================================================
-    
     os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
     torch.manual_seed(args.seed)
 
@@ -240,10 +192,6 @@ def main() -> None:
         config=vars(args),
     )
 
-    # ============================================================
-    # Step 2: Initialize Accelerator
-    # ============================================================
-    
     accelerator = Accelerator(
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         mixed_precision="fp16",
@@ -253,10 +201,8 @@ def main() -> None:
     print("Loading SD 3.5 Medium models...")
 
     # ============================================================
-    # Step 3: Load Pretrained Models
+    # Step 1: Load VAE (FP32 for stability)
     # ============================================================
-    
-    # Load VAE in FP32 for stability (same as SDXL)
     vae = AutoencoderKL.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="vae",
@@ -264,8 +210,11 @@ def main() -> None:
         token=args.token or True,
     ).to(device)
     vae.requires_grad_(False)
+    vae.eval()
 
-    # Load MMDiT Transformer in FP16 (this is the equivalent of UNet for SD3)
+    # ============================================================
+    # Step 2: Load MMDiT Transformer (FP16 for memory)
+    # ============================================================
     transformer = SD3Transformer2DModel.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="transformer",
@@ -274,15 +223,11 @@ def main() -> None:
     ).to(device)
 
     # ============================================================
-    # Step 4: Apply LoRA to MMDiT (Parameter-Efficient Fine-Tuning)
+    # Step 3: Apply LoRA to MMDiT
     # ============================================================
-    
-    # For SD3.5 Medium, we target the attention layers in the MMDiT
-    # The key difference from SDXL: using q_proj, k_proj, v_proj, out_proj
-    # instead of attn2.to_q, attn2.to_k, etc.
     lora_config = LoraConfig(
-        r=16,  # Rank of the low-rank matrices
-        lora_alpha=16,  # Scaling factor
+        r=16,
+        lora_alpha=16,
         target_modules=[
             "to_q",
             "to_k", 
@@ -292,7 +237,7 @@ def main() -> None:
             "add_k_proj",
             "add_v_proj",
             "to_add_out",
-        ],  # All attention layers in MMDiT
+        ],
         lora_dropout=0.1,
         bias="none",
     )
@@ -300,10 +245,8 @@ def main() -> None:
     transformer.print_trainable_parameters()
 
     # ============================================================
-    # Step 5: Load Text Encoders and Tokenizers (T5-XXL excluded)
+    # Step 4: Load Text Encoders and Tokenizers
     # ============================================================
-    
-    # Load text encoders (only CLIP-L and OpenCLIP-G, skip T5-XXL)
     text_encoder = CLIPTextModel.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="text_encoder",
@@ -332,13 +275,13 @@ def main() -> None:
 
     # Freeze text encoders
     text_encoder.requires_grad_(False)
+    text_encoder.eval()
     text_encoder_2.requires_grad_(False)
+    text_encoder_2.eval()
 
     # ============================================================
-    # Step 6: Load Scheduler (DDPM for training)
+    # Step 5: Load Scheduler (DDPM for training)
     # ============================================================
-    
-    # Use DDPM scheduler for training (same as SDXL approach)
     scheduler = DDPMScheduler.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="scheduler",
@@ -346,9 +289,8 @@ def main() -> None:
     )
 
     # ============================================================
-    # Step 7: Load Dataset and Create DataLoader
+    # Step 6: Load Dataset
     # ============================================================
-    
     print("Loading dataset...")
     base_dataset = InfantEmotionDataset(
         data_dir=args.data_dir,
@@ -370,21 +312,29 @@ def main() -> None:
     )
 
     # ============================================================
-    # Step 8: Setup Optimizer
+    # Step 7: Setup Optimizer
     # ============================================================
-    
     optimizer = torch.optim.AdamW(
         transformer.parameters(),
         lr=args.learning_rate,
     )
 
     # ============================================================
-    # Step 9: Prepare Model with Accelerator
+    # Step 8: CRITICAL - Force Training Mode
     # ============================================================
-    
+    transformer.train()
+    print("✅ Transformer set to training mode")
+    print(f"   Transformer training mode: {transformer.training}")
+    print(f"   Gradient computation enabled: {torch.is_grad_enabled()}")
+
+    # Prepare with accelerator
     transformer, optimizer, dataloader = accelerator.prepare(
         transformer, optimizer, dataloader
     )
+    
+    # CRITICAL: Force training mode AFTER accelerator.prepare
+    transformer.train()
+    print(f"✅ After accelerator.prepare - training mode: {transformer.training}")
 
     print("Starting training...")
     global_step = 0
@@ -392,158 +342,162 @@ def main() -> None:
     progress_bar = tqdm(range(args.max_train_steps))
 
     # ============================================================
-    # Step 10: Training Loop
+    # Step 9: Training Loop with Explicit Gradient Computation
     # ============================================================
-    
     for batch in dataloader:
-        # ----- 10a: Move batch to device -----
-        images = batch["images"].to(device, dtype=torch.float16)
-        prompts = batch["prompts"]
+        # CRITICAL: Ensure gradients are enabled for this step
+        with torch.set_grad_enabled(True):
+            images = batch["images"].to(device, dtype=torch.float16)
+            prompts = batch["prompts"]
 
-        if check_tensor(images, "images", global_step):
-            optimizer.zero_grad()
-            continue
-
-        # ----- 10b: Encode text prompts using both CLIP text encoders -----
-        with torch.no_grad():
-            # First text encoder (CLIP-L)
-            tokenized_prompts = tokenizer(
-                prompts,
-                padding="max_length",
-                max_length=tokenizer.model_max_length,
-                truncation=True,
-                return_tensors="pt",
-            ).input_ids.to(device)
-            
-            text_encoder_output = text_encoder(
-                tokenized_prompts,
-                output_hidden_states=True,
-                return_dict=True,
-            )
-            
-            text_embeddings_1 = text_encoder_output.last_hidden_state
-            
-            # Get pooled projection for MMDiT conditioning
-            if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
-                pooled_projection_1 = text_encoder_output.pooler_output
-            else:
-                pooled_projection_1 = text_encoder_output.last_hidden_state.mean(dim=1)
-
-            # Second text encoder (OpenCLIP-G)
-            tokenized_prompts_2 = tokenizer_2(
-                prompts,
-                padding="max_length",
-                max_length=tokenizer_2.model_max_length,
-                truncation=True,
-                return_tensors="pt",
-            ).input_ids.to(device)
-
-            text_encoder_output_2 = text_encoder_2(
-                tokenized_prompts_2,
-                output_hidden_states=True,
-                return_dict=True,
-            )
-
-            text_embeddings_2 = text_encoder_output_2.last_hidden_state
-            
-            if hasattr(text_encoder_output_2, 'pooler_output') and text_encoder_output_2.pooler_output is not None:
-                pooled_projection_2 = text_encoder_output_2.pooler_output
-            else:
-                pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)
-
-            # Concatenate pooled projections for MMDiT (2048 dims)
-            pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)
-            
-            # Pad text embeddings to 4096 to match T5-XXL dimension (excluded)
-            t5_dim = 4096 - 768 - 1280
-            zero_padding = torch.zeros(
-                text_embeddings_1.shape[0], 
-                text_embeddings_1.shape[1], 
-                t5_dim,
-                device=text_embeddings_1.device,
-                dtype=text_embeddings_1.dtype
-            )
-            text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)
-
-        # ----- 10c: Encode images to latent space using VAE -----
-        with torch.no_grad():
-            latents = vae.encode(images.float()).latent_dist.sample()
-            latents = latents * 0.18215
-
-            if check_tensor(latents, "latents", global_step):
+            if check_tensor(images, "images", global_step):
                 optimizer.zero_grad()
                 continue
 
-        # ----- 10d: Sample random timestep and add noise -----
-        timesteps = torch.randint(
-            0,
-            scheduler.config.num_train_timesteps,
-            (images.shape[0],),
-            device=device,
-        ).long()
+            # ----- Text encoding (no gradients) -----
+            with torch.no_grad():
+                # CLIP-L
+                tokenized_prompts = tokenizer(
+                    prompts,
+                    padding="max_length",
+                    max_length=tokenizer.model_max_length,
+                    truncation=True,
+                    return_tensors="pt",
+                ).input_ids.to(device)
+                
+                text_encoder_output = text_encoder(
+                    tokenized_prompts,
+                    output_hidden_states=True,
+                    return_dict=True,
+                )
+                
+                text_embeddings_1 = text_encoder_output.last_hidden_state
+                
+                if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
+                    pooled_projection_1 = text_encoder_output.pooler_output
+                else:
+                    pooled_projection_1 = text_encoder_output.last_hidden_state.mean(dim=1)
 
-        noise = torch.randn_like(latents)
-        noisy_latents = scheduler.add_noise(latents, noise, timesteps)
+                # OpenCLIP-G
+                tokenized_prompts_2 = tokenizer_2(
+                    prompts,
+                    padding="max_length",
+                    max_length=tokenizer_2.model_max_length,
+                    truncation=True,
+                    return_tensors="pt",
+                ).input_ids.to(device)
 
-        # ----- 10e: Forward pass through MMDiT -----
-        # CRITICAL: MMDiT forward pass requires:
-        # - hidden_states: noisy latents
-        # - timestep: timestep indices
-        # - encoder_hidden_states: text embeddings (padded to 4096)
-        # - pooled_projections: pooled embeddings (2048 dims)
-        noise_pred = transformer(
-            hidden_states=noisy_latents,
-            timestep=timesteps,
-            encoder_hidden_states=text_embeddings,
-            pooled_projections=pooled_projections,
-            return_dict=False,
-        )[0]
+                text_encoder_output_2 = text_encoder_2(
+                    tokenized_prompts_2,
+                    output_hidden_states=True,
+                    return_dict=True,
+                )
 
-        if check_tensor(noise_pred, "noise_pred", global_step):
-            optimizer.zero_grad()
-            continue
+                text_embeddings_2 = text_encoder_output_2.last_hidden_state
+                
+                if hasattr(text_encoder_output_2, 'pooler_output') and text_encoder_output_2.pooler_output is not None:
+                    pooled_projection_2 = text_encoder_output_2.pooler_output
+                else:
+                    pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)
 
-        # ----- 10f: Compute loss (MSE between predicted and actual noise) -----
-        loss = torch.nn.functional.mse_loss(
-            noise_pred.float(), noise.float(), reduction="mean"
-        )
+                # Concatenate pooled projections (2048 dims)
+                pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)
+                
+                # Pad text embeddings to 4096
+                t5_dim = 4096 - 768 - 1280
+                zero_padding = torch.zeros(
+                    text_embeddings_1.shape[0], 
+                    text_embeddings_1.shape[1], 
+                    t5_dim,
+                    device=text_embeddings_1.device,
+                    dtype=text_embeddings_1.dtype
+                )
+                text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)
 
-        if torch.isnan(loss) or torch.isinf(loss):
-            print(f"⚠️ NaN/Inf loss at step {global_step}! Skipping...")
-            optimizer.zero_grad()
-            continue
+            # ----- VAE encoding (no gradients) -----
+            with torch.no_grad():
+                latents = vae.encode(images.float()).latent_dist.sample()
+                latents = latents * 0.18215
 
-        # ----- 10g: Backward pass with gradient accumulation -----
-        with accelerator.accumulate(transformer):
-            accelerator.backward(loss)
+                if check_tensor(latents, "latents", global_step):
+                    optimizer.zero_grad()
+                    continue
 
-            if accelerator.sync_gradients:
-                accelerator.clip_grad_norm_(transformer.parameters(), max_norm=1.0)
+            # ----- Sample timestep and add noise -----
+            timesteps = torch.randint(
+                0,
+                scheduler.config.num_train_timesteps,
+                (images.shape[0],),
+                device=device,
+            ).long()
 
-            optimizer.step()
-            optimizer.zero_grad()
+            noise = torch.randn_like(latents)
+            noisy_latents = scheduler.add_noise(latents, noise, timesteps)
 
-        # ----- 10h: Log metrics -----
-        global_step += 1
-        running_loss += loss.item()
-        avg_loss = running_loss / global_step
+            # ----- CRITICAL: Forward pass with gradient computation -----
+            # Ensure model is in training mode
+            if not transformer.training:
+                transformer.train()
+                print("⚠️ Transformer was not in training mode, fixed!")
+            
+            # Move to device with correct dtype
+            noisy_latents = noisy_latents.to(device=device, dtype=torch.float16)
+            timesteps = timesteps.to(device)
+            text_embeddings = text_embeddings.to(device=device, dtype=torch.float16)
+            pooled_projections = pooled_projections.to(device=device, dtype=torch.float16)
 
-        wandb.log({
-            "train/loss": loss.item(),
-            "train/avg_loss": avg_loss,
-            "train/global_step": global_step,
-        })
+            # Forward pass - THIS SHOULD COMPUTE GRADIENTS
+            noise_pred = transformer(
+                hidden_states=noisy_latents,
+                timestep=timesteps,
+                encoder_hidden_states=text_embeddings,
+                pooled_projections=pooled_projections,
+                return_dict=False,
+            )[0]
 
-        progress_bar.update(1)
-        progress_bar.set_postfix({"loss": loss.item(), "avg_loss": avg_loss})
+            if check_tensor(noise_pred, "noise_pred", global_step):
+                optimizer.zero_grad()
+                continue
 
-        if global_step >= args.max_train_steps:
-            break
+            # Compute loss
+            loss = torch.nn.functional.mse_loss(
+                noise_pred.float(), noise.float(), reduction="mean"
+            )
+
+            if torch.isnan(loss) or torch.isinf(loss):
+                print(f"⚠️ NaN/Inf loss at step {global_step}! Skipping...")
+                optimizer.zero_grad()
+                continue
+
+            # ----- Backward pass -----
+            with accelerator.accumulate(transformer):
+                accelerator.backward(loss)
+
+                if accelerator.sync_gradients:
+                    accelerator.clip_grad_norm_(transformer.parameters(), max_norm=1.0)
+
+                optimizer.step()
+                optimizer.zero_grad()
+
+            global_step += 1
+            running_loss += loss.item()
+            avg_loss = running_loss / global_step
+
+            wandb.log({
+                "train/loss": loss.item(),
+                "train/avg_loss": avg_loss,
+                "train/global_step": global_step,
+            })
+
+            progress_bar.update(1)
+            progress_bar.set_postfix({"loss": loss.item(), "avg_loss": avg_loss})
+
+            if global_step >= args.max_train_steps:
+                break
 
     # ============================================================
-    # Step 11: Save Fine-Tuned Model
+    # Step 10: Save Model
     # ============================================================
-    
     print("Saving final model...")
     accelerator.wait_for_everyone()
     if accelerator.is_main_process:
