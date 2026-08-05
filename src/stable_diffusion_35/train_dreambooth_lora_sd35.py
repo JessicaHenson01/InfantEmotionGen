@@ -280,10 +280,10 @@ def main() -> None:
     print("Loading SD 3.5 Medium model...")
 
     # ============================================================
-    # CRITICAL FIX: Load the model components separately for training
+    # Load the model components separately for training
     # ============================================================
     from diffusers import AutoencoderKL, SD3Transformer2DModel
-    from transformers import CLIPTextModel, CLIPTokenizer, T5EncoderModel, T5Tokenizer
+    from transformers import CLIPTextModel, CLIPTokenizer
     
     # Load VAE
     vae = AutoencoderKL.from_pretrained(
@@ -330,7 +330,7 @@ def main() -> None:
     )
 
     # ============================================================
-    # CRITICAL FIX: Use DDPM scheduler for training
+    # Use DDPM scheduler for training
     # ============================================================
     scheduler = DDPMScheduler.from_pretrained(
         args.model_id,
