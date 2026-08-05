@@ -276,7 +276,7 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
         for emotion, prompt in emotion_prompts.items():
             generator = torch.Generator(device).manual_seed(42)
             
-            # Get latents from pipeline (FP16)
+            # Generate image directly with pipeline
             result = pipe(
                 prompt=prompt,
                 negative_prompt="cartoon, drawing, blurry, low quality, distorted, deformed",
@@ -285,25 +285,10 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
                 generator=generator,
                 height=512,
                 width=512,
-                output_type="latent",  # Return latents instead of image
             )
             
-            # ============================================================
-            # FIX: Convert latents from FP16 to FP32 before VAE decode
-            # ============================================================
-            latents = result.images[0].to(torch.float32)
-            
-            # Decode with VAE (FP32)
-            decoded = pipe.vae.decode(latents / pipe.vae.config.scaling_factor, return_dict=False)[0]
-            
-            # Convert to PIL image
-            decoded = (decoded / 2 + 0.5).clamp(0, 1)
-            decoded = decoded.cpu().permute(0, 2, 3, 1).float().numpy()
-            decoded = (decoded * 255).round().astype("uint8")
-            
-            from PIL import Image as PILImage
-            img = PILImage.fromarray(decoded[0])
-            
+            # Save image
+            img = result.images[0]
             save_path = f"{output_dir}/samples/step_{step}_{emotion}.png"
             img.save(save_path)
             sample_images.append(wandb.Image(save_path, caption=f"{emotion} baby"))
@@ -368,16 +353,6 @@ def main() -> None:
         tokenizer_3=None,
         text_encoder_3=None,
     )
-
-    # Load VAE separately in FP32
-    print("Loading VAE in FP32...")
-    vae = AutoencoderKL.from_pretrained(
-        args.model_id,
-        subfolder="vae",
-        torch_dtype=torch.float32,
-    )
-    pipe.vae = vae
-
     pipe.to(device)
 
     # Access MMDiT Transformer (replaces UNet)
@@ -465,8 +440,8 @@ def main() -> None:
     log_sample_images(pipe, transformer, device, 0, emotion_prompts, args.output_dir)
 
     for batch in dataloader:
-        # Move images to device (FP32 to match VAE)
-        images = batch["images"].to(device, dtype=torch.float32)
+        # Move images to device (VAE expects FP16)
+        images = batch["images"].to(device, dtype=torch.float16)
         prompts = batch["prompts"]
 
         # Check input images
@@ -502,7 +477,7 @@ def main() -> None:
             # Concatenate embeddings
             text_embeddings = torch.cat([text_embeddings, text_embeddings_2], dim=-1)
 
-        # Encode images to latents (VAE is FP32)
+        # Encode images to latents (VAE is in FP16)
         with torch.no_grad():
             latents = pipe.vae.encode(images).latent_dist.sample()
             latents = latents * 0.18215
