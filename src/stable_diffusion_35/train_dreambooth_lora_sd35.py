@@ -465,9 +465,16 @@ def main() -> None:
                 return_tensors="pt",
             ).input_ids.to(device)
 
-            text_embeddings = pipe.text_encoder(tokenized_prompts)[0]
+            text_encoder_output = pipe.text_encoder(
+                tokenized_prompts,
+                output_hidden_states=True,
+                return_dict=True,
+            )
+            
+            # Get CLIP-L embeddings (use sequence for per-token features)
+            text_embeddings = text_encoder_output.last_hidden_state  # (batch, 77, 768)
 
-            # Second text encoder (OpenCLIP-G) - gets pooled output
+            # Second text encoder (OpenCLIP-G)
             tokenized_prompts_2 = pipe.tokenizer_2(
                 prompts,
                 padding="max_length",
@@ -481,19 +488,19 @@ def main() -> None:
                 output_hidden_states=True,
                 return_dict=True,
             )
+
+            # Get OpenCLIP-G embeddings (use sequence for per-token features)
+            text_embeddings_2 = text_encoder_output_2.last_hidden_state  # (batch, 77, 1280)
             
-            # Get the pooled output (CLS token) from the second encoder
-            pooled_projections = text_encoder_output_2.last_hidden_state.mean(dim=1)  # (batch, 1280)
-            
-            # If pooler_output doesn't exist, use the mean of the last hidden state
-            if pooled_projections is None:
+            # Get pooled projection for MMDiT conditioning
+            if hasattr(text_encoder_output_2, 'pooler_output'):
+                pooled_projections = text_encoder_output_2.pooler_output  # (batch, 1280)
+            else:
                 pooled_projections = text_encoder_output_2.last_hidden_state.mean(dim=1)  # (batch, 1280)
 
-            # Get the full sequence for the concatenated embeddings
-            text_embeddings_2 = text_encoder_output_2.last_hidden_state  # (batch, seq_len, 1280)
-
-            # Concatenate embeddings
-            text_embeddings = torch.cat([text_embeddings, text_embeddings_2], dim=-1)
+            # Concatenate embeddings along feature dimension
+            # Both are (batch, 77, dim) -> concatenated to (batch, 77, 2048)
+            text_embeddings = torch.cat([text_embeddings, text_embeddings_2], dim=-1)  # (batch, 77, 2048)
 
         # Encode images to latents (VAE is in FP16)
         with torch.no_grad():
