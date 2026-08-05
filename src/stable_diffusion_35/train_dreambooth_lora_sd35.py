@@ -18,7 +18,7 @@ import shutil
 from typing import Any, Dict, List
 
 # ============================================================
-# FIX 1: Disable torchao in PEFT (must be before importing peft)
+# FIX: Disable torchao in PEFT BEFORE importing peft
 # ============================================================
 os.environ["PEFT_DISABLE_TORCHAO"] = "1"
 
@@ -339,9 +339,7 @@ def main() -> None:
 
     print("Loading SD 3.5 Medium model (T5-XXL excluded)...")
 
-    # ============================================================
-    # FIX 2: Load pipeline with T5 disabled
-    # ============================================================
+    # Load pipeline with T5 disabled
     token = args.token or True
     pipe = AutoPipelineForText2Image.from_pretrained(
         args.model_id,
