@@ -9,7 +9,7 @@ Key differences from SDXL:
 5. Training resolution matches SDXL at 512×512
 6. Full WandB logging integration
 7. Checkpoint saving matching SDXL
-8. Uses DDPM scheduler instead of FlowMatchEulerDiscreteScheduler for training compatibility
+8. Uses DDPM scheduler for training compatibility
 """
 
 import argparse
@@ -503,10 +503,12 @@ def main() -> None:
         noise = torch.randn_like(latents)
         noisy_latents = pipe.scheduler.add_noise(latents, noise, timesteps)
 
-        # MMDiT forward pass
+        # ============================================================
+        # FIX: Use explicit keyword arguments for transformer forward
+        # ============================================================
         noise_pred = transformer(
-            noisy_latents,
-            timesteps,
+            hidden_states=noisy_latents,
+            timestep=timesteps,
             encoder_hidden_states=text_embeddings,
             return_dict=False,
         )[0]
