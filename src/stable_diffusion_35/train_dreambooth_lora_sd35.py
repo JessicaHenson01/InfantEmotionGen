@@ -9,6 +9,7 @@ import shutil
 import json
 from typing import Any, Dict, List
 from PIL import Image
+from collections import Counter
 
 # ============================================================
 # FIX: Disable torchao in PEFT BEFORE importing peft
@@ -24,7 +25,6 @@ from torch.utils.data import DataLoader, Dataset
 from tqdm.auto import tqdm
 import numpy as np
 import time
-import re
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -39,40 +39,81 @@ class InfantEmotionDataset(Dataset):
     def __init__(self, data_dir: str, json_path: str, size: int = 512):
         self.data_dir = data_dir
         self.size = size
-        
-        # Load labels
-        with open(json_path, 'r') as f:
-            self.labels = json.load(f)
-        
-        # Get all image files
         self.image_paths = []
         self.emotions = []
         
-        # Look for images in subdirectories
+        print(f"Loading dataset from: {data_dir}")
+        print(f"JSON labels from: {json_path}")
+        
+        # Load labels
+        if os.path.exists(json_path):
+            with open(json_path, 'r') as f:
+                self.labels = json.load(f)
+            print(f"Loaded {len(self.labels)} labels from JSON")
+        else:
+            print(f"⚠️ JSON file not found: {json_path}")
+            self.labels = {}
+        
+        # Method 1: Look for images in subdirectories (angry/, crying/, happy/)
+        print("\nLooking for images in subdirectories...")
         emotion_dirs = ['angry', 'crying', 'happy']
         for emotion in emotion_dirs:
             emotion_path = os.path.join(data_dir, emotion)
             if os.path.exists(emotion_path):
+                print(f"  Found {emotion}/ directory")
                 for file in os.listdir(emotion_path):
                     if file.endswith(('.jpg', '.jpeg', '.png')):
                         self.image_paths.append(os.path.join(emotion_path, file))
                         self.emotions.append(emotion)
+                print(f"    Found {len([f for f in os.listdir(emotion_path) if f.endswith(('.jpg', '.jpeg', '.png'))])} images in {emotion}/")
         
-        # If no images found in subdirs, try root directory
+        # Method 2: If no images found, look in root directory
         if not self.image_paths:
+            print("\nNo images found in subdirectories. Looking in root directory...")
             for file in os.listdir(data_dir):
                 if file.endswith(('.jpg', '.jpeg', '.png')):
                     img_name = os.path.splitext(file)[0]
+                    # Try to match with JSON labels
                     if img_name in self.labels:
                         self.image_paths.append(os.path.join(data_dir, file))
                         self.emotions.append(self.labels[img_name])
+                    else:
+                        # Try to infer emotion from filename
+                        for emotion in ['angry', 'crying', 'happy']:
+                            if emotion in file.lower() or emotion in img_name.lower():
+                                self.image_paths.append(os.path.join(data_dir, file))
+                                self.emotions.append(emotion)
+                                break
         
-        print(f"Loaded {len(self.image_paths)} images")
+        # Method 3: If still no images, try to find any images in subdirectories with different names
+        if not self.image_paths:
+            print("\nSearching all subdirectories for images...")
+            for root, dirs, files in os.walk(data_dir):
+                for file in files:
+                    if file.endswith(('.jpg', '.jpeg', '.png')):
+                        # Try to determine emotion from parent directory name
+                        parent_dir = os.path.basename(root)
+                        for emotion in ['angry', 'crying', 'happy']:
+                            if emotion in parent_dir.lower():
+                                self.image_paths.append(os.path.join(root, file))
+                                self.emotions.append(emotion)
+                                break
+                        else:
+                            # If no emotion found in path, use 'unknown'
+                            self.image_paths.append(os.path.join(root, file))
+                            self.emotions.append('unknown')
+        
+        print(f"\n✅ Loaded {len(self.image_paths)} images")
         
         # Print distribution
-        from collections import Counter
         emotion_counts = Counter(self.emotions)
         print(f"Distribution: {dict(emotion_counts)}")
+        
+        # Show sample paths
+        if self.image_paths:
+            print(f"\nSample paths:")
+            for i in range(min(3, len(self.image_paths))):
+                print(f"  {self.image_paths[i]} -> {self.emotions[i]}")
     
     def __len__(self) -> int:
         return len(self.image_paths)
@@ -386,6 +427,8 @@ def main() -> None:
 
     if len(base_dataset) == 0:
         print("❌ ERROR: No images found in dataset!")
+        print(f"   Please check that images exist in: {args.data_dir}")
+        print(f"   Expected structure: {args.data_dir}/angry/, {args.data_dir}/crying/, {args.data_dir}/happy/")
         return
 
     dream_dataset = DreamBoothDataset(
