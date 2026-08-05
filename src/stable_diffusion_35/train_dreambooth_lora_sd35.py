@@ -73,6 +73,7 @@ def generate_preview_image(
     vae_shift_factor: float,
     num_inference_steps: int = 15,
     seed: int = 0,
+    num_train_timesteps: int = 1000,
 ):
     """
     Cheap in-training preview: runs a short Euler integration of the learned
@@ -116,8 +117,9 @@ def generate_preview_image(
 
     dt = 1.0 / num_inference_steps
     for step in range(num_inference_steps):
-        t_val = 1.0 - step * dt
-        timestep = torch.full((1,), t_val, device=device, dtype=torch.float16)
+        t_val = 1.0 - step * dt  # sigma in [0,1], drives the Euler step size
+        model_t = t_val * num_train_timesteps  # scaled for the model's timestep conditioning
+        timestep = torch.full((1,), model_t, device=device, dtype=torch.float16)
         velocity = transformer(
             hidden_states=x,
             timestep=timestep,
@@ -429,33 +431,45 @@ def main() -> None:
         # FLOW MATCHING IMPLEMENTATION
         # ============================================================
         
-        # Sample random timesteps with logit-normal distribution
+        # Sample sigma (fraction along the noise->data path) with a
+        # logit-normal distribution, matching SD3's paper recipe.
         u = torch.normal(mean=0.0, std=1.0, size=(images.shape[0],), device=device)
-        timesteps = torch.sigmoid(u)
-        timesteps = timesteps.clamp(0.0, 1.0)
+        sigmas = torch.sigmoid(u)
+        sigmas = sigmas.clamp(0.0, 1.0)
+
+        # `sigmas` (in [0,1]) drives the interpolation below. The MODEL's
+        # timestep conditioning input is a SEPARATE, differently-scaled
+        # quantity — diffusers' official train_dreambooth_lora_sd3.py does
+        # `indices = (u * num_train_timesteps).long(); timesteps =
+        # noise_scheduler.timesteps[indices]`. Feeding the raw [0,1] sigma
+        # directly as `timestep=` (as this script previously did) starves
+        # the model's time-embedding of the scale it was pretrained on —
+        # values clustered near 0.5 look like a single, nearly-meaningless
+        # noise level to the model, regardless of the true sigma.
+        model_timesteps = sigmas * scheduler.config.num_train_timesteps
         
-        # Expand timesteps for broadcasting
-        timesteps_expanded = timesteps.view(-1, 1, 1, 1)
+        # Expand sigmas for broadcasting over the latent
+        sigmas_expanded = sigmas.view(-1, 1, 1, 1)
         
         # Sample noise
         noise = torch.randn_like(latents)
         
         # Flow Matching interpolation
-        noisy_latents = (1.0 - timesteps_expanded) * latents + timesteps_expanded * noise
+        noisy_latents = (1.0 - sigmas_expanded) * latents + sigmas_expanded * noise
         
         # Target velocity
         target_velocity = noise - latents
 
         # Convert to correct dtype
         noisy_latents = noisy_latents.to(dtype=torch.float16)
-        timesteps = timesteps.to(dtype=torch.float16)
+        model_timesteps = model_timesteps.to(dtype=torch.float16)
         text_embeddings = text_embeddings.to(dtype=torch.float16)
         pooled_projections = pooled_projections.to(dtype=torch.float16)
 
         # Forward pass
         predicted_velocity = transformer(
             hidden_states=noisy_latents,
-            timestep=timesteps,
+            timestep=model_timesteps,
             encoder_hidden_states=text_embeddings,
             pooled_projections=pooled_projections,
             return_dict=False,
@@ -495,7 +509,8 @@ def main() -> None:
             "train/loss": loss.item(),
             "train/avg_loss": avg_loss,
             "train/global_step": global_step,
-            "train/timestep_mean": timesteps.mean().item(),
+            "train/sigma_mean": sigmas.mean().item(),
+            "train/model_timestep_mean": model_timesteps.mean().item(),
         })
 
         progress_bar.update(1)
@@ -528,6 +543,7 @@ def main() -> None:
                         vae_shift_factor=vae_shift_factor,
                         num_inference_steps=args.sample_inference_steps,
                         seed=args.seed,
+                        num_train_timesteps=scheduler.config.num_train_timesteps,
                     )
                     wandb.log({
                         f"preview/{emotion}": wandb.Image(preview_img, caption=f"{emotion} @ step {global_step}"),
