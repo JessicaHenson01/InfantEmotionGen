@@ -339,15 +339,16 @@ def main() -> None:
 
     print("Loading SD 3.5 Medium model (T5-XXL excluded)...")
 
-    # Load pipeline with T5 disabled
+    # Load pipeline with T5 disabled and VAE in FP32
     token = args.token or True
     pipe = AutoPipelineForText2Image.from_pretrained(
         args.model_id,
         torch_dtype=torch.float16,
         variant="fp16",
         token=token,
-        tokenizer_3=None,      # Disable T5 tokenizer
-        text_encoder_3=None,   # Disable T5 text encoder
+        tokenizer_3=None,
+        text_encoder_3=None,
+        vae_dtype=torch.float32,  # <-- FIX: Load VAE in FP32 to avoid dtype mismatch
     )
     pipe.to(device)
 
@@ -436,7 +437,9 @@ def main() -> None:
     log_sample_images(pipe, transformer, device, 0, emotion_prompts, args.output_dir)
 
     for batch in dataloader:
-        images = batch["images"].to(device, dtype=torch.float16)
+        # Move images to device with correct dtype for VAE
+        # VAE is FP32, so we pass FP32 images
+        images = batch["images"].to(device, dtype=torch.float32)
         prompts = batch["prompts"]
 
         # Check input images
@@ -472,9 +475,9 @@ def main() -> None:
             # Concatenate embeddings
             text_embeddings = torch.cat([text_embeddings, text_embeddings_2], dim=-1)
 
-        # Encode images to latents
+        # Encode images to latents (VAE is FP32, images are FP32)
         with torch.no_grad():
-            latents = pipe.vae.encode(images.float()).latent_dist.sample()
+            latents = pipe.vae.encode(images).latent_dist.sample()
             latents = latents * 0.18215
 
             if check_tensor(latents, "latents", global_step):
