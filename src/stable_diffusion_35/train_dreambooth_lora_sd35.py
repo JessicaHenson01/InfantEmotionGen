@@ -208,11 +208,7 @@ def check_tensor(tensor: torch.Tensor, name: str, step: int) -> bool:
 
 
 def save_checkpoint(transformer, optimizer, global_step, output_dir, wandb_run=None):
-    """
-    Save checkpoint locally and log to wandb.
-    Matches your SDXL checkpoint saving behavior.
-    """
-    # Save locally
+    """Save checkpoint locally."""
     checkpoint_dir = os.path.join(output_dir, f"checkpoint-{global_step}")
     os.makedirs(checkpoint_dir, exist_ok=True)
     
@@ -224,41 +220,25 @@ def save_checkpoint(transformer, optimizer, global_step, output_dir, wandb_run=N
     
     unwrapped.save_pretrained(checkpoint_dir)
     
-    # Save optimizer state
     torch.save({
         'optimizer_state_dict': optimizer.state_dict(),
         'global_step': global_step,
     }, os.path.join(checkpoint_dir, "optimizer.pt"))
-    
-    # Log to wandb as artifact
-    if wandb_run:
-        artifact = wandb.Artifact(
-            name=f"sd35_mmdit_checkpoint_{global_step}",
-            type="model",
-            description=f"SD 3.5 Medium MMDiT LoRA checkpoint at step {global_step}",
-        )
-        artifact.add_dir(checkpoint_dir)
-        wandb_run.log_artifact(artifact)
     
     print(f"Checkpoint saved at step {global_step}: {checkpoint_dir}")
     return checkpoint_dir
 
 
 def cleanup_old_checkpoints(output_dir, keep_last=3):
-    """
-    Keep only the last N checkpoints to save space.
-    Matches your SDXL checkpoint cleanup behavior.
-    """
+    """Keep only the last N checkpoints."""
     checkpoint_dirs = []
     for item in os.listdir(output_dir):
         if item.startswith("checkpoint-") and os.path.isdir(os.path.join(output_dir, item)):
             step = int(item.split("-")[1])
             checkpoint_dirs.append((step, item))
     
-    # Sort by step number
     checkpoint_dirs.sort(key=lambda x: x[0])
     
-    # Remove oldest checkpoints beyond keep_last
     if len(checkpoint_dirs) > keep_last:
         for step, dir_name in checkpoint_dirs[:-keep_last]:
             dir_path = os.path.join(output_dir, dir_name)
@@ -271,8 +251,15 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
     os.makedirs(f"{output_dir}/samples", exist_ok=True)
 
     sample_images = []
-    captions = []
-
+    
+    # Handle wrapped transformer
+    model_to_eval = transformer
+    if hasattr(transformer, 'unwrap'):
+        model_to_eval = transformer.unwrap()
+    elif hasattr(transformer, 'module'):
+        model_to_eval = transformer.module
+    
+    model_to_eval.eval()
     with torch.no_grad():
         for emotion, prompt in emotion_prompts.items():
             generator = torch.Generator(device).manual_seed(42)
@@ -289,19 +276,17 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
             save_path = f"{output_dir}/samples/step_{step}_{emotion}.png"
             img.save(save_path)
             sample_images.append(wandb.Image(save_path, caption=f"{emotion} baby"))
-            captions.append(f"{emotion} baby")
-
+    
+    model_to_eval.train()
     wandb.log({f"samples/step_{step}": sample_images})
 
 
 def main() -> None:
     args = parse_args()
 
-    # Set memory optimization
     os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
     torch.manual_seed(args.seed)
 
-    # Initialize WandB
     wandb.init(
         project=args.wandb_project,
         entity=args.wandb_entity,
@@ -325,13 +310,11 @@ def main() -> None:
         }
     )
 
-    # Log the configuration
     print("📊 WandB initialized!")
     print(f"   Project: {args.wandb_project}")
     print(f"   Run: {args.wandb_run_name}")
     print(f"   View at: https://wandb.ai/{wandb.run.entity}/{args.wandb_project}/runs/{wandb.run.id}")
 
-    # Initialize accelerator
     accelerator = Accelerator(
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         mixed_precision=CONFIG["mixed_precision"],
@@ -340,7 +323,6 @@ def main() -> None:
 
     print("Loading SD 3.5 Medium model (T5-XXL excluded)...")
 
-    # Load pipeline with T5 disabled
     token = args.token or True
     pipe = AutoPipelineForText2Image.from_pretrained(
         args.model_id,
@@ -352,29 +334,24 @@ def main() -> None:
     )
     pipe.to(device)
 
-    # ============================================================
-    # FIX: Replace FlowMatchEulerDiscreteScheduler with DDPM for training
-    # ============================================================
     print("Switching to DDPM scheduler for training compatibility...")
     pipe.scheduler = DDPMScheduler.from_config(pipe.scheduler.config)
     print("✅ Using DDPM scheduler for training")
 
-    # Access MMDiT Transformer (replaces UNet)
     transformer = pipe.transformer
 
-    # Count total parameters for logging
     total_params = sum(p.numel() for p in transformer.parameters())
     print(f"📊 Total transformer parameters: {total_params:,}")
 
-    # Apply LoRA to MMDiT (diffusers-PEFT format)
+    # LoRA config for SD 3.5 Medium MMDiT
     lora_config = LoraConfig(
         r=CONFIG["lora_rank"],
         lora_alpha=CONFIG["lora_alpha"],
         target_modules=[
-            "to_q",
-            "to_k",
-            "to_v",
-            "to_out.0",
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "out_proj",
         ],
         lora_dropout=CONFIG["lora_dropout"],
         bias="none",
@@ -384,7 +361,6 @@ def main() -> None:
     trainable_params = sum(p.numel() for p in transformer.parameters() if p.requires_grad)
     print(f"📊 Trainable parameters: {trainable_params:,} ({100 * trainable_params / total_params:.2f}%)")
 
-    # CRITICAL FIX: Print trainable parameters for debugging
     print("\n🔍 Trainable parameters:")
     for name, param in transformer.named_parameters():
         if param.requires_grad:
@@ -396,11 +372,12 @@ def main() -> None:
         "trainable_percent": 100 * trainable_params / total_params,
     })
 
-    # Freeze Text Encoders (CLIP-L + OpenCLIP-G)
+    # Freeze text encoders
     pipe.text_encoder.requires_grad_(False)
+    pipe.text_encoder.eval()
     pipe.text_encoder_2.requires_grad_(False)
+    pipe.text_encoder_2.eval()
 
-    # Load Dataset (same as SDXL, 512×512)
     print("Loading dataset...")
     base_dataset = InfantEmotionDataset(
         data_dir=args.data_dir,
@@ -421,52 +398,42 @@ def main() -> None:
         num_workers=0,
     )
 
-    # Setup optimizer
     optimizer = torch.optim.AdamW(
         transformer.parameters(),
         lr=args.learning_rate,
     )
 
-    # CRITICAL FIX: Set model to training mode BEFORE accelerator.prepare
     transformer.train()
     print("✅ Model set to training mode")
 
-    # Prepare with accelerator
     transformer, optimizer, dataloader = accelerator.prepare(
         transformer, optimizer, dataloader
     )
 
-    # Define prompts for sample generation
     emotion_prompts = {
         "angry": "a photo of an angry sks infant",
         "crying": "a photo of a crying sks infant",
         "happy": "a photo of a happy sks infant",
     }
 
-    # Training loop
     print("Starting training...")
     global_step = 0
     running_loss = 0.0
     progress_bar = tqdm(range(args.max_train_steps))
 
-    # Log initial samples
     wandb.log({"status": "training_started"})
     log_sample_images(pipe, transformer, device, 0, emotion_prompts, args.output_dir)
 
     for batch in dataloader:
-        # Move images to device (VAE expects FP16)
         images = batch["images"].to(device, dtype=torch.float16)
         prompts = batch["prompts"]
 
-        # Check input images
         if check_tensor(images, "images", global_step):
-            print(f"   Images range: min={images.min():.4f}, max={images.max():.4f}")
             optimizer.zero_grad()
             continue
 
-        # Tokenize prompts (CLIP-L + OpenCLIP-G only, no T5)
         with torch.no_grad():
-            # First text encoder (CLIP-L)
+            # CLIP-L
             tokenized_prompts = pipe.tokenizer(
                 prompts,
                 padding="max_length",
@@ -481,16 +448,14 @@ def main() -> None:
                 return_dict=True,
             )
             
-            # Get CLIP-L embeddings (use sequence for per-token features)
-            text_embeddings_1 = text_encoder_output.last_hidden_state  # (batch, 77, 768)
+            text_embeddings_1 = text_encoder_output.last_hidden_state
             
-            # Get CLIP-L pooled embedding (for MMDiT conditioning)
             if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
-                pooled_projection_1 = text_encoder_output.pooler_output  # (batch, 768)
+                pooled_projection_1 = text_encoder_output.pooler_output
             else:
-                pooled_projection_1 = text_encoder_output.last_hidden_state.mean(dim=1)  # (batch, 768)
+                pooled_projection_1 = text_encoder_output.last_hidden_state.mean(dim=1)
 
-            # Second text encoder (OpenCLIP-G)
+            # OpenCLIP-G
             tokenized_prompts_2 = pipe.tokenizer_2(
                 prompts,
                 padding="max_length",
@@ -505,31 +470,18 @@ def main() -> None:
                 return_dict=True,
             )
 
-            # Get OpenCLIP-G embeddings (use sequence for per-token features)
-            text_embeddings_2 = text_encoder_output_2.last_hidden_state  # (batch, 77, 1280)
+            text_embeddings_2 = text_encoder_output_2.last_hidden_state
             
-            # Get OpenCLIP-G pooled embedding (for MMDiT conditioning)
             if hasattr(text_encoder_output_2, 'pooler_output') and text_encoder_output_2.pooler_output is not None:
-                pooled_projection_2 = text_encoder_output_2.pooler_output  # (batch, 1280)
+                pooled_projection_2 = text_encoder_output_2.pooler_output
             else:
-                pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)  # (batch, 1280)
+                pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)
 
-            # ============================================================
-            # CRITICAL FIX: SD 3.5 Medium expects:
-            # - pooled_projections: (batch, 2048) for text_embedder
-            # - encoder_hidden_states: (batch, 77, 4096) for context_embedder
-            # ============================================================
+            # Pooled projections: (batch, 2048)
+            pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)
             
-            # Pooled projections: concatenate CLIP-L and OpenCLIP-G (no padding)
-            # This goes to text_embedder which expects 2048 dims
-            pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)  # (batch, 2048)
-            
-            # Encoder hidden states: concatenate and pad to 4096
-            # This goes to context_embedder which expects 4096 dims
-            # CLIP-L: 768 + OpenCLIP-G: 1280 = 2048, need to pad to 4096
-            t5_dim = 4096 - 768 - 1280  # 2048
-            
-            # Pad with zeros to match T5-XXL dimension
+            # Encoder hidden states: pad to 4096
+            t5_dim = 4096 - 768 - 1280
             zero_padding = torch.zeros(
                 text_embeddings_1.shape[0], 
                 text_embeddings_1.shape[1], 
@@ -537,19 +489,16 @@ def main() -> None:
                 device=text_embeddings_1.device,
                 dtype=text_embeddings_1.dtype
             )
-            text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)  # (batch, 77, 4096)
+            text_embeddings = torch.cat([text_embeddings_1, text_embeddings_2, zero_padding], dim=-1)
 
-        # Encode images to latents (VAE is in FP16)
         with torch.no_grad():
             latents = pipe.vae.encode(images).latent_dist.sample()
             latents = latents * 0.18215
 
             if check_tensor(latents, "latents", global_step):
-                print("   VAE produced NaN! Skipping...")
                 optimizer.zero_grad()
                 continue
 
-        # Sample random timestep
         timesteps = torch.randint(
             0,
             pipe.scheduler.config.num_train_timesteps,
@@ -557,19 +506,14 @@ def main() -> None:
             device=device,
         ).long()
 
-        # Add noise
         noise = torch.randn_like(latents)
         noisy_latents = pipe.scheduler.add_noise(latents, noise, timesteps)
 
-        # ============================================================
-        # CRITICAL FIX: Ensure all tensors are on the correct device
-        # ============================================================
-        noisy_latents = noisy_latents.to(device)
+        noisy_latents = noisy_latents.to(device=device, dtype=torch.float16)
         timesteps = timesteps.to(device)
-        text_embeddings = text_embeddings.to(device)
-        pooled_projections = pooled_projections.to(device)
+        text_embeddings = text_embeddings.to(device=device, dtype=torch.float16)
+        pooled_projections = pooled_projections.to(device=device, dtype=torch.float16)
 
-        # MMDiT forward pass with proper dimensions
         noise_pred = transformer(
             hidden_states=noisy_latents,
             timestep=timesteps,
@@ -582,9 +526,10 @@ def main() -> None:
             optimizer.zero_grad()
             continue
 
-        # Compute loss in FP32 for stability
         loss = torch.nn.functional.mse_loss(
-            noise_pred.float(), noise.float(), reduction="mean"
+            noise_pred.float(), 
+            noise.float(), 
+            reduction="mean"
         )
 
         if torch.isnan(loss) or torch.isinf(loss):
@@ -592,10 +537,8 @@ def main() -> None:
             optimizer.zero_grad()
             continue
 
-        # CRITICAL FIX: Normalize loss by gradient accumulation steps
         loss = loss / args.gradient_accumulation_steps
 
-        # Backward pass with gradient accumulation
         with accelerator.accumulate(transformer):
             accelerator.backward(loss)
 
@@ -606,23 +549,22 @@ def main() -> None:
             optimizer.zero_grad()
 
         global_step += 1
-        running_loss += loss.item() * args.gradient_accumulation_steps
+        
+        actual_loss = loss.item() * args.gradient_accumulation_steps
+        running_loss += actual_loss
         avg_loss = running_loss / global_step
 
-        # Log to WandB
         wandb.log({
-            "train/loss": loss.item() * args.gradient_accumulation_steps,
+            "train/loss": actual_loss,
             "train/avg_loss": avg_loss,
             "train/global_step": global_step,
             "train/learning_rate": optimizer.param_groups[0]['lr'],
         })
 
         progress_bar.update(1)
-        progress_bar.set_postfix({"loss": loss.item() * args.gradient_accumulation_steps, "avg_loss": avg_loss})
+        progress_bar.set_postfix({"loss": actual_loss, "avg_loss": avg_loss})
 
-        # Log sample images every 500 steps
         if global_step % args.checkpoint_steps == 0:
-            # Save checkpoint (matching SDXL behavior)
             unwrapped_unet = accelerator.unwrap_model(transformer)
             save_checkpoint(
                 unwrapped_unet,
@@ -631,20 +573,14 @@ def main() -> None:
                 args.output_dir,
                 wandb
             )
-            
-            # Cleanup old checkpoints (keep last 3)
             cleanup_old_checkpoints(args.output_dir, keep_last=3)
-            
-            # Log sample images
             log_sample_images(pipe, transformer, device, global_step, emotion_prompts, args.output_dir)
 
         if global_step >= args.max_train_steps:
             break
 
-    # Final sample logging
     log_sample_images(pipe, transformer, device, args.max_train_steps, emotion_prompts, args.output_dir)
 
-    # Save final model
     print("Saving final model...")
     accelerator.wait_for_everyone()
     if accelerator.is_main_process:
@@ -652,32 +588,6 @@ def main() -> None:
         os.makedirs(final_dir, exist_ok=True)
         unwrapped = accelerator.unwrap_model(transformer)
         unwrapped.save_pretrained(final_dir)
-
-        # Log final model as WandB artifact
-        artifact = wandb.Artifact(
-            name="sd35_lora_weights",
-            type="model",
-            description=f"SD 3.5 Medium LoRA weights after {args.max_train_steps} steps",
-        )
-        artifact.add_dir(final_dir)
-        wandb.log_artifact(artifact)
-
-        # Save to Hugging Face if in Colab mode
-        if args.colab:
-            from huggingface_hub import upload_folder
-            print(f"📤 Uploading to Hugging Face: {args.hf_repo}")
-            try:
-                upload_folder(
-                    folder_path=final_dir,
-                    repo_id=args.hf_repo,
-                    repo_type="model",
-                    path_in_repo=".",
-                    ignore_patterns=["*.pt", "optimizer.pt"],  # Skip optimizer files
-                )
-                print("✅ Model uploaded to Hugging Face!")
-            except Exception as e:
-                print(f"⚠️ Upload failed: {e}")
-                print("Model saved locally at:", final_dir)
 
         print(f"Training complete! Final model saved to {final_dir}")
 
