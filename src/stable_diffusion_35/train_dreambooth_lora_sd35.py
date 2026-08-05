@@ -294,6 +294,25 @@ def log_sample_images(pipe, transformer, device, step, emotion_prompts, output_d
     wandb.log({f"samples/step_{step}": sample_images})
 
 
+def get_pooled_embedding(text_encoder_output, fallback_to_mean=True):
+    """Extract pooled embedding from text encoder output."""
+    # Try to get pooler_output
+    if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
+        return text_encoder_output.pooler_output
+    
+    # Try dictionary access
+    if isinstance(text_encoder_output, dict) and 'pooler_output' in text_encoder_output:
+        return text_encoder_output['pooler_output']
+    
+    # Fallback: mean of last hidden state
+    if hasattr(text_encoder_output, 'last_hidden_state'):
+        return text_encoder_output.last_hidden_state.mean(dim=1)
+    if isinstance(text_encoder_output, dict) and 'last_hidden_state' in text_encoder_output:
+        return text_encoder_output['last_hidden_state'].mean(dim=1)
+    
+    raise ValueError("Could not extract pooled embedding from text encoder output")
+
+
 def main() -> None:
     args = parse_args()
 
@@ -473,6 +492,12 @@ def main() -> None:
             
             # Get CLIP-L embeddings (use sequence for per-token features)
             text_embeddings = text_encoder_output.last_hidden_state  # (batch, 77, 768)
+            
+            # Get CLIP-L pooled embedding (for MMDiT conditioning)
+            if hasattr(text_encoder_output, 'pooler_output') and text_encoder_output.pooler_output is not None:
+                pooled_projection_1 = text_encoder_output.pooler_output  # (batch, 768)
+            else:
+                pooled_projection_1 = text_encoder_output.last_hidden_state.mean(dim=1)  # (batch, 768)
 
             # Second text encoder (OpenCLIP-G)
             tokenized_prompts_2 = pipe.tokenizer_2(
@@ -492,11 +517,15 @@ def main() -> None:
             # Get OpenCLIP-G embeddings (use sequence for per-token features)
             text_embeddings_2 = text_encoder_output_2.last_hidden_state  # (batch, 77, 1280)
             
-            # Get pooled projection for MMDiT conditioning
-            if hasattr(text_encoder_output_2, 'pooler_output'):
-                pooled_projections = text_encoder_output_2.pooler_output  # (batch, 1280)
+            # Get OpenCLIP-G pooled embedding (for MMDiT conditioning)
+            if hasattr(text_encoder_output_2, 'pooler_output') and text_encoder_output_2.pooler_output is not None:
+                pooled_projection_2 = text_encoder_output_2.pooler_output  # (batch, 1280)
             else:
-                pooled_projections = text_encoder_output_2.last_hidden_state.mean(dim=1)  # (batch, 1280)
+                pooled_projection_2 = text_encoder_output_2.last_hidden_state.mean(dim=1)  # (batch, 1280)
+
+            # Concatenate pooled projections for MMDiT conditioning
+            # SD 3.5 expects (batch, 2048) where 2048 = 768 + 1280
+            pooled_projections = torch.cat([pooled_projection_1, pooled_projection_2], dim=-1)  # (batch, 2048)
 
             # Concatenate embeddings along feature dimension
             # Both are (batch, 77, dim) -> concatenated to (batch, 77, 2048)
