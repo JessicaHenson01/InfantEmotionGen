@@ -17,6 +17,11 @@ import sys
 import shutil
 from typing import Any, Dict, List
 
+# ============================================================
+# FIX 1: Disable torchao in PEFT (must be before importing peft)
+# ============================================================
+os.environ["PEFT_DISABLE_TORCHAO"] = "1"
+
 import torch
 import wandb
 from accelerate import Accelerator
@@ -181,6 +186,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Run in Colab mode"
     )
+    parser.add_argument(
+        "--token",
+        type=str,
+        default=None,
+        help="Hugging Face token for gated models"
+    )
     return parser.parse_args()
 
 
@@ -329,13 +340,16 @@ def main() -> None:
     print("Loading SD 3.5 Medium model (T5-XXL excluded)...")
 
     # ============================================================
-    # FIX: Load pipeline with token for gated model
+    # FIX 2: Load pipeline with T5 disabled
     # ============================================================
+    token = args.token or True
     pipe = AutoPipelineForText2Image.from_pretrained(
         args.model_id,
         torch_dtype=torch.float16,
         variant="fp16",
-        token=True,  # <-- ADDED: Uses the token from huggingface-cli login
+        token=token,
+        tokenizer_3=None,      # Disable T5 tokenizer
+        text_encoder_3=None,   # Disable T5 text encoder
     )
     pipe.to(device)
 
