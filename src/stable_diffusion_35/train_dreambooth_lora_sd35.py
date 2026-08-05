@@ -467,7 +467,7 @@ def main() -> None:
 
             text_embeddings = pipe.text_encoder(tokenized_prompts)[0]
 
-            # Second text encoder (OpenCLIP-G)
+            # Second text encoder (OpenCLIP-G) - gets pooled output
             tokenized_prompts_2 = pipe.tokenizer_2(
                 prompts,
                 padding="max_length",
@@ -476,7 +476,21 @@ def main() -> None:
                 return_tensors="pt",
             ).input_ids.to(device)
 
-            text_embeddings_2 = pipe.text_encoder_2(tokenized_prompts_2)[0]
+            text_encoder_output_2 = pipe.text_encoder_2(
+                tokenized_prompts_2,
+                output_hidden_states=True,
+                return_dict=True,
+            )
+            
+            # Get the pooled output (CLS token) from the second encoder
+            pooled_projections = text_encoder_output_2.pooler_output  # (batch, 1280)
+            
+            # If pooler_output doesn't exist, use the mean of the last hidden state
+            if pooled_projections is None:
+                pooled_projections = text_encoder_output_2.last_hidden_state.mean(dim=1)  # (batch, 1280)
+
+            # Get the full sequence for the concatenated embeddings
+            text_embeddings_2 = text_encoder_output_2.last_hidden_state  # (batch, seq_len, 1280)
 
             # Concatenate embeddings
             text_embeddings = torch.cat([text_embeddings, text_embeddings_2], dim=-1)
@@ -504,11 +518,8 @@ def main() -> None:
         noisy_latents = pipe.scheduler.add_noise(latents, noise, timesteps)
 
         # ============================================================
-        # FIX: Compute pooled projections and pass to transformer
+        # FIX: MMDiT forward pass with pooled projections
         # ============================================================
-        pooled_projections = text_embeddings_2.mean(dim=1)  # (batch, 1280)
-
-        # MMDiT forward pass with pooled projections
         noise_pred = transformer(
             hidden_states=noisy_latents,
             timestep=timesteps,
