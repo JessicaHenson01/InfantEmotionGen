@@ -1,0 +1,23 @@
+{
+  "sdxl_primary": {
+    "description": "Initial SDXL base model plus PEFT UNet LoRA adapter.",
+    "pipeline_type": "sdxl_lora",
+    "protocol": "evaluation/configs/generation_protocol.sdxl.json",
+    "lora_repo": "InfantEmotionGen/SDXLPrimary",
+    "lora_subfolder": "unet_lora_final",
+    "adapter_format": "peft_unet",
+    "generated_dir": "evaluation/generated/sdxl_primary",
+    "results_dir": "evaluation/results/sdxl_primary"
+  },
+  "sd35_medium": {
+    "description": "Stable Diffusion 3.5 Medium base plus team PEFT MMDiT transformer LoRA adapter.",
+    "pipeline_type": "sd3_lora",
+    "protocol": "evaluation/configs/generation_protocol.sd35.json",
+    "base_model": "stabilityai/stable-diffusion-3.5-medium",
+    "lora_repo": "InfantEmotionGen/stable-diffusion-3.5-medium",
+    "lora_subfolder": "mmdit_lora_final",
+    "adapter_format": "peft_transformer",
+    "generated_dir": "evaluation/generated/sd35_medium",
+    "results_dir": "evaluation/results/sd35_medium"
+  }
+}

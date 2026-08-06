@@ -1,0 +1,32 @@
+# Python/runtime artifacts
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Local archives and accidental root-level dataset extracts
+*.zip
+/*.jpg
+/*.jpeg
+/*.png
+/*.webp
+/*.bmp
+/dataset.json
+
+# Evaluation data generated from private/source datasets
+evaluation/data/*
+evaluation/generated/
+evaluation/results/
+evaluation/.cache/
+!evaluation/data/.gitkeep
+!evaluation/data/split_manifest.example.json
+
+# Keep evaluation workflow source files trackable
+!evaluation/
+!evaluation/scripts/
+!evaluation/scripts/**
+!evaluation/README.md
+!evaluation/requirements.txt
+!evaluation/requirements_eval.txt
+!evaluation/configs/
+!evaluation/configs/**
+evaluation/scripts/__pycache__/

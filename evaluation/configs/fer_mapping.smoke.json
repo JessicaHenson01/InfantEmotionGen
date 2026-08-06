@@ -1,0 +1,14 @@
+{
+  "angry": {
+    "target_name": "angry",
+    "accepted_model_labels": ["angry", "anger"]
+  },
+  "crying": {
+    "target_name": "crying",
+    "accepted_model_labels": ["crying", "sad", "sadness", "distress"]
+  },
+  "happy": {
+    "target_name": "happy",
+    "accepted_model_labels": ["happy", "happiness", "joy"]
+  }
+}

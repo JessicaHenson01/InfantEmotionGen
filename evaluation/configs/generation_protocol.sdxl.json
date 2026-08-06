@@ -1,0 +1,23 @@
+{
+  "description": "Fixed SDXL LoRA evaluation-generation protocol. Change these values only before generating all models for a comparable evaluation batch.",
+  "base_model": "stabilityai/stable-diffusion-xl-base-1.0",
+  "vae_model": "madebyollin/sdxl-vae-fp16-fix",
+  "num_images_per_class": 100,
+  "height": 1024,
+  "width": 1024,
+  "num_inference_steps": 30,
+  "guidance_scale": 7.5,
+  "seed": 4242,
+  "negative_prompt": "cartoon, drawing, illustration, blurry, low quality, distorted, deformed, extra limbs, cropped face",
+  "emotions": {
+    "angry": {
+      "prompt": "a photo of an angry sks infant face"
+    },
+    "crying": {
+      "prompt": "a photo of a crying sks infant face"
+    },
+    "happy": {
+      "prompt": "a photo of a happy sks infant face"
+    }
+  }
+}

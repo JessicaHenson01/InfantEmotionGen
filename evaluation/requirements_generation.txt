@@ -1,0 +1,10 @@
+diffusers
+peft
+transformers
+accelerate
+huggingface_hub
+safetensors
+pillow
+torch
+sentencepiece
+protobuf
