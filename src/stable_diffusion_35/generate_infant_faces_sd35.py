@@ -13,6 +13,13 @@ from diffusers import AutoPipelineForText2Image
 
 
 def parse_args() -> argparse.Namespace:
+    """
+    Parse command line arguments for the SD3.5 inference script.
+
+    Returns:
+        argparse.Namespace: Parsed arguments with model, generation,
+                            and logging configuration.
+    """
     parser = argparse.ArgumentParser(description="Generate images with SD 3.5 Medium")
     parser.add_argument(
         "--model_id",
@@ -78,6 +85,13 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    """
+    Main generation function.
+
+    Loads the SD3.5 Medium pipeline, applies LoRA weights, and generates
+    images for each emotion class (angry, crying, happy). Images are saved
+    locally and logged to WandB.
+    """
     args = parse_args()
 
     # Initialize WandB
@@ -95,7 +109,7 @@ def main() -> None:
         }
     )
 
-    print(f"📊 WandB initialized!")
+    print("WandB initialized!")
     print(f"   Project: {args.wandb_project}")
     print(f"   Run: {args.wandb_run_name}")
 
@@ -114,9 +128,9 @@ def main() -> None:
     # Try to enable xFormers
     try:
         pipe.enable_xformers_memory_efficient_attention()
-        print("✅ xFormers enabled")
+        print("xFormers enabled")
     except (ModuleNotFoundError, ImportError) as error:
-        print(f"⚠️ xFormers not available: {error}")
+        print(f"xFormers not available: {error}")
 
     # Load LoRA weights
     print(f"Loading LoRA weights from: {args.lora_path}")
@@ -130,7 +144,6 @@ def main() -> None:
     }
 
     print("Generating images...")
-    generated_files = []
 
     for emotion, prompt in emotion_prompts.items():
         emotion_dir = os.path.join(args.output_dir, emotion)
@@ -153,7 +166,6 @@ def main() -> None:
 
             save_path = os.path.join(emotion_dir, f"{emotion}_{idx:04d}.png")
             result.images[0].save(save_path)
-            generated_files.append(save_path)
 
             if (idx + 1) % 10 == 0:
                 print(f"  Generated {idx + 1}/{args.num_images}")
@@ -161,7 +173,10 @@ def main() -> None:
             # Log individual images to WandB (every 10th image)
             if idx % 10 == 0:
                 wandb.log({
-                    f"generated/{emotion}_sample_{idx}": wandb.Image(save_path, caption=f"{emotion} baby {idx}")
+                    f"generated/{emotion}_sample_{idx}": wandb.Image(
+                        save_path,
+                        caption=f"{emotion} baby {idx}"
+                    )
                 })
 
     # Log all generated images as a WandB artifact
@@ -178,7 +193,12 @@ def main() -> None:
         sample_dir = os.path.join(args.output_dir, emotion)
         if os.listdir(sample_dir):
             sample_path = os.path.join(sample_dir, os.listdir(sample_dir)[0])
-            wandb.log({f"samples/{emotion}": wandb.Image(sample_path, caption=f"{emotion} baby")})
+            wandb.log({
+                f"samples/{emotion}": wandb.Image(
+                    sample_path,
+                    caption=f"{emotion} baby"
+                )
+            })
 
     print(f"Generation complete! Images saved to {args.output_dir}")
     wandb.finish()

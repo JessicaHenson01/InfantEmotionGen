@@ -1,366 +1,212 @@
-# InfantEmotionGen
+# Synthetic Infant Facial Expression Generation Using SDXL and Stable Diffusion 3.5
 
-InfantEmotionGen investigates whether modern generative models can create realistic infant face images with controllable emotional expressions. The project focuses on three target classes:
+This repository contains the code and configuration for fine-tuning two state-of-the-art diffusion models—**SDXL** and **Stable Diffusion 3.5 Medium**—for controlled infant facial expression generation. The models are fine-tuned using **DreamBooth** personalization and **Low-Rank Adaptation (LoRA)** on a curated dataset of infant faces with three emotion classes: `happy`, `angry`, and `crying`.
 
-```text
-0 = angry
-1 = crying
-2 = happy
-```
+---
 
-The current final comparison is between two LoRA-adapted diffusion models published under the `InfantEmotionGen` Hugging Face organization:
+## Table of Contents
 
-```text
-InfantEmotionGen/SDXLPrimary
-InfantEmotionGen/stable-diffusion-3.5-medium
-```
+- [Project Structure](#project-structure)
+- [Requirements](#requirements)
+- [Training Pipelines](#training-pipelines)
+  - [Train SDXL](#1-train-sdxl-unet-based)
+  - [Train SD3.5 Medium](#2-train-sd35-medium-mmdit-based)
+- [Generating Images](#generating-images)
+  - [Generate with SDXL](#1-generate-with-sdxl)
+  - [Generate with SD3.5 Medium](#2-generate-with-sd35-medium)
+- [Evaluation](#evaluation)
+- [Configuration](#configuration)
+- [License](#license)
 
-The repository also contains StyleGAN2-ADA work used as a baseline/related model track.
+---
 
-## Project Goal
-
-Real infant facial-expression datasets are difficult to collect because of privacy, consent, and data-scarcity constraints. This project explores synthetic infant emotion generation as a way to produce controlled images for research workflows while still evaluating realism and expression consistency carefully.
-
-The main questions are:
-
-1. Can fine-tuned diffusion models generate convincing infant faces?
-2. Can the generated faces reliably express `angry`, `crying`, and `happy`?
-3. How do SDXL LoRA and SD3.5 Medium LoRA compare under the same generation and evaluation protocol?
-
-## Repository Layout
+## Project Structure
 
 ```text
-data/
-  baby_emotion_samples.json        Local training metadata
-  baby_emotion_samples/            Local training images, not committed
-
-src/
-  data_utils/                      Shared infant emotion dataset loader
-  stable_diffusion/                SDXL DreamBooth/LoRA training and generation
-  stable_diffusion_35/             SD3.5 Medium DreamBooth/LoRA training and generation
-
-stylegan2_baby/
-  scripts/                         StyleGAN2-ADA setup, dataset prep, training, generation
-  configs/                         StyleGAN2 config examples
-  patches/                         Apple Silicon/MPS compatibility patches
-
-evaluation/
-  configs/                         Model registry, generation protocol, CLIP/FER mappings
-  scripts/                         Dataset import, generation, FID, CLIP, FER, comparison
-  data/                            Local reference datasets, ignored by git
-  generated/                       Generated model images, ignored by git
-  results/                         Metric outputs, ignored by git
-
-InfantGeneration_SD35.ipynb        SD3.5 experimentation notebook
-stylegan2_baby.ipynb               StyleGAN2 experimentation notebook
-Project Proposal.md                Project proposal and metric definitions
-InterimReport.md                   Interim experimental progress report
+InfantEmotionGen/
+│
+├── src/
+│   ├── stable_diffusion/                 # SDXL training and inference scripts
+│   │   ├── train_dreambooth_lora_sdxl.py
+│   │   ├── generate_infant_faces.py
+│   │   └── save_utils.py
+│   │
+│   └── stable_diffusion_35/              # SD3.5 Medium training and inference scripts
+│       ├── train_dreambooth_lora_sd35.py
+│       └── generate_infant_faces_sd35.py
+│
+├── data/
+│   ├── baby_emotion_samples/             # Training images (1200 total, 400 per emotion)
+│   └── labels_formatted.json             # JSON file mapping images to emotion labels
+│
+├── models/
+│   ├── infant_lora/                      # SDXL LoRA weights (output)
+│   └── infant_lora_sd35/                 # SD3.5 LoRA weights (output)
+│
+├── generated_images/
+│   ├── sdxl/                             # SDXL generated images
+│   └── sd35/                             # SD3.5 generated images
+│
+├── evaluation/                           # Evaluation scripts, configs, and outputs
+│   └── generated/                        # Evaluation-generated images
+│
+├── configs.py                            # Shared hyperparameter configuration
+├── .pylintrc                             # Pylint configuration
+└── README.md                             # This file
 ```
 
-## Data
+---
 
-Training data is local/private and is not committed to git. The project uses infant face images labeled as `angry`, `crying`, or `happy`.
+## Requirements
 
-The local dataset loader is:
+- Python 3.10+
+- PyTorch 2.0+
+- Diffusers 0.27+
+- Accelerate 0.27+
+- PEFT 0.8+
+- WandB
 
-```text
-src/data_utils/dataset.py
-```
-
-It expects JSON labels in this format:
-
-```json
-{
-  "image_001.jpg": 0,
-  "image_002.jpg": 1,
-  "image_003.jpg": 2
-}
-```
-
-The current local metadata file is:
-
-```text
-data/baby_emotion_samples.json
-```
-
-Some training scripts still default to `data/labels_formatted.json`; pass the current metadata file explicitly when needed:
+Install dependencies via pip using the provided `requirements.txt`:
 
 ```bash
---json_path data/baby_emotion_samples.json
+pip install -r requirements.txt
 ```
 
-## Final Evaluation Reference
+---
 
-Final evaluation should use the held-out dataset that was not used for model training:
+## Training Pipelines
 
-```text
-InfantEmotionGen/InfantEmotionGen_Dataset
-```
+Both models are trained on the same dataset (1,200 images, 400 per emotion) using identical DreamBooth + LoRA configurations. The learning rate is adjusted per architecture to account for differences in the denoising backbones.
 
-The external reference importer uses the ZIP file's held-out labels:
+### 1. Train SDXL (UNet-based)
 
-```text
-final_test_samples/test_samples.json
-```
-
-It populates:
-
-```text
-evaluation/data/external_reference/
-  angry/   250 images
-  crying/  250 images
-  happy/   250 images
-```
-
-Populate and validate it with:
+Run the following command from the **project root**:
 
 ```bash
-evaluation/scripts/populate_external_reference.sh
-evaluation/scripts/populate_external_reference.sh --validate-only
+python src/stable_diffusion/train_dreambooth_lora_sdxl.py \
+  --data_dir ./data/baby_emotion_samples \
+  --json_path ./data/labels_formatted.json \
+  --output_dir ./models/infant_lora \
+  --wandb_project "infant-emotion-generation" \
+  --wandb_run_name "sdxl-training" \
+  --instance_prompt_template "a photo of a {} sks infant" \
+  --resolution 512 \
+  --train_batch_size 1 \
+  --gradient_accumulation_steps 4 \
+  --learning_rate 5e-6 \
+  --max_train_steps 1500 \
+  --seed 42
 ```
 
-The older `evaluation/data/real_reference` and `evaluation/data/pipeline_test` folders are for smoke testing the evaluation pipeline, not final reporting.
+**Expected training time:** ~2–4 hours on a single NVIDIA GPU (e.g., A100 or RTX 4090).
+**Output:** LoRA adapter weights saved to `./models/infant_lora/unet_lora_final/`.
 
-## Model Tracks
+---
 
-### SDXLPrimary
+### 2. Train SD3.5 Medium (MMDiT-based)
 
-The SDXL model uses:
-
-```text
-base model: stabilityai/stable-diffusion-xl-base-1.0
-LoRA repo:  InfantEmotionGen/SDXLPrimary
-adapter:    unet_lora_final
-target:     SDXL UNet
-```
-
-The SDXL training code is:
-
-```text
-src/stable_diffusion/train_dreambooth_lora_sdxl.py
-```
-
-This track uses DreamBooth with LoRA and the `sks` trigger token for the infant concept.
-
-### SD3.5 Medium
-
-The SD3.5 model uses:
-
-```text
-base model: stabilityai/stable-diffusion-3.5-medium
-LoRA repo:  InfantEmotionGen/stable-diffusion-3.5-medium
-adapter:    mmdit_lora_final
-target:     SD3.5 MMDiT transformer
-```
-
-The SD3.5 training code is:
-
-```text
-src/stable_diffusion_35/train_dreambooth_lora_sd35.py
-```
-
-Each user must accept Stability AI's gated model access before loading SD3.5:
-
-```text
-https://huggingface.co/stabilityai/stable-diffusion-3.5-medium
-```
-
-### StyleGAN2-ADA
-
-The StyleGAN2-ADA work lives in:
-
-```text
-stylegan2_baby/
-```
-
-It includes dataset preparation, smoke tests, Apple Silicon compatibility patches, and training/generation scripts. This track is useful for the GAN baseline and project comparison context, while the current automated evaluation workflow is centered on the two Hugging Face diffusion model runs.
-
-## Environment Setup
-
-Use a dedicated conda environment instead of `base`:
+Run the following command from the **project root**:
 
 ```bash
-conda create -n infant-eval python=3.11 -y
-conda activate infant-eval
+python src/stable_diffusion_35/train_dreambooth_lora_sd35.py \
+  --data_dir ./data/baby_emotion_samples \
+  --json_path ./data/labels_formatted.json \
+  --output_dir ./models/infant_lora_sd35 \
+  --wandb_project "infant-emotion-generation" \
+  --wandb_run_name "sd35-training" \
+  --instance_prompt_template "a photo of a {} sks infant" \
+  --resolution 512 \
+  --train_batch_size 1 \
+  --gradient_accumulation_steps 4 \
+  --learning_rate 1e-4 \
+  --max_train_steps 1500 \
+  --seed 42
 ```
 
-Install dependencies:
+> **Note:** SD3.5 Medium uses a higher learning rate (`1e-4`) compared to SDXL (`5e-6`) due to its MMDiT architecture and flow matching objective.
+
+**Output:** LoRA adapter weights saved to `./models/infant_lora_sd35/mmdit_lora_final/`.
+
+---
+
+## Generating Images
+
+After training is complete, generate 100 images per emotion for each model.
+
+### 1. Generate with SDXL
 
 ```bash
-python -m pip install -r requirements.txt
-python -m pip install -r evaluation/requirements.txt
-python -m pip install -r evaluation/requirements_generation.txt
-python -m pip install -r evaluation/requirements_eval.txt
+python src/stable_diffusion/generate_infant_faces.py \
+  --lora_path ./models/infant_lora/unet_lora_final \
+  --output_dir ./generated_images/sdxl \
+  --num_images 100 \
+  --guidance_scale 7.5 \
+  --num_inference_steps 30 \
+  --seed 42
 ```
 
-Authenticate to Hugging Face:
+### 2. Generate with SD3.5 Medium
 
 ```bash
-hf auth login
+python src/stable_diffusion_35/generate_infant_faces_sd35.py \
+  --lora_path ./models/infant_lora_sd35/mmdit_lora_final \
+  --output_dir ./generated_images/sd35 \
+  --num_images 100 \
+  --guidance_scale 7.0 \
+  --num_inference_steps 30 \
+  --seed 42
 ```
 
-On Apple Silicon, check whether PyTorch can use MPS:
+**Output format:** Images are saved in emotion-specific subfolders:
+
+```text
+generated_images/
+  ├── sdxl/
+  │   ├── happy/
+  │   ├── angry/
+  │   └── crying/
+  └── sd35/
+      ├── happy/
+      ├── angry/
+      └── crying/
+```
+
+---
+
+## Evaluation
+
+Evaluation is performed on a held-out reference set of 750 images (250 per emotion) from the same dataset. The following metrics are computed:
+
+- **FID:** Measures distributional realism against the reference set.
+- **CLIP Score:** Measures semantic alignment between generated images and prompt embeddings.
+- **FER Accuracy & Macro F1:** Measures emotional expression recognizability using a frozen facial expression classifier.
+
+> **Note:** The evaluation script is currently under development. Please refer to `evaluation/run_evaluation.py` for the final implementation. Update this section with the exact evaluation command once the script is finalized.
+
+### Example Evaluation Command (Placeholder)
 
 ```bash
-python - <<'PY'
-import torch
-print(torch.__version__)
-print("mps built:", torch.backends.mps.is_built())
-print("mps available:", torch.backends.mps.is_available())
-print(torch.ones(1, device="mps"))
-PY
+python evaluation/run_evaluation.py \
+  --model sdxl \
+  --generated_dir ./generated_images/sdxl \
+  --reference_dir ./data/held_out_samples
 ```
 
-If MPS is unavailable, generation will fall back to CPU unless `DEVICE=mps` is explicitly requested. Full SD3.5 generation is very slow on CPU.
+**Metrics Output:** Results will be logged to WandB and saved as a JSON file in the `evaluation/` directory.
 
-## Fixed Generation Protocol
+---
 
-The evaluation generation settings live in:
+## Configuration
 
-```text
-evaluation/configs/generation_protocol.sdxl.json
-evaluation/configs/generation_protocol.sd35.json
-```
+All hyperparameters for training and generation are configured via the `configs.py` file. Key parameters include:
 
-The full protocol is:
+| Parameter | SDXL | SD3.5 Medium |
+|-----------|------|--------------|
+| Learning Rate | `5e-6` | `1e-4` |
+| LoRA Rank | `16` | `16` |
+| LoRA Alpha | `16` | `16` |
+| Batch Size | `1` | `1` |
+| Gradient Accumulation | `4` | `4` |
+| Max Steps | `1500` | `1500` |
 
-```text
-100 images per class
-300 images per model
-1024x1024 resolution
-30 inference steps
-seed 4242
-guidance scale 7.5
-```
-
-SDXL prompts:
-
-```text
-a photo of an angry sks infant face
-a photo of a crying sks infant face
-a photo of a happy sks infant face
-```
-
-SD3.5 prompts:
-
-```text
-a photo of an angry infant face
-a photo of a crying infant face
-a photo of a happy infant face
-```
-
-The generation script assigns deterministic seeds by class and image index, so interrupted runs can resume reproducibly.
-
-## Run Final Evaluation
-
-The configured model runs are listed in:
-
-```text
-evaluation/configs/model_runs.json
-```
-
-Run the complete final workflow:
-
-```bash
-evaluation/scripts/run_full_model_evaluation.sh
-```
-
-If SDXL is already complete and only SD3.5 still needs generation/evaluation:
-
-```bash
-RUN_SDXL=0 DEVICE=mps evaluation/scripts/run_full_model_evaluation.sh
-```
-
-The runner:
-
-1. checks disk space;
-2. uses `evaluation/data/external_reference` as the real-image reference;
-3. generates missing images with `--skip-existing`;
-4. evaluates each model with FID, CLIP, and FER;
-5. writes comparison files.
-
-Generated images:
-
-```text
-evaluation/generated/<run_name>/
-  angry/
-  crying/
-  happy/
-  generation_manifest.json
-```
-
-Metric outputs:
-
-```text
-evaluation/results/<run_name>/
-  fid.json
-  clip.json
-  fer.json
-```
-
-Comparison outputs:
-
-```text
-evaluation/results/comparison.csv
-evaluation/results/comparison.md
-```
-
-## Metrics
-
-FID compares the generated image distribution against the held-out external reference dataset. Lower is better.
-
-CLIP measures whether generated images align with the intended emotion text prompts. Higher agreement and target cosine are better.
-
-FER runs a frozen facial-expression classifier on generated images and compares the predicted expression against the image folder label. Higher accuracy and macro F1 are better. The current FER model is a proxy and should not be described as infant-specific ground truth.
-
-The generated images are not directly paired with specific real images. Each model is evaluated separately against the same reference distribution and then compared side by side.
-
-## Smoke Tests
-
-Before final generated images are available, the pipeline can be tested with the private StyleGAN-format dataset:
-
-```text
-InfantEmotionGen/baby_samples_gan
-```
-
-Populate the deterministic 80/20 smoke-test split:
-
-```bash
-evaluation/scripts/populate_real_eval_folders.sh
-```
-
-Run smoke tests:
-
-```bash
-evaluation/scripts/run_smoke_tests.sh
-```
-
-Smoke-test FID compares `evaluation/data/pipeline_test` against `evaluation/data/real_reference`. This proves the pipeline works, but it is not the final model evaluation.
-
-## Git And Data Policy
-
-Generated images, downloaded datasets, model caches, and metric outputs are local artifacts and should not be committed.
-
-Ignored local artifacts include:
-
-```text
-evaluation/data/
-evaluation/generated/
-evaluation/results/
-evaluation/.cache/
-*.zip
-root-level extracted image files
-```
-
-Track source code and configuration:
-
-```text
-src/
-stylegan2_baby/scripts/
-stylegan2_baby/configs/
-evaluation/scripts/
-evaluation/configs/
-README.md
-evaluation/README.md
-requirements files
-```
+Edit `configs.py` to adjust these values globally across training runs.
