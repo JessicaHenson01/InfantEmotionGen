@@ -17,6 +17,7 @@ from diffusers import (
     StableDiffusion3Pipeline,
     StableDiffusionXLPipeline,
 )
+from PIL import Image
 from peft import PeftModel
 
 
@@ -72,6 +73,11 @@ def parse_args() -> argparse.Namespace:
         help="Limit Hugging Face parallel file download workers for large models.",
     )
     parser.add_argument("--overwrite", action="store_true", help="Clear the run output directory before generation.")
+    parser.add_argument(
+        "--skip-existing",
+        action="store_true",
+        help="Resume a run by leaving existing expected PNG files in place and only generating missing files.",
+    )
     return parser.parse_args()
 
 
@@ -212,6 +218,14 @@ def prepare_output(run_dir: Path, emotions: list[str], overwrite: bool) -> None:
         emotion_dir.mkdir(parents=True, exist_ok=True)
 
 
+def image_matches_size(path: Path, width: int, height: int) -> bool:
+    try:
+        with Image.open(path) as image:
+            return image.size == (width, height)
+    except OSError:
+        return False
+
+
 def build_pipeline(
     protocol: dict[str, Any],
     pipeline_type: str,
@@ -313,6 +327,8 @@ def main() -> int:
 
         images_per_class = int(protocol["num_images_per_class"])
         base_seed = int(protocol["seed"])
+        width = int(protocol["width"])
+        height = int(protocol["height"])
         with torch.inference_mode():
             for class_index, emotion in enumerate(emotions):
                 prompt = str(protocol["emotions"][emotion]["prompt"])
@@ -321,6 +337,22 @@ def main() -> int:
                 print(f"Generating {images_per_class} images for {emotion}: {prompt}")
                 for image_index in range(images_per_class):
                     seed = base_seed + (class_index * 100000) + image_index
+                    filename = f"{emotion}_{image_index:04d}_seed{seed}.png"
+                    output_path = emotion_dir / filename
+                    if args.skip_existing and output_path.is_file():
+                        if image_matches_size(output_path, width, height):
+                            manifest["outputs"][emotion].append(
+                                {
+                                    "prompt": prompt,
+                                    "seed": seed,
+                                    "path": str(output_path.relative_to(repo_root)),
+                                    "status": "existing",
+                                }
+                            )
+                            print(f"  kept {output_path.relative_to(repo_root)}")
+                            continue
+                        print(f"  replacing wrong-size image {output_path.relative_to(repo_root)}")
+
                     generator_device = "cuda" if device == "cuda" else "cpu"
                     generator = torch.Generator(device=generator_device).manual_seed(seed)
                     result = pipe(
@@ -329,17 +361,16 @@ def main() -> int:
                         num_inference_steps=int(protocol["num_inference_steps"]),
                         guidance_scale=float(protocol["guidance_scale"]),
                         generator=generator,
-                        height=int(protocol["height"]),
-                        width=int(protocol["width"]),
+                        height=height,
+                        width=width,
                     )
-                    filename = f"{emotion}_{image_index:04d}_seed{seed}.png"
-                    output_path = emotion_dir / filename
                     result.images[0].save(output_path)
                     manifest["outputs"][emotion].append(
                         {
                             "prompt": prompt,
                             "seed": seed,
                             "path": str(output_path.relative_to(repo_root)),
+                            "status": "generated",
                         }
                     )
                     print(f"  saved {output_path.relative_to(repo_root)}")

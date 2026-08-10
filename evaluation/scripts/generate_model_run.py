@@ -23,6 +23,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "mps", "cpu"])
     parser.add_argument("--dtype", default="auto", choices=["auto", "float16", "float32", "bfloat16"])
     parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--skip-existing", action="store_true")
     parser.add_argument("--local-files-only", action="store_true")
     parser.add_argument("--disable-xet", action="store_true")
     parser.add_argument("--hf-transfer-workers", type=int, default=1)
@@ -94,6 +95,8 @@ def main() -> int:
     append_optional(command, "--seed", args.seed)
     if args.overwrite:
         command.append("--overwrite")
+    if args.skip_existing:
+        command.append("--skip-existing")
     if args.local_files_only:
         command.append("--local-files-only")
     if args.disable_xet:
