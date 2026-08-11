@@ -1,0 +1,26 @@
+Loading models...
+/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py:205: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.
+  warnings.warn(
+config.json: 100% 642/642 [00:00<00:00, 2.00MB/s]
+vae/diffusion_pytorch_model.safetensors: downloading bytes: 100% 316M/316M [00:02<00:00, 130MB/s, 29.2MB/s  ]  
+vae/diffusion_pytorch_model.safetensors: reconstructing file: 100% 335M/335M [00:02<00:00, 138MB/s, 31.5MB/s  ]
+config.json: 100% 1.68k/1.68k [00:00<00:00, 909kB/s]
+unet/diffusion_pytorch_model.safetensors: downloading bytes: 100% 6.88G/6.88G [00:27<00:00, 255MB/s,  274MB/s  ] 
+unet/diffusion_pytorch_model.safetensors: reconstructing file: 100% 10.3G/10.3G [00:27<00:00, 380MB/s,  391MB/s  ]
+trainable params: 12,574,720 || all params: 2,580,038,404 || trainable%: 0.4874
+model_index.json: 100% 609/609 [00:00<00:00, 1.33MB/s]
+Fetching 19 files: 100% 19/19 [00:18<00:00,  1.02it/s]B/s,  232MB/s  ] 
+Loading weights: 100% 517/517 [00:00<00:00, 4418.17it/s]s,  226MB/s  ]89MB/s,  251MB/s  ]
+Loading weights: 100% 196/196 [00:00<00:00, 3932.81it/s]389MB/s,  278MB/s  ]             
+Loading pipeline components...: 100% 7/7 [00:01<00:00,  6.80it/s]
+Download complete: 100% 7.11G/7.11G [00:29<00:00, 245MB/s,  226MB/s  ]
+Reconstruction complete: 100% 7.11G/7.11G [00:29<00:00, 245MB/s,  278MB/s  ]
+Loading dataset...
+Loaded 1200 images
+Distribution: {'angry': 400, 'crying': 400, 'happy': 400}
+Starting training...
+  0% 5/1500 [00:06<28:17,  1.14s/it, loss=0.556, avg_loss=0.646]  
+
+ 80% 1200/1500 [19:10<04:48,  1.04it/s, loss=0.374, avg_loss=0.675]
+Saving final model...
+Training complete! Final model saved to ./models/infant_lora/unet_lora_final

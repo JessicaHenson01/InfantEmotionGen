@@ -1,0 +1,55 @@
+============================================================
+SD 3.5 Medium Training (Flow Matching)
+With Emotion-Specific Prompts - FAIR COMPARISON with SDXL
+============================================================
+Learning rate: 0.0001
+Batch size: 1
+Gradient accumulation: 4
+Max steps: 1500
+============================================================
+/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py:205: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.
+  warnings.warn(
+VAE scaling_factor=1.5305, shift_factor=0.0609
+trainable params: 7,274,496 || all params: 2,250,446,016 || trainable%: 0.3232
+Loading weights: 100% 196/196 [00:00<00:00, 5997.15it/s]
+[transformers] [1mCLIPTextModel LOAD REPORT[0m from: stabilityai/stable-diffusion-3.5-medium
+Key                    | Status     |  |
+-----------------------+------------+--+-
+text_projection.weight | [38;5;208mUNEXPECTED[0m |  |
+
+Notes:
+- [38;5;208mUNEXPECTED:[0m	[3mcan be ignored when loading from different task/architecture; not ok if you expect identical arch.[0m
+Loading weights: 100% 516/516 [00:00<00:00, 4635.03it/s]
+[transformers] [1mCLIPTextModel LOAD REPORT[0m from: stabilityai/stable-diffusion-3.5-medium
+Key                    | Status     |  |
+-----------------------+------------+--+-
+text_projection.weight | [38;5;208mUNEXPECTED[0m |  |
+
+Notes:
+- [38;5;208mUNEXPECTED:[0m	[3mcan be ignored when loading from different task/architecture; not ok if you expect identical arch.[0m
+Loading dataset using your existing data_utils...
+Loaded 1200 images
+Distribution: {'angry': 400, 'crying': 400, 'happy': 400}
+Starting training...
+100% 1500/1500 [15:46<00:00,  1.67it/s, loss=0.148, avg_loss=0.244] 
+
+🖼️  Logging preview samples at step 250...
+
+✅ Checkpoint saved at step 500
+
+🖼️  Logging preview samples at step 500...
+
+🖼️  Logging preview samples at step 750...
+
+✅ Checkpoint saved at step 1000
+
+🖼️  Logging preview samples at step 1000...
+
+🖼️  Logging preview samples at step 1250...
+
+✅ Checkpoint saved at step 1500
+
+🖼️  Logging preview samples at step 1500...
+Saving final model...
+
+✅ Training complete! Model saved to ./models/infant_lora_sd35/mmdit_lora_final
