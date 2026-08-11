@@ -210,4 +210,3 @@ All hyperparameters for training and generation are configured via the `configs.
 | Max Steps | `1500` | `1500` |
 
 Edit `configs.py` to adjust these values globally across training runs.
-

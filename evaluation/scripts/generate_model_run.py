@@ -187,6 +187,8 @@ def main() -> int:
     # Add boolean flags
     if args.overwrite:
         command.append("--overwrite")
+    if args.skip_existing:
+        command.append("--skip-existing")
     if args.local_files_only:
         command.append("--local-files-only")
     if args.disable_xet:

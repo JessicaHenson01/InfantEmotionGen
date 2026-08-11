@@ -52,6 +52,13 @@ These tiny-test scores are only pipeline checks because they use 1 image per cla
 
 ## Install
 
+Use a dedicated conda environment for evaluation instead of `base`:
+
+```bash
+conda create -n infant-eval python=3.11 -y
+conda activate infant-eval
+```
+
 Authenticate to Hugging Face first:
 
 ```bash
@@ -150,6 +157,66 @@ TEST_FRACTION=0.20 \
 SEED=42 \
 evaluation/scripts/populate_real_eval_folders.sh
 ```
+
+## Final External Reference Dataset
+
+For final model evaluation, use the held-out dataset that was not used for training:
+
+```text
+InfantEmotionGen/InfantEmotionGen_Dataset
+```
+
+Populate the final reference folders:
+
+```bash
+evaluation/scripts/populate_external_reference.sh
+```
+
+This writes:
+
+```text
+evaluation/data/external_reference/
+  angry/   250 images
+  crying/  250 images
+  happy/   250 images
+
+evaluation/data/external_reference_manifest.json
+```
+
+Validate the existing external reference folders:
+
+```bash
+evaluation/scripts/populate_external_reference.sh --validate-only
+```
+
+Optional override:
+
+```bash
+REPO_ID=InfantEmotionGen/InfantEmotionGen_Dataset \
+OUTPUT_ROOT="$PWD/evaluation/data" \
+evaluation/scripts/populate_external_reference.sh
+```
+
+The default ZIP labels path is:
+
+```text
+final_test_samples/test_samples.json
+```
+
+Override it only if the dataset layout changes:
+
+```bash
+evaluation/scripts/populate_external_reference.sh \
+  --zip-label-json final_test_samples/test_samples.json
+```
+
+The importer supports common Hugging Face image dataset layouts:
+
+- class folders named `angry`, `crying`, and `happy`;
+- `metadata.jsonl` or `metadata.csv` with `file_name` plus `label`, `class`, or `emotion`;
+- a StyleGAN-format ZIP with `dataset.json`.
+
+The smoke-test split remains useful for checking the pipeline, but final FID should use this external reference dataset.
 
 ## Smoke Test
 
@@ -293,6 +360,42 @@ SD35Medium:  FID 311.5380, CLIP agreement 0.3333, FER accuracy 0.3333, generated
 
 Again: these are not final quality scores. They only prove the generation and evaluation plumbing works.
 
+## Parameter Counts
+
+Count cached Hugging Face model parameters from safetensor metadata:
+
+```bash
+python evaluation/scripts/count_model_parameters.py \
+  --json evaluation/results/parameter_counts.json
+```
+
+Current measured counts:
+
+```text
+sdxl_base
+  total: 3.469B
+  unet: 2.567B
+  text_encoder: 0.123B
+  text_encoder_2: 0.695B
+  vae_1_0: 0.084B
+
+sdxl_primary_lora
+  total adapter parameters: 0.013B / 12.57M
+
+sd35_base
+  total: 8.134B
+  transformer: 2.470B
+  text_encoder: 0.124B
+  text_encoder_2: 0.695B
+  text_encoder_3: 4.762B
+  vae: 0.084B
+
+sd35_medium_lora
+  total adapter parameters: 0.007B / 7.27M
+```
+
+Important distinction: SDXL and SD3.5 have similarly sized core denoisers, but SD3.5's full inference pipeline is much larger because it includes `text_encoder_3`, a T5 text encoder. If reporting only the core denoiser, compare `unet` for SDXL against `transformer` for SD3.5. If reporting total inference pipeline size, include all text encoders and the VAE.
+
 ## Scaling Up
 
 Start with a small real batch before trying full protocol generation:
@@ -304,7 +407,7 @@ evaluation/scripts/generate_model_run.sh sdxl_primary \
   --width 512 \
   --num-inference-steps 10 \
   --device auto \
-  --overwrite
+  --skip-existing
 ```
 
 ```bash
@@ -317,7 +420,7 @@ evaluation/scripts/generate_model_run.sh sd35_medium \
   --dtype float16 \
   --disable-xet \
   --hf-transfer-workers 1 \
-  --overwrite
+  --skip-existing
 ```
 
 Then evaluate and compare:
@@ -330,11 +433,79 @@ evaluation/scripts/compare_model_runs.sh
 
 For final evaluation, generate the same number of images per class for every model.
 
+Use `--skip-existing` for longer runs. It keeps any already-generated expected PNGs and only fills in missing files, so a crashed run can be restarted with the exact same command. Use `--overwrite` only when you intentionally want to clear that model's generated output folder and start again.
+
+Recommended local progression:
+
+```text
+1 image/class, 512x512, 5 steps     pipeline check
+10 images/class, 512x512, 10 steps  small comparison
+25 images/class, 512x512, 15 steps  better local comparison if disk/time allow
+100 images/class, 1024x1024, 30 steps  final protocol, preferably on a stronger GPU machine
+```
+
+## Full Evaluation
+
+Run the complete configured evaluation:
+
+```bash
+evaluation/scripts/run_full_model_evaluation.sh
+```
+
+By default this uses the protocol files exactly:
+
+```text
+100 images per class
+1024x1024 resolution
+30 inference steps
+seed 4242
+guidance scale 7.5
+```
+
+The full runner:
+
+1. checks available disk space;
+2. uses `evaluation/data/external_reference` as the default real-image reference;
+3. resumes SDXLPrimary generation with `--skip-existing`;
+4. evaluates SDXLPrimary with FID, CLIP, and FER;
+5. resumes SD3.5 Medium generation with `--skip-existing`;
+6. evaluates SD3.5 Medium with FID, CLIP, and FER;
+7. writes `evaluation/results/comparison.csv` and `evaluation/results/comparison.md`.
+
+If the laptop crashes, rerun the same command. Existing expected PNGs are kept and missing images are generated.
+If an existing PNG has the wrong size for the requested protocol, the generator replaces it instead of keeping it. This matters when a folder already contains tiny-test `512x512` images and the final protocol requests `1024x1024`.
+
+The runner refuses to start unless at least `60GiB` is free. To intentionally use a lower threshold:
+
+```bash
+MIN_FREE_GB=25 evaluation/scripts/run_full_model_evaluation.sh
+```
+
+To run only one model:
+
+```bash
+RUN_SD35=0 evaluation/scripts/run_full_model_evaluation.sh
+RUN_SDXL=0 evaluation/scripts/run_full_model_evaluation.sh
+```
+
+To do a smaller full-pipeline rehearsal through the same runner:
+
+```bash
+NUM_IMAGES=10 \
+HEIGHT=512 \
+WIDTH=512 \
+NUM_INFERENCE_STEPS=10 \
+evaluation/scripts/run_full_model_evaluation.sh
+```
+
 ## Metrics
 
 FID:
 
-- compares generated images to `evaluation/data/real_reference`;
+- compares generated images to the configured real-reference folder;
+- the full runner defaults to `evaluation/data/external_reference`;
+- smoke tests use `evaluation/data/real_reference`;
+- resizes images to a fixed square size before batching so mixed source dimensions do not crash evaluation;
 - lower is better;
 - noisy with small image counts, especially tiny tests.
 
