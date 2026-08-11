@@ -28,38 +28,109 @@ class GenerationError(RuntimeError):
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for image generation."""
     parser = argparse.ArgumentParser(
         description="Generate comparable Diffusers image folders for FID/CLIP/FER evaluation."
     )
-    parser.add_argument("--run-name", required=True, help="Output/result run name, e.g. sdxl_primary.")
+    parser.add_argument(
+        "--run-name",
+        required=True,
+        help="Output/result run name, e.g. sdxl_primary."
+    )
     parser.add_argument(
         "--pipeline-type",
         choices=["sdxl_lora", "sd3_pipeline", "sd3_lora"],
         default="sdxl_lora",
-        help="sdxl_lora loads SDXL base plus adapter. sd3_lora loads SD3/SD3.5 base plus adapter. sd3_pipeline loads a full SD3/SD3.5 Diffusers pipeline.",
+        help="sdxl_lora loads SDXL base plus adapter. sd3_lora loads SD3/SD3.5 base plus adapter. "
+             "sd3_pipeline loads a full SD3/SD3.5 Diffusers pipeline.",
     )
-    parser.add_argument("--lora-repo", help="Hugging Face repo ID or local adapter directory for --pipeline-type sdxl_lora.")
-    parser.add_argument("--lora-subfolder", help="Optional subfolder inside the LoRA repo, e.g. unet_lora_final.")
+    parser.add_argument(
+        "--lora-repo",
+        help="Hugging Face repo ID or local adapter directory for --pipeline-type sdxl_lora."
+    )
+    parser.add_argument(
+        "--lora-subfolder",
+        help="Optional subfolder inside the LoRA repo, e.g. unet_lora_final."
+    )
     parser.add_argument(
         "--adapter-format",
         choices=["auto", "peft_unet", "peft_transformer", "diffusers_lora"],
         default="auto",
         help="Use peft_unet or peft_transformer for adapter_config.json + adapter_model.safetensors folders.",
     )
-    parser.add_argument("--protocol", type=Path, default=DEFAULT_PROTOCOL)
-    parser.add_argument("--output-root", type=Path, default=Path("evaluation/generated"))
-    parser.add_argument("--cache-root", type=Path, default=Path("evaluation/.cache"))
-    parser.add_argument("--base-model", help="Override protocol base_model.")
-    parser.add_argument("--vae-model", help="Override protocol vae_model. Use empty string to disable fixed VAE.")
-    parser.add_argument("--num-images", type=int, help="Override protocol num_images_per_class.")
-    parser.add_argument("--height", type=int, help="Override protocol height.")
-    parser.add_argument("--width", type=int, help="Override protocol width.")
-    parser.add_argument("--num-inference-steps", type=int, help="Override protocol num_inference_steps.")
-    parser.add_argument("--guidance-scale", type=float, help="Override protocol guidance_scale.")
-    parser.add_argument("--seed", type=int, help="Override protocol seed.")
-    parser.add_argument("--device", default="auto", choices=["auto", "cuda", "mps", "cpu"])
-    parser.add_argument("--dtype", default="auto", choices=["auto", "float16", "float32", "bfloat16"])
-    parser.add_argument("--local-files-only", action="store_true")
+    parser.add_argument(
+        "--protocol",
+        type=Path,
+        default=DEFAULT_PROTOCOL,
+        help="Path to generation protocol JSON file"
+    )
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        default=Path("evaluation/generated"),
+        help="Root directory for generated images"
+    )
+    parser.add_argument(
+        "--cache-root",
+        type=Path,
+        default=Path("evaluation/.cache"),
+        help="Cache directory for models and downloads"
+    )
+    parser.add_argument(
+        "--base-model",
+        help="Override protocol base_model."
+    )
+    parser.add_argument(
+        "--vae-model",
+        help="Override protocol vae_model. Use empty string to disable fixed VAE."
+    )
+    parser.add_argument(
+        "--num-images",
+        type=int,
+        help="Override protocol num_images_per_class."
+    )
+    parser.add_argument(
+        "--height",
+        type=int,
+        help="Override protocol height."
+    )
+    parser.add_argument(
+        "--width",
+        type=int,
+        help="Override protocol width."
+    )
+    parser.add_argument(
+        "--num-inference-steps",
+        type=int,
+        help="Override protocol num_inference_steps."
+    )
+    parser.add_argument(
+        "--guidance-scale",
+        type=float,
+        help="Override protocol guidance_scale."
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        help="Override protocol seed."
+    )
+    parser.add_argument(
+        "--device",
+        default="auto",
+        choices=["auto", "cuda", "mps", "cpu"],
+        help="Device to use for inference"
+    )
+    parser.add_argument(
+        "--dtype",
+        default="auto",
+        choices=["auto", "float16", "float32", "bfloat16"],
+        help="Data type to use for model"
+    )
+    parser.add_argument(
+        "--local-files-only",
+        action="store_true",
+        help="Only use local files (don't download from Hugging Face)"
+    )
     parser.add_argument(
         "--disable-xet",
         action="store_true",
@@ -71,11 +142,26 @@ def parse_args() -> argparse.Namespace:
         default=1,
         help="Limit Hugging Face parallel file download workers for large models.",
     )
-    parser.add_argument("--overwrite", action="store_true", help="Clear the run output directory before generation.")
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Clear the run output directory before generation."
+    )
     return parser.parse_args()
 
 
 def load_json(path: Path) -> dict[str, Any]:
+    """Load and parse JSON from a file path.
+
+    Args:
+        path: Path to the JSON file.
+
+    Returns:
+        Parsed JSON data as a dictionary.
+
+    Raises:
+        GenerationError: If file not found, invalid JSON, or not a dictionary.
+    """
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
@@ -88,6 +174,17 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def select_device(requested: str) -> str:
+    """Select the appropriate PyTorch device based on user preference.
+
+    Args:
+        requested: Device preference ('auto', 'cuda', 'mps', or 'cpu').
+
+    Returns:
+        Selected device string ('cuda', 'mps', or 'cpu').
+
+    Raises:
+        GenerationError: If requested device is unavailable.
+    """
     if requested == "auto":
         if torch.cuda.is_available():
             return "cuda"
@@ -102,6 +199,15 @@ def select_device(requested: str) -> str:
 
 
 def select_dtype(requested: str, device: str) -> torch.dtype:
+    """Select the appropriate PyTorch data type.
+
+    Args:
+        requested: Data type preference ('auto', 'float16', 'float32', or 'bfloat16').
+        device: Device being used (affects auto selection).
+
+    Returns:
+        Selected PyTorch dtype.
+    """
     if requested == "float16":
         return torch.float16
     if requested == "float32":
@@ -114,10 +220,31 @@ def select_dtype(requested: str, device: str) -> torch.dtype:
 
 
 def protocol_value(protocol: dict[str, Any], key: str, override: Any) -> Any:
+    """Get a protocol value, using override if provided.
+
+    Args:
+        protocol: Protocol dictionary.
+        key: Key to look up in protocol.
+        override: Override value (if not None).
+
+    Returns:
+        Protocol value or override.
+    """
     return protocol[key] if override is None else override
 
 
 def resolve_protocol(args: argparse.Namespace) -> dict[str, Any]:
+    """Resolve the generation protocol with command line overrides.
+
+    Args:
+        args: Parsed command line arguments.
+
+    Returns:
+        Resolved protocol dictionary.
+
+    Raises:
+        GenerationError: If protocol is invalid or missing required fields.
+    """
     protocol = load_json(args.protocol)
     emotions = protocol.get("emotions")
     if not isinstance(emotions, dict) or not emotions:
@@ -146,6 +273,14 @@ def resolve_protocol(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def validate_args(args: argparse.Namespace) -> None:
+    """Validate command line arguments for consistency.
+
+    Args:
+        args: Parsed command line arguments.
+
+    Raises:
+        GenerationError: If arguments are invalid or inconsistent.
+    """
     if args.pipeline_type in {"sdxl_lora", "sd3_lora"} and not args.lora_repo:
         raise GenerationError(f"--lora-repo is required for --pipeline-type {args.pipeline_type}.")
     if args.pipeline_type == "sd3_pipeline" and args.lora_repo:
@@ -153,6 +288,15 @@ def validate_args(args: argparse.Namespace) -> None:
 
 
 def looks_like_peft_unet_adapter(repo_or_path: str, subfolder: str | None) -> bool:
+    """Check if a path looks like a PEFT UNET adapter directory.
+
+    Args:
+        repo_or_path: Path or repo ID to check.
+        subfolder: Optional subfolder within the path.
+
+    Returns:
+        True if the path contains adapter_config.json, False otherwise.
+    """
     path = Path(repo_or_path)
     if subfolder:
         path = path / subfolder
@@ -167,6 +311,22 @@ def load_adapter(
     pipeline_type: str,
     local_files_only: bool,
 ) -> str:
+    """Load a LoRA or PEFT adapter into the pipeline.
+
+    Args:
+        pipe: Diffusers pipeline to load adapter into.
+        repo_or_path: Hugging Face repo ID or local path.
+        subfolder: Optional subfolder within the repo/path.
+        adapter_format: Format of the adapter ('auto', 'peft_unet', 'peft_transformer', 'diffusers_lora').
+        pipeline_type: Type of pipeline ('sdxl_lora' or 'sd3_lora').
+        local_files_only: Whether to only use local files.
+
+    Returns:
+        String indicating the loaded adapter format.
+
+    Raises:
+        GenerationError: If adapter loading fails or format is incompatible.
+    """
     if adapter_format == "auto":
         if pipeline_type == "sd3_lora":
             adapter_format = "peft_transformer"
@@ -204,6 +364,13 @@ def load_adapter(
 
 
 def prepare_output(run_dir: Path, emotions: list[str], overwrite: bool) -> None:
+    """Prepare the output directory structure for generated images.
+
+    Args:
+        run_dir: Directory for this run's outputs.
+        emotions: List of emotion class names.
+        overwrite: Whether to overwrite existing directory.
+    """
     if run_dir.exists() and overwrite:
         shutil.rmtree(run_dir)
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -219,6 +386,21 @@ def build_pipeline(
     dtype: torch.dtype,
     local_files_only: bool,
 ) -> StableDiffusionXLPipeline | StableDiffusion3Pipeline:
+    """Build the Diffusers pipeline for image generation.
+
+    Args:
+        protocol: Resolved protocol dictionary.
+        pipeline_type: Type of pipeline to build.
+        device: Device to load the model on.
+        dtype: Data type for model weights.
+        local_files_only: Whether to only use local files.
+
+    Returns:
+        Configured Diffusers pipeline.
+
+    Raises:
+        GenerationError: If pipeline building fails.
+    """
     kwargs: dict[str, Any] = {
         "torch_dtype": dtype,
         "local_files_only": local_files_only,
@@ -235,7 +417,10 @@ def build_pipeline(
         pipe = StableDiffusion3Pipeline.from_pretrained(protocol["base_model"], **kwargs)
     else:
         pipe = StableDiffusionXLPipeline.from_pretrained(protocol["base_model"], **kwargs)
-        pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config, use_karras_sigmas=True)
+        pipe.scheduler = DPMSolverMultistepScheduler.from_config(
+            pipe.scheduler.config,
+            use_karras_sigmas=True
+        )
 
     pipe.to(device)
     if hasattr(pipe, "enable_attention_slicing"):
@@ -246,10 +431,21 @@ def build_pipeline(
 
 
 def save_manifest(path: Path, manifest: dict[str, Any]) -> None:
+    """Save the generation manifest to a JSON file.
+
+    Args:
+        path: Path where the manifest should be saved.
+        manifest: Manifest dictionary to save.
+    """
     path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
 
 
 def main() -> int:
+    """Run the main image generation process.
+
+    Returns:
+        Exit code (0 for success, 1 for failure).
+    """
     args = parse_args()
     repo_root = Path(__file__).resolve().parents[2]
     os.chdir(repo_root)

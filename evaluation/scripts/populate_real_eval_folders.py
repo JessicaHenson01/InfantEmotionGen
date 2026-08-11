@@ -31,13 +31,33 @@ class SplitError(RuntimeError):
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for populating real evaluation folders."""
     parser = argparse.ArgumentParser(
         description="Create a deterministic stratified smoke-test split from a StyleGAN dataset ZIP."
     )
-    parser.add_argument("--repo-id", default="InfantEmotionGen/baby_samples_gan")
-    parser.add_argument("--output-root", type=Path, required=True)
-    parser.add_argument("--test-fraction", type=float, default=0.20)
-    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--repo-id",
+        default="InfantEmotionGen/baby_samples_gan",
+        help="Hugging Face dataset repository ID"
+    )
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        required=True,
+        help="Root directory for output splits"
+    )
+    parser.add_argument(
+        "--test-fraction",
+        type=float,
+        default=0.20,
+        help="Fraction of images to use for test split"
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed for reproducibility"
+    )
     parser.add_argument(
         "--zip-name",
         help="ZIP filename to use when the Hugging Face dataset snapshot contains multiple ZIP files.",
@@ -51,6 +71,19 @@ def parse_args() -> argparse.Namespace:
 
 
 def label_key(label: Any) -> int:
+    """Convert a label to an integer class key.
+
+    Handles integer, float, and one-hot encoded labels.
+
+    Args:
+        label: Label value (int, float, or list of probabilities).
+
+    Returns:
+        Integer class ID.
+
+    Raises:
+        SplitError: If label format is unsupported or ambiguous.
+    """
     if isinstance(label, bool):
         raise SplitError(f"Boolean labels are unsupported: {label!r}")
     if isinstance(label, (int, float)):
@@ -68,6 +101,18 @@ def label_key(label: Any) -> int:
 
 
 def find_zip(snapshot_dir: Path, zip_name: str | None) -> Path:
+    """Find the StyleGAN ZIP file in the snapshot directory.
+
+    Args:
+        snapshot_dir: Directory containing downloaded dataset snapshot.
+        zip_name: Optional specific ZIP filename to use.
+
+    Returns:
+        Path to the ZIP file.
+
+    Raises:
+        SplitError: If no ZIP found, multiple ZIPs found without name, or requested ZIP not found.
+    """
     zip_paths = sorted(path for path in snapshot_dir.rglob("*.zip") if path.is_file())
     if zip_name:
         matches = [path for path in zip_paths if path.name == zip_name or str(path.relative_to(snapshot_dir)) == zip_name]
@@ -86,6 +131,17 @@ def find_zip(snapshot_dir: Path, zip_name: str | None) -> Path:
 
 
 def load_stylegan_labels(archive: zipfile.ZipFile) -> list[tuple[str, int]]:
+    """Load and validate labels from a StyleGAN dataset.json file.
+
+    Args:
+        archive: Open ZIP file containing the dataset.
+
+    Returns:
+        List of (filename, class_id) tuples for labeled images.
+
+    Raises:
+        SplitError: If dataset.json is missing, invalid, or contains unsupported labels.
+    """
     try:
         metadata = json.loads(archive.read("dataset.json"))
     except KeyError as exc:
@@ -119,6 +175,19 @@ def load_stylegan_labels(archive: zipfile.ZipFile) -> list[tuple[str, int]]:
 def stratified_split(
     grouped: dict[int, list[str]], test_fraction: float, seed: int
 ) -> tuple[dict[int, list[str]], dict[int, list[str]]]:
+    """Create stratified train/test split based on class labels.
+
+    Args:
+        grouped: Dictionary mapping class IDs to list of filenames.
+        test_fraction: Fraction of data to use for test split.
+        seed: Random seed for reproducibility.
+
+    Returns:
+        Tuple of (reference_split, test_split) dictionaries.
+
+    Raises:
+        SplitError: If test_fraction is invalid or a class has too few images.
+    """
     if not 0 < test_fraction < 1:
         raise SplitError(f"--test-fraction must be between 0 and 1, got {test_fraction}")
 
@@ -142,6 +211,11 @@ def stratified_split(
 
 
 def clear_directory_contents(directory: Path) -> None:
+    """Clear all contents of a directory while preserving the directory itself.
+
+    Args:
+        directory: Directory to clear.
+    """
     directory.mkdir(parents=True, exist_ok=True)
     for child in directory.iterdir():
         if child.is_dir():
@@ -151,6 +225,15 @@ def clear_directory_contents(directory: Path) -> None:
 
 
 def output_filename(source_filename: str, used: set[str]) -> str:
+    """Generate a unique output filename based on source filename.
+
+    Args:
+        source_filename: Original filename from the ZIP.
+        used: Set of already-used filenames to avoid collisions.
+
+    Returns:
+        Unique output filename.
+    """
     source_path = Path(source_filename)
     stem = re.sub(r"[^A-Za-z0-9._-]+", "_", source_path.stem).strip("._") or "image"
     digest = hashlib.sha1(source_filename.encode("utf-8")).hexdigest()[:10]
@@ -168,6 +251,16 @@ def extract_split(
     assignments: dict[int, list[str]],
     split_root: Path,
 ) -> dict[str, dict[str, str]]:
+    """Extract images for a split from the ZIP archive.
+
+    Args:
+        archive: Open ZIP file containing images.
+        assignments: Dictionary mapping class IDs to filenames to extract.
+        split_root: Root directory for the split.
+
+    Returns:
+        Dictionary mapping source filenames to output information.
+    """
     records: dict[str, dict[str, str]] = {}
     used_names: set[str] = set()
     for class_id, filenames in assignments.items():
@@ -188,6 +281,14 @@ def extract_split(
 
 
 def count_images(directory: Path) -> int:
+    """Count the number of image files in a directory recursively.
+
+    Args:
+        directory: Directory to count images in.
+
+    Returns:
+        Number of image files found.
+    """
     return sum(
         1
         for path in directory.rglob("*")
@@ -196,6 +297,15 @@ def count_images(directory: Path) -> int:
 
 
 def validate_split(output_root: Path, manifest: dict[str, Any]) -> None:
+    """Validate an existing split against its manifest.
+
+    Args:
+        output_root: Root directory containing the splits.
+        manifest: Manifest dictionary to validate against.
+
+    Raises:
+        SplitError: If validation fails.
+    """
     reference_root = output_root / "real_reference"
     test_root = output_root / "pipeline_test"
 
@@ -240,6 +350,11 @@ def validate_split(output_root: Path, manifest: dict[str, Any]) -> None:
 
 
 def print_counts(counts: dict[str, dict[str, int]]) -> None:
+    """Print counts of images per class for both splits.
+
+    Args:
+        counts: Dictionary containing counts for real_reference and pipeline_test splits.
+    """
     for class_name in CLASS_MAPPING.values():
         reference_count = counts["real_reference"].get(class_name, 0)
         test_count = counts["pipeline_test"].get(class_name, 0)
@@ -247,6 +362,17 @@ def print_counts(counts: dict[str, dict[str, int]]) -> None:
 
 
 def load_manifest(output_root: Path) -> dict[str, Any]:
+    """Load and parse the split manifest JSON file.
+
+    Args:
+        output_root: Root directory containing the manifest.
+
+    Returns:
+        Manifest dictionary.
+
+    Raises:
+        SplitError: If manifest not found or invalid JSON.
+    """
     manifest_path = output_root / "split_manifest.json"
     if not manifest_path.is_file():
         raise SplitError(f"Manifest not found: {manifest_path}")
@@ -267,6 +393,22 @@ def build_manifest(
     reference_records: dict[str, dict[str, str]],
     test_records: dict[str, dict[str, str]],
 ) -> dict[str, Any]:
+    """Build the complete split manifest dictionary.
+
+    Args:
+        repo_id: Hugging Face dataset repository ID.
+        zip_path: Path to the source ZIP file.
+        seed: Random seed used for splitting.
+        test_fraction: Fraction used for test split.
+        labeled_count: Total number of labeled images.
+        reference_assignments: Dictionary of reference split assignments.
+        test_assignments: Dictionary of test split assignments.
+        reference_records: Records for reference split images.
+        test_records: Records for test split images.
+
+    Returns:
+        Complete manifest dictionary.
+    """
     counts = {
         "real_reference": {
             CLASS_MAPPING[class_id]: len(filenames)
@@ -299,6 +441,17 @@ def build_manifest(
 
 
 def group_by_class(labeled: Iterable[tuple[str, int]]) -> dict[int, list[str]]:
+    """Group labeled images by class ID.
+
+    Args:
+        labeled: List of (filename, class_id) tuples.
+
+    Returns:
+        Dictionary mapping class IDs to list of filenames.
+
+    Raises:
+        SplitError: If any expected class is missing.
+    """
     grouped: dict[int, list[str]] = defaultdict(list)
     for filename, class_id in labeled:
         grouped[class_id].append(filename)
@@ -309,6 +462,14 @@ def group_by_class(labeled: Iterable[tuple[str, int]]) -> dict[int, list[str]]:
 
 
 def populate(args: argparse.Namespace) -> None:
+    """Populate the evaluation splits by downloading and extracting the dataset.
+
+    Args:
+        args: Parsed command line arguments.
+
+    Raises:
+        SplitError: If any step of the population process fails.
+    """
     output_root = args.output_root.resolve()
     snapshot_dir = Path(snapshot_download(repo_id=args.repo_id, repo_type="dataset")).resolve()
     zip_path = find_zip(snapshot_dir, args.zip_name)
@@ -350,6 +511,11 @@ def populate(args: argparse.Namespace) -> None:
 
 
 def main() -> int:
+    """Main entry point for the script.
+
+    Returns:
+        Exit code (0 for success, 1 for failure).
+    """
     args = parse_args()
     try:
         if args.validate_only:
