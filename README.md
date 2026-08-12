@@ -50,6 +50,12 @@ InfantEmotionGen/
 ├── evaluation/                           # Evaluation scripts, configs, and outputs
 │   └── generated/                        # Evaluation-generated images
 │
+├── logs/
+│   ├── *_train.log                       # Training logs
+│   ├── *_generate.log                    # Generation logs
+│   └── evaluation_results/               # Tracked JSON metric summaries
+│
+├── InfantEmotionGen_Evaluation.ipynb     # Notebook wrapper for final evaluation
 ├── configs.py                            # Shared hyperparameter configuration
 ├── .pylintrc                             # Pylint configuration
 └── README.md                             # This file
@@ -180,6 +186,8 @@ Evaluation is performed with the scripts under `evaluation/`. Final evaluation u
 - **FID:** Measures distributional realism against the reference set.
 - **CLIP Agreement and CLIPScore:** Measures semantic alignment between generated images and emotion prompts.
 - **FER Accuracy & Macro F1:** Measures emotional expression recognizability using a frozen facial expression classifier.
+
+For the notebook-based workflow, open `InfantEmotionGen_Evaluation.ipynb` from the repository root and run the cells in order. The notebook validates the external reference set, checks generated image counts, runs the configured metrics for both model runs, prints the comparison table, and copies JSON summaries into `logs/evaluation_results/`.
 
 Populate and validate the final external reference set:
 
