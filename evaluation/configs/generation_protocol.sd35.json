@@ -11,13 +11,13 @@
   "negative_prompt": "cartoon, drawing, illustration, blurry, low quality, distorted, deformed, extra limbs, cropped face",
   "emotions": {
     "angry": {
-      "prompt": "a photo of an angry infant face"
+      "prompt": "a photo of an angry sks infant face"
     },
     "crying": {
-      "prompt": "a photo of a crying infant face"
+      "prompt": "a photo of a crying sks infant face"
     },
     "happy": {
-      "prompt": "a photo of a happy infant face"
+      "prompt": "a photo of a happy sks infant face"
     }
   }
 }
