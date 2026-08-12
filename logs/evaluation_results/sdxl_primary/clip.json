@@ -1,0 +1,2742 @@
+{
+  "confusion": {
+    "angry->angry": 91,
+    "angry->crying": 9,
+    "crying->angry": 14,
+    "crying->crying": 84,
+    "crying->happy": 2,
+    "happy->happy": 100
+  },
+  "image_count": 300,
+  "mean_target_clip_score": 0.892548955976963,
+  "mean_target_cosine_x100": 35.70195823907852,
+  "metric": "OpenCLIP emotion alignment",
+  "model": "ViT-B-32",
+  "per_class": {
+    "angry": {
+      "count": 100,
+      "mean_target_clip_score": 0.8829147540032863,
+      "mean_target_cosine_x100": 35.316590160131454,
+      "mean_top1_margin_x100": 1.1278102397918701,
+      "zero_shot_accuracy": 0.91
+    },
+    "crying": {
+      "count": 100,
+      "mean_target_clip_score": 0.9143344387412071,
+      "mean_target_cosine_x100": 36.573377549648285,
+      "mean_top1_margin_x100": 1.403603732585907,
+      "zero_shot_accuracy": 0.84
+    },
+    "happy": {
+      "count": 100,
+      "mean_target_clip_score": 0.8803976751863957,
+      "mean_target_cosine_x100": 35.215907007455826,
+      "mean_top1_margin_x100": 5.088050499558449,
+      "zero_shot_accuracy": 1.0
+    }
+  },
+  "pretrained": "laion2b_s34b_b79k",
+  "records": [
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0000_seed4242.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8835188299417496,
+      "target_cosine_x100": 35.34075319766998,
+      "top1_margin_x100": 0.7256925106048584
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0001_seed4243.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8907055109739304,
+      "target_cosine_x100": 35.628220438957214,
+      "top1_margin_x100": 1.6129672527313232
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0002_seed4244.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.6629036366939545,
+      "target_cosine_x100": 26.51614546775818,
+      "top1_margin_x100": 2.6941031217575073
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0003_seed4245.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8517196774482727,
+      "target_cosine_x100": 34.06878709793091,
+      "top1_margin_x100": 1.354837417602539
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0004_seed4246.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9431200474500656,
+      "target_cosine_x100": 37.724801898002625,
+      "top1_margin_x100": 1.8124818801879883
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0005_seed4247.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9032017737627029,
+      "target_cosine_x100": 36.12807095050812,
+      "top1_margin_x100": 1.5767037868499756
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0006_seed4248.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9346933662891388,
+      "target_cosine_x100": 37.38773465156555,
+      "top1_margin_x100": 1.4383107423782349
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0007_seed4249.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_clip_score": 0.8063467592000961,
+      "target_cosine_x100": 32.253870368003845,
+      "top1_margin_x100": 0.17038583755493164
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0008_seed4250.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8722592145204544,
+      "target_cosine_x100": 34.890368580818176,
+      "top1_margin_x100": 1.199018955230713
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0009_seed4251.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9490449726581573,
+      "target_cosine_x100": 37.961798906326294,
+      "top1_margin_x100": 1.582130789756775
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0010_seed4252.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9010880440473557,
+      "target_cosine_x100": 36.043521761894226,
+      "top1_margin_x100": 1.0713547468185425
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0011_seed4253.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9466513246297836,
+      "target_cosine_x100": 37.866052985191345,
+      "top1_margin_x100": 0.6869018077850342
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0012_seed4254.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.823332816362381,
+      "target_cosine_x100": 32.93331265449524,
+      "top1_margin_x100": 0.0232011079788208
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0013_seed4255.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8765891194343567,
+      "target_cosine_x100": 35.06356477737427,
+      "top1_margin_x100": 0.5718082189559937
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0014_seed4256.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8597201108932495,
+      "target_cosine_x100": 34.38880443572998,
+      "top1_margin_x100": 0.22527873516082764
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0015_seed4257.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8672837167978287,
+      "target_cosine_x100": 34.69134867191315,
+      "top1_margin_x100": 0.15474557876586914
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0016_seed4258.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.917377769947052,
+      "target_cosine_x100": 36.69511079788208,
+      "top1_margin_x100": 2.842995524406433
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0017_seed4259.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9117402136325836,
+      "target_cosine_x100": 36.469608545303345,
+      "top1_margin_x100": 1.1649250984191895
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0018_seed4260.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8713847398757935,
+      "target_cosine_x100": 34.85538959503174,
+      "top1_margin_x100": 0.44984519481658936
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0019_seed4261.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8762658387422562,
+      "target_cosine_x100": 35.05063354969025,
+      "top1_margin_x100": 1.6434907913208008
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0020_seed4262.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9342776238918304,
+      "target_cosine_x100": 37.37110495567322,
+      "top1_margin_x100": 1.2556016445159912
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0021_seed4263.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9303445369005203,
+      "target_cosine_x100": 37.21378147602081,
+      "top1_margin_x100": 1.426100730895996
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0022_seed4264.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9277767688035965,
+      "target_cosine_x100": 37.11107075214386,
+      "top1_margin_x100": 0.5180895328521729
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0023_seed4265.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9135599434375763,
+      "target_cosine_x100": 36.54239773750305,
+      "top1_margin_x100": 1.7703503370285034
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0024_seed4266.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9372063726186752,
+      "target_cosine_x100": 37.48825490474701,
+      "top1_margin_x100": 1.143011450767517
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0025_seed4267.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8736329525709152,
+      "target_cosine_x100": 34.94531810283661,
+      "top1_margin_x100": 0.9300500154495239
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0026_seed4268.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8426342904567719,
+      "target_cosine_x100": 33.705371618270874,
+      "top1_margin_x100": 1.1395424604415894
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0027_seed4269.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9105394780635834,
+      "target_cosine_x100": 36.421579122543335,
+      "top1_margin_x100": 2.0119577646255493
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0028_seed4270.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9007525444030762,
+      "target_cosine_x100": 36.03010177612305,
+      "top1_margin_x100": 1.2807101011276245
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0029_seed4271.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9251610934734344,
+      "target_cosine_x100": 37.00644373893738,
+      "top1_margin_x100": 0.8095890283584595
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0030_seed4272.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.929088220000267,
+      "target_cosine_x100": 37.16352880001068,
+      "top1_margin_x100": 1.1445730924606323
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0031_seed4273.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8416630327701569,
+      "target_cosine_x100": 33.666521310806274,
+      "top1_margin_x100": 0.5094647407531738
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0032_seed4274.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_clip_score": 0.9217668324708939,
+      "target_cosine_x100": 36.870673298835754,
+      "top1_margin_x100": 0.5530029535293579
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0033_seed4275.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8794689923524857,
+      "target_cosine_x100": 35.178759694099426,
+      "top1_margin_x100": 0.8822053670883179
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0034_seed4276.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.764828696846962,
+      "target_cosine_x100": 30.59314787387848,
+      "top1_margin_x100": 1.8103986978530884
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0035_seed4277.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8832921832799911,
+      "target_cosine_x100": 35.331687331199646,
+      "top1_margin_x100": 0.2038717269897461
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0036_seed4278.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8790119737386703,
+      "target_cosine_x100": 35.160478949546814,
+      "top1_margin_x100": 1.362118124961853
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0037_seed4279.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9145232290029526,
+      "target_cosine_x100": 36.5809291601181,
+      "top1_margin_x100": 0.6749212741851807
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0038_seed4280.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8213496953248978,
+      "target_cosine_x100": 32.85398781299591,
+      "top1_margin_x100": 2.372419834136963
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0039_seed4281.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8621343970298767,
+      "target_cosine_x100": 34.48537588119507,
+      "top1_margin_x100": 2.070361375808716
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0040_seed4282.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9202677756547928,
+      "target_cosine_x100": 36.81071102619171,
+      "top1_margin_x100": 1.6739815473556519
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0041_seed4283.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9100668877363205,
+      "target_cosine_x100": 36.40267550945282,
+      "top1_margin_x100": 1.2692362070083618
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0042_seed4284.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.929577648639679,
+      "target_cosine_x100": 37.18310594558716,
+      "top1_margin_x100": 1.082092523574829
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0043_seed4285.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9419988840818405,
+      "target_cosine_x100": 37.67995536327362,
+      "top1_margin_x100": 2.3337483406066895
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0044_seed4286.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_clip_score": 0.8832284063100815,
+      "target_cosine_x100": 35.32913625240326,
+      "top1_margin_x100": 0.21780729293823242
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0045_seed4287.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_clip_score": 0.8854153752326965,
+      "target_cosine_x100": 35.41661500930786,
+      "top1_margin_x100": 0.5980163812637329
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0046_seed4288.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8431717753410339,
+      "target_cosine_x100": 33.72687101364136,
+      "top1_margin_x100": 0.27482807636260986
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0047_seed4289.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.898607075214386,
+      "target_cosine_x100": 35.94428300857544,
+      "top1_margin_x100": 0.15320777893066406
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0048_seed4290.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8234574645757675,
+      "target_cosine_x100": 32.9382985830307,
+      "top1_margin_x100": 1.3681292533874512
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0049_seed4291.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9525759518146515,
+      "target_cosine_x100": 38.10303807258606,
+      "top1_margin_x100": 0.2886444330215454
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0050_seed4292.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8991547673940659,
+      "target_cosine_x100": 35.966190695762634,
+      "top1_margin_x100": 1.802852749824524
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0051_seed4293.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9073595702648163,
+      "target_cosine_x100": 36.29438281059265,
+      "top1_margin_x100": 3.2125264406204224
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0052_seed4294.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9124597907066345,
+      "target_cosine_x100": 36.49839162826538,
+      "top1_margin_x100": 1.2016505002975464
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0053_seed4295.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.920807346701622,
+      "target_cosine_x100": 36.83229386806488,
+      "top1_margin_x100": 0.8051246404647827
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0054_seed4296.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_clip_score": 0.885448232293129,
+      "target_cosine_x100": 35.41792929172516,
+      "top1_margin_x100": 0.19051730632781982
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0055_seed4297.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8935374021530151,
+      "target_cosine_x100": 35.741496086120605,
+      "top1_margin_x100": 1.3316929340362549
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0056_seed4298.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_clip_score": 0.9045980870723724,
+      "target_cosine_x100": 36.1839234828949,
+      "top1_margin_x100": 0.19641518592834473
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0057_seed4299.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9408804029226303,
+      "target_cosine_x100": 37.63521611690521,
+      "top1_margin_x100": 2.5771141052246094
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0058_seed4300.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_clip_score": 0.9320347011089325,
+      "target_cosine_x100": 37.2813880443573,
+      "top1_margin_x100": 0.2044767141342163
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0059_seed4301.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.952187180519104,
+      "target_cosine_x100": 38.08748722076416,
+      "top1_margin_x100": 2.024391293525696
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0060_seed4302.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_clip_score": 0.7600129395723343,
+      "target_cosine_x100": 30.40051758289337,
+      "top1_margin_x100": 0.40117502212524414
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0061_seed4303.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8963371068239212,
+      "target_cosine_x100": 35.85348427295685,
+      "top1_margin_x100": 0.45918524265289307
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0062_seed4304.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8812862634658813,
+      "target_cosine_x100": 35.251450538635254,
+      "top1_margin_x100": 0.9308874607086182
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0063_seed4305.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8617024123668671,
+      "target_cosine_x100": 34.46809649467468,
+      "top1_margin_x100": 0.1459956169128418
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0064_seed4306.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_clip_score": 0.889924019575119,
+      "target_cosine_x100": 35.59696078300476,
+      "top1_margin_x100": 0.5590885877609253
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0065_seed4307.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9176845848560333,
+      "target_cosine_x100": 36.70738339424133,
+      "top1_margin_x100": 2.390417456626892
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0066_seed4308.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9208249300718307,
+      "target_cosine_x100": 36.83299720287323,
+      "top1_margin_x100": 0.9171366691589355
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0067_seed4309.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9178987145423889,
+      "target_cosine_x100": 36.71594858169556,
+      "top1_margin_x100": 2.5442034006118774
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0068_seed4310.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8831064403057098,
+      "target_cosine_x100": 35.324257612228394,
+      "top1_margin_x100": 0.5452126264572144
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0069_seed4311.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8322856575250626,
+      "target_cosine_x100": 33.2914263010025,
+      "top1_margin_x100": 0.21052658557891846
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0070_seed4312.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9084433317184448,
+      "target_cosine_x100": 36.33773326873779,
+      "top1_margin_x100": 0.11273622512817383
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0071_seed4313.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8707885444164276,
+      "target_cosine_x100": 34.831541776657104,
+      "top1_margin_x100": 0.7938146591186523
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0072_seed4314.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9104199707508087,
+      "target_cosine_x100": 36.41679883003235,
+      "top1_margin_x100": 0.9985893964767456
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0073_seed4315.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9260337054729462,
+      "target_cosine_x100": 37.04134821891785,
+      "top1_margin_x100": 1.41829252243042
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0074_seed4316.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8843656629323959,
+      "target_cosine_x100": 35.37462651729584,
+      "top1_margin_x100": 1.017788052558899
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0075_seed4317.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8938395231962204,
+      "target_cosine_x100": 35.753580927848816,
+      "top1_margin_x100": 0.49614906311035156
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0076_seed4318.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9234032779932022,
+      "target_cosine_x100": 36.93613111972809,
+      "top1_margin_x100": 1.2252449989318848
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0077_seed4319.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8975867182016373,
+      "target_cosine_x100": 35.90346872806549,
+      "top1_margin_x100": 0.9509623050689697
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0078_seed4320.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8807761967182159,
+      "target_cosine_x100": 35.23104786872864,
+      "top1_margin_x100": 1.7210692167282104
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0079_seed4321.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.7990735769271851,
+      "target_cosine_x100": 31.962943077087402,
+      "top1_margin_x100": 2.6096731424331665
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0080_seed4322.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.949842557311058,
+      "target_cosine_x100": 37.99370229244232,
+      "top1_margin_x100": 1.097533106803894
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0081_seed4323.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8783570677042007,
+      "target_cosine_x100": 35.13428270816803,
+      "top1_margin_x100": 1.479676365852356
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0082_seed4324.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8463216572999954,
+      "target_cosine_x100": 33.85286629199982,
+      "top1_margin_x100": 2.308851480484009
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0083_seed4325.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8386042714118958,
+      "target_cosine_x100": 33.54417085647583,
+      "top1_margin_x100": 1.8066704273223877
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0084_seed4326.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9179762005805969,
+      "target_cosine_x100": 36.71904802322388,
+      "top1_margin_x100": 0.35629570484161377
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0085_seed4327.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8925443887710571,
+      "target_cosine_x100": 35.701775550842285,
+      "top1_margin_x100": 1.7094820737838745
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0086_seed4328.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8820158243179321,
+      "target_cosine_x100": 35.280632972717285,
+      "top1_margin_x100": 0.7974952459335327
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0087_seed4329.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.7134179025888443,
+      "target_cosine_x100": 28.536716103553772,
+      "top1_margin_x100": 2.1199017763137817
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0088_seed4330.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8976082503795624,
+      "target_cosine_x100": 35.904330015182495,
+      "top1_margin_x100": 0.43220818042755127
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0089_seed4331.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.7961244881153107,
+      "target_cosine_x100": 31.844979524612427,
+      "top1_margin_x100": 0.7202595472335815
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0090_seed4332.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.7947424054145813,
+      "target_cosine_x100": 31.789696216583252,
+      "top1_margin_x100": 0.04393458366394043
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0091_seed4333.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8282242715358734,
+      "target_cosine_x100": 33.12897086143494,
+      "top1_margin_x100": 1.0473400354385376
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0092_seed4334.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8473259955644608,
+      "target_cosine_x100": 33.89303982257843,
+      "top1_margin_x100": 0.320965051651001
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0093_seed4335.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8759398013353348,
+      "target_cosine_x100": 35.03759205341339,
+      "top1_margin_x100": 1.9014954566955566
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0094_seed4336.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8981262892484665,
+      "target_cosine_x100": 35.92505156993866,
+      "top1_margin_x100": 1.6638249158859253
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0095_seed4337.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.9322544187307358,
+      "target_cosine_x100": 37.29017674922943,
+      "top1_margin_x100": 2.0931661128997803
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0096_seed4338.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8475165069103241,
+      "target_cosine_x100": 33.900660276412964,
+      "top1_margin_x100": 0.02766251564025879
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0097_seed4339.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8407744765281677,
+      "target_cosine_x100": 33.63097906112671,
+      "top1_margin_x100": 1.2678861618041992
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0098_seed4340.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.7991353422403336,
+      "target_cosine_x100": 31.965413689613342,
+      "top1_margin_x100": 0.7267117500305176
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/angry/angry_0099_seed4341.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_clip_score": 0.8800346404314041,
+      "target_cosine_x100": 35.201385617256165,
+      "top1_margin_x100": 0.7355421781539917
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0000_seed104242.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.9015653282403946,
+      "target_cosine_x100": 36.062613129615784,
+      "top1_margin_x100": 0.15737414360046387
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0001_seed104243.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9019745886325836,
+      "target_cosine_x100": 36.078983545303345,
+      "top1_margin_x100": 2.0430684089660645
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0002_seed104244.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9711973369121552,
+      "target_cosine_x100": 38.847893476486206,
+      "top1_margin_x100": 2.312973141670227
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0003_seed104245.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8750558644533157,
+      "target_cosine_x100": 35.00223457813263,
+      "top1_margin_x100": 0.5225807428359985
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0004_seed104246.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9055142104625702,
+      "target_cosine_x100": 36.22056841850281,
+      "top1_margin_x100": 2.616095542907715
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0005_seed104247.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9658139199018478,
+      "target_cosine_x100": 38.632556796073914,
+      "top1_margin_x100": 2.101665735244751
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0006_seed104248.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9444379806518555,
+      "target_cosine_x100": 37.77751922607422,
+      "top1_margin_x100": 2.0063042640686035
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0007_seed104249.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9481008350849152,
+      "target_cosine_x100": 37.924033403396606,
+      "top1_margin_x100": 3.3102422952651978
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0008_seed104250.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.91678187251091,
+      "target_cosine_x100": 36.6712749004364,
+      "top1_margin_x100": 3.23120653629303
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0009_seed104251.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9082334488630295,
+      "target_cosine_x100": 36.32933795452118,
+      "top1_margin_x100": 0.6650149822235107
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0010_seed104252.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9194172918796539,
+      "target_cosine_x100": 36.77669167518616,
+      "top1_margin_x100": 1.4380335807800293
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0011_seed104253.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9543468058109283,
+      "target_cosine_x100": 38.173872232437134,
+      "top1_margin_x100": 0.9849965572357178
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0012_seed104254.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.9271544963121414,
+      "target_cosine_x100": 37.08617985248566,
+      "top1_margin_x100": 0.3129810094833374
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0013_seed104255.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9315603226423264,
+      "target_cosine_x100": 37.262412905693054,
+      "top1_margin_x100": 2.790394425392151
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0014_seed104256.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9297825396060944,
+      "target_cosine_x100": 37.191301584243774,
+      "top1_margin_x100": 1.953589916229248
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0015_seed104257.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9579429775476456,
+      "target_cosine_x100": 38.31771910190582,
+      "top1_margin_x100": 0.022655725479125977
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0016_seed104258.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9455256164073944,
+      "target_cosine_x100": 37.821024656295776,
+      "top1_margin_x100": 2.789658308029175
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0017_seed104259.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9479264914989471,
+      "target_cosine_x100": 37.917059659957886,
+      "top1_margin_x100": 1.5732437372207642
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0018_seed104260.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8263769000768661,
+      "target_cosine_x100": 33.055076003074646,
+      "top1_margin_x100": 1.7112493515014648
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0019_seed104261.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9038334339857101,
+      "target_cosine_x100": 36.153337359428406,
+      "top1_margin_x100": 0.5936175584793091
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0020_seed104262.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9509266167879105,
+      "target_cosine_x100": 38.03706467151642,
+      "top1_margin_x100": 0.10668933391571045
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0021_seed104263.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.910370722413063,
+      "target_cosine_x100": 36.41482889652252,
+      "top1_margin_x100": 0.9851694107055664
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0022_seed104264.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9286301583051682,
+      "target_cosine_x100": 37.145206332206726,
+      "top1_margin_x100": 2.2628813982009888
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0023_seed104265.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.774119645357132,
+      "target_cosine_x100": 30.96478581428528,
+      "top1_margin_x100": 1.3486385345458984
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0024_seed104266.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9686716645956039,
+      "target_cosine_x100": 38.74686658382416,
+      "top1_margin_x100": 2.5121599435806274
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0025_seed104267.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.9140828251838684,
+      "target_cosine_x100": 36.563313007354736,
+      "top1_margin_x100": 1.0062694549560547
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0026_seed104268.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9198878705501556,
+      "target_cosine_x100": 36.795514822006226,
+      "top1_margin_x100": 2.0963311195373535
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0027_seed104269.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9532217681407928,
+      "target_cosine_x100": 38.128870725631714,
+      "top1_margin_x100": 1.3633877038955688
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0028_seed104270.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8858755975961685,
+      "target_cosine_x100": 35.43502390384674,
+      "top1_margin_x100": 1.9296765327453613
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0029_seed104271.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9491452574729919,
+      "target_cosine_x100": 37.96581029891968,
+      "top1_margin_x100": 2.1472513675689697
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0030_seed104272.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8301092684268951,
+      "target_cosine_x100": 33.204370737075806,
+      "top1_margin_x100": 1.325032114982605
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0031_seed104273.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9576626121997833,
+      "target_cosine_x100": 38.30650448799133,
+      "top1_margin_x100": 1.6157031059265137
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0032_seed104274.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9536822140216827,
+      "target_cosine_x100": 38.14728856086731,
+      "top1_margin_x100": 2.2750914096832275
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0033_seed104275.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8768629282712936,
+      "target_cosine_x100": 35.074517130851746,
+      "top1_margin_x100": 0.5282074213027954
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0034_seed104276.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9697190672159195,
+      "target_cosine_x100": 38.78876268863678,
+      "top1_margin_x100": 2.8604596853256226
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0035_seed104277.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9418511390686035,
+      "target_cosine_x100": 37.67404556274414,
+      "top1_margin_x100": 0.7098793983459473
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0036_seed104278.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9563605487346649,
+      "target_cosine_x100": 38.2544219493866,
+      "top1_margin_x100": 2.3808062076568604
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0037_seed104279.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9514913707971573,
+      "target_cosine_x100": 38.05965483188629,
+      "top1_margin_x100": 1.0687530040740967
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0038_seed104280.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.8687510341405869,
+      "target_cosine_x100": 34.750041365623474,
+      "top1_margin_x100": 0.2984344959259033
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0039_seed104281.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9712062776088715,
+      "target_cosine_x100": 38.84825110435486,
+      "top1_margin_x100": 1.3879835605621338
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0040_seed104282.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9504809230566025,
+      "target_cosine_x100": 38.0192369222641,
+      "top1_margin_x100": 1.733994483947754
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0041_seed104283.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.9071054309606552,
+      "target_cosine_x100": 36.28421723842621,
+      "top1_margin_x100": 0.18948912620544434
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0042_seed104284.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.9313024580478668,
+      "target_cosine_x100": 37.25209832191467,
+      "top1_margin_x100": 0.3281503915786743
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0043_seed104285.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8907994627952576,
+      "target_cosine_x100": 35.6319785118103,
+      "top1_margin_x100": 1.9529998302459717
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0044_seed104286.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9032852947711945,
+      "target_cosine_x100": 36.13141179084778,
+      "top1_margin_x100": 1.6714543104171753
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0045_seed104287.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9035565704107285,
+      "target_cosine_x100": 36.14226281642914,
+      "top1_margin_x100": 0.7442951202392578
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0046_seed104288.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9340161085128784,
+      "target_cosine_x100": 37.36064434051514,
+      "top1_margin_x100": 1.9075572490692139
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0047_seed104289.png",
+      "predicted_class": "happy",
+      "target_class": "crying",
+      "target_clip_score": 0.8577181398868561,
+      "target_cosine_x100": 34.30872559547424,
+      "top1_margin_x100": 0.806167721748352
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0048_seed104290.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9372919797897339,
+      "target_cosine_x100": 37.491679191589355,
+      "top1_margin_x100": 2.0742475986480713
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0049_seed104291.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9520769119262695,
+      "target_cosine_x100": 38.08307647705078,
+      "top1_margin_x100": 1.148378849029541
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0050_seed104292.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9622008353471756,
+      "target_cosine_x100": 38.488033413887024,
+      "top1_margin_x100": 1.260855793952942
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0051_seed104293.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.9077040106058121,
+      "target_cosine_x100": 36.30816042423248,
+      "top1_margin_x100": 0.3008633852005005
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0052_seed104294.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8274613320827484,
+      "target_cosine_x100": 33.09845328330994,
+      "top1_margin_x100": 0.9663224220275879
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0053_seed104295.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.7880104333162308,
+      "target_cosine_x100": 31.52041733264923,
+      "top1_margin_x100": 1.7087072134017944
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0054_seed104296.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8853377401828766,
+      "target_cosine_x100": 35.41350960731506,
+      "top1_margin_x100": 0.4233419895172119
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0055_seed104297.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.917808935046196,
+      "target_cosine_x100": 36.71235740184784,
+      "top1_margin_x100": 0.887557864189148
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0056_seed104298.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8681881427764893,
+      "target_cosine_x100": 34.72752571105957,
+      "top1_margin_x100": 0.9711325168609619
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0057_seed104299.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9118063002824783,
+      "target_cosine_x100": 36.47225201129913,
+      "top1_margin_x100": 0.24688541889190674
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0058_seed104300.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8828676491975784,
+      "target_cosine_x100": 35.31470596790314,
+      "top1_margin_x100": 0.4154711961746216
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0059_seed104301.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9942296892404556,
+      "target_cosine_x100": 39.769187569618225,
+      "top1_margin_x100": 3.6536335945129395
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0060_seed104302.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9415541589260101,
+      "target_cosine_x100": 37.662166357040405,
+      "top1_margin_x100": 1.6167640686035156
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0061_seed104303.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8795809000730515,
+      "target_cosine_x100": 35.18323600292206,
+      "top1_margin_x100": 1.1060088872909546
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0062_seed104304.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.913635715842247,
+      "target_cosine_x100": 36.54542863368988,
+      "top1_margin_x100": 0.9913593530654907
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0063_seed104305.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9365411847829819,
+      "target_cosine_x100": 37.461647391319275,
+      "top1_margin_x100": 1.899901032447815
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0064_seed104306.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9380386024713516,
+      "target_cosine_x100": 37.521544098854065,
+      "top1_margin_x100": 1.1562585830688477
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0065_seed104307.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9451980143785477,
+      "target_cosine_x100": 37.80792057514191,
+      "top1_margin_x100": 3.4097820520401
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0066_seed104308.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.9251697361469269,
+      "target_cosine_x100": 37.006789445877075,
+      "top1_margin_x100": 0.4581749439239502
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0067_seed104309.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.8311745524406433,
+      "target_cosine_x100": 33.24698209762573,
+      "top1_margin_x100": 0.05747079849243164
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0068_seed104310.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9399515390396118,
+      "target_cosine_x100": 37.59806156158447,
+      "top1_margin_x100": 1.9307136535644531
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0069_seed104311.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.939110666513443,
+      "target_cosine_x100": 37.56442666053772,
+      "top1_margin_x100": 0.04261434078216553
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0070_seed104312.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8667935431003571,
+      "target_cosine_x100": 34.67174172401428,
+      "top1_margin_x100": 2.9567450284957886
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0071_seed104313.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9013308584690094,
+      "target_cosine_x100": 36.053234338760376,
+      "top1_margin_x100": 1.21707022190094
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0072_seed104314.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.894848108291626,
+      "target_cosine_x100": 35.79392433166504,
+      "top1_margin_x100": 2.100473642349243
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0073_seed104315.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.8780039846897125,
+      "target_cosine_x100": 35.1201593875885,
+      "top1_margin_x100": 0.02338588237762451
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0074_seed104316.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9248636662960052,
+      "target_cosine_x100": 36.99454665184021,
+      "top1_margin_x100": 1.4118224382400513
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0075_seed104317.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.899428054690361,
+      "target_cosine_x100": 35.97712218761444,
+      "top1_margin_x100": 0.257641077041626
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0076_seed104318.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9498704224824905,
+      "target_cosine_x100": 37.99481689929962,
+      "top1_margin_x100": 0.6724059581756592
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0077_seed104319.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.83521768450737,
+      "target_cosine_x100": 33.4087073802948,
+      "top1_margin_x100": 0.0697106122970581
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0078_seed104320.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9052736312150955,
+      "target_cosine_x100": 36.21094524860382,
+      "top1_margin_x100": 1.181197166442871
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0079_seed104321.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.912957638502121,
+      "target_cosine_x100": 36.51830554008484,
+      "top1_margin_x100": 2.397829294204712
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0080_seed104322.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9030468016862869,
+      "target_cosine_x100": 36.12187206745148,
+      "top1_margin_x100": 1.620250940322876
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0081_seed104323.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9166344255208969,
+      "target_cosine_x100": 36.66537702083588,
+      "top1_margin_x100": 3.2768219709396362
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0082_seed104324.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8897192776203156,
+      "target_cosine_x100": 35.58877110481262,
+      "top1_margin_x100": 1.3619184494018555
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0083_seed104325.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8657576143741608,
+      "target_cosine_x100": 34.63030457496643,
+      "top1_margin_x100": 0.5271166563034058
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0084_seed104326.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9116202592849731,
+      "target_cosine_x100": 36.464810371398926,
+      "top1_margin_x100": 1.3006985187530518
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0085_seed104327.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9146465361118317,
+      "target_cosine_x100": 36.58586144447327,
+      "top1_margin_x100": 1.884162425994873
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0086_seed104328.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9376052767038345,
+      "target_cosine_x100": 37.50421106815338,
+      "top1_margin_x100": 1.9235849380493164
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0087_seed104329.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_clip_score": 0.9048555046319962,
+      "target_cosine_x100": 36.194220185279846,
+      "top1_margin_x100": 0.4970729351043701
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0088_seed104330.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8999760448932648,
+      "target_cosine_x100": 35.99904179573059,
+      "top1_margin_x100": 0.5525559186935425
+    },
+    {
+      "correct": false,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0089_seed104331.png",
+      "predicted_class": "happy",
+      "target_class": "crying",
+      "target_clip_score": 0.8845687657594681,
+      "target_cosine_x100": 35.38275063037872,
+      "top1_margin_x100": 0.3232330083847046
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0090_seed104332.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9260393679141998,
+      "target_cosine_x100": 37.04157471656799,
+      "top1_margin_x100": 1.002812385559082
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0091_seed104333.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.89425228536129,
+      "target_cosine_x100": 35.7700914144516,
+      "top1_margin_x100": 0.2699434757232666
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0092_seed104334.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.8602761477231979,
+      "target_cosine_x100": 34.41104590892792,
+      "top1_margin_x100": 0.5216717720031738
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0093_seed104335.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9242299199104309,
+      "target_cosine_x100": 36.969196796417236,
+      "top1_margin_x100": 1.1660248041152954
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0094_seed104336.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9799493104219437,
+      "target_cosine_x100": 39.19797241687775,
+      "top1_margin_x100": 2.4722695350646973
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0095_seed104337.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9364741295576096,
+      "target_cosine_x100": 37.45896518230438,
+      "top1_margin_x100": 2.7107834815979004
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0096_seed104338.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.958373099565506,
+      "target_cosine_x100": 38.33492398262024,
+      "top1_margin_x100": 1.790100336074829
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0097_seed104339.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.914272665977478,
+      "target_cosine_x100": 36.57090663909912,
+      "top1_margin_x100": 1.145276427268982
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0098_seed104340.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9072139114141464,
+      "target_cosine_x100": 36.28855645656586,
+      "top1_margin_x100": 2.739819884300232
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/crying/crying_0099_seed104341.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_clip_score": 0.9169706702232361,
+      "target_cosine_x100": 36.67882680892944,
+      "top1_margin_x100": 1.5796691179275513
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0000_seed204242.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9042096883058548,
+      "target_cosine_x100": 36.16838753223419,
+      "top1_margin_x100": 6.031626462936401
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0001_seed204243.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.875336155295372,
+      "target_cosine_x100": 35.01344621181488,
+      "top1_margin_x100": 5.447319149971008
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0002_seed204244.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8747223019599915,
+      "target_cosine_x100": 34.98889207839966,
+      "top1_margin_x100": 4.226726293563843
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0003_seed204245.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9071561694145203,
+      "target_cosine_x100": 36.28624677658081,
+      "top1_margin_x100": 4.888531565666199
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0004_seed204246.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9130547195672989,
+      "target_cosine_x100": 36.522188782691956,
+      "top1_margin_x100": 4.604232311248779
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0005_seed204247.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8906438201665878,
+      "target_cosine_x100": 35.62575280666351,
+      "top1_margin_x100": 5.364015698432922
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0006_seed204248.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8943257480859756,
+      "target_cosine_x100": 35.773029923439026,
+      "top1_margin_x100": 2.9090821743011475
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0007_seed204249.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8849465101957321,
+      "target_cosine_x100": 35.397860407829285,
+      "top1_margin_x100": 4.507544636726379
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0008_seed204250.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8972166478633881,
+      "target_cosine_x100": 35.88866591453552,
+      "top1_margin_x100": 4.832029342651367
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0009_seed204251.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8529437333345413,
+      "target_cosine_x100": 34.11774933338165,
+      "top1_margin_x100": 1.9175738096237183
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0010_seed204252.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9264113008975983,
+      "target_cosine_x100": 37.05645203590393,
+      "top1_margin_x100": 5.869430303573608
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0011_seed204253.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9160318225622177,
+      "target_cosine_x100": 36.64127290248871,
+      "top1_margin_x100": 7.4026525020599365
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0012_seed204254.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8410304039716721,
+      "target_cosine_x100": 33.64121615886688,
+      "top1_margin_x100": 5.143001675605774
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0013_seed204255.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8752813190221786,
+      "target_cosine_x100": 35.011252760887146,
+      "top1_margin_x100": 5.54201602935791
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0014_seed204256.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9071255475282669,
+      "target_cosine_x100": 36.285021901130676,
+      "top1_margin_x100": 5.386775732040405
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0015_seed204257.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.7924924045801163,
+      "target_cosine_x100": 31.69969618320465,
+      "top1_margin_x100": 4.500675201416016
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0016_seed204258.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.894780308008194,
+      "target_cosine_x100": 35.79121232032776,
+      "top1_margin_x100": 4.7046273946762085
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0017_seed204259.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.903809443116188,
+      "target_cosine_x100": 36.15237772464752,
+      "top1_margin_x100": 6.175869703292847
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0018_seed204260.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9176186472177505,
+      "target_cosine_x100": 36.70474588871002,
+      "top1_margin_x100": 5.570325255393982
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0019_seed204261.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8797462284564972,
+      "target_cosine_x100": 35.18984913825989,
+      "top1_margin_x100": 3.6569297313690186
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0020_seed204262.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9200146049261093,
+      "target_cosine_x100": 36.80058419704437,
+      "top1_margin_x100": 7.316547632217407
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0021_seed204263.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9162575751543045,
+      "target_cosine_x100": 36.65030300617218,
+      "top1_margin_x100": 5.614924430847168
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0022_seed204264.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.873161256313324,
+      "target_cosine_x100": 34.92645025253296,
+      "top1_margin_x100": 5.8133721351623535
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0023_seed204265.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8731840550899506,
+      "target_cosine_x100": 34.92736220359802,
+      "top1_margin_x100": 6.330737471580505
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0024_seed204266.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9311891347169876,
+      "target_cosine_x100": 37.247565388679504,
+      "top1_margin_x100": 5.732280015945435
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0025_seed204267.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8881718665361404,
+      "target_cosine_x100": 35.52687466144562,
+      "top1_margin_x100": 5.091732740402222
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0026_seed204268.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.7986319065093994,
+      "target_cosine_x100": 31.945276260375977,
+      "top1_margin_x100": 3.242969512939453
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0027_seed204269.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9171685576438904,
+      "target_cosine_x100": 36.686742305755615,
+      "top1_margin_x100": 4.506930708885193
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0028_seed204270.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.836840346455574,
+      "target_cosine_x100": 33.47361385822296,
+      "top1_margin_x100": 1.5605688095092773
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0029_seed204271.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8761124312877655,
+      "target_cosine_x100": 35.04449725151062,
+      "top1_margin_x100": 5.1892876625061035
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0030_seed204272.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.7209096103906631,
+      "target_cosine_x100": 28.836384415626526,
+      "top1_margin_x100": 5.080346763134003
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0031_seed204273.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8299372345209122,
+      "target_cosine_x100": 33.19748938083649,
+      "top1_margin_x100": 1.727229356765747
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0032_seed204274.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8408433943986893,
+      "target_cosine_x100": 33.63373577594757,
+      "top1_margin_x100": 6.284856796264648
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0033_seed204275.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.930732935667038,
+      "target_cosine_x100": 37.22931742668152,
+      "top1_margin_x100": 6.053602695465088
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0034_seed204276.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8372718840837479,
+      "target_cosine_x100": 33.490875363349915,
+      "top1_margin_x100": 5.48061728477478
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0035_seed204277.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9009196609258652,
+      "target_cosine_x100": 36.03678643703461,
+      "top1_margin_x100": 3.918972611427307
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0036_seed204278.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9327732026576996,
+      "target_cosine_x100": 37.31092810630798,
+      "top1_margin_x100": 5.3191810846328735
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0037_seed204279.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8764074742794037,
+      "target_cosine_x100": 35.05629897117615,
+      "top1_margin_x100": 5.182167887687683
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0038_seed204280.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8287519216537476,
+      "target_cosine_x100": 33.1500768661499,
+      "top1_margin_x100": 3.401520848274231
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0039_seed204281.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8963987976312637,
+      "target_cosine_x100": 35.85595190525055,
+      "top1_margin_x100": 5.936926603317261
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0040_seed204282.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8886713534593582,
+      "target_cosine_x100": 35.54685413837433,
+      "top1_margin_x100": 7.102698087692261
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0041_seed204283.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9255411475896835,
+      "target_cosine_x100": 37.02164590358734,
+      "top1_margin_x100": 5.987939238548279
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0042_seed204284.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8699189871549606,
+      "target_cosine_x100": 34.796759486198425,
+      "top1_margin_x100": 6.485992670059204
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0043_seed204285.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.859442725777626,
+      "target_cosine_x100": 34.37770903110504,
+      "top1_margin_x100": 5.276772379875183
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0044_seed204286.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.893002524971962,
+      "target_cosine_x100": 35.72010099887848,
+      "top1_margin_x100": 4.90092933177948
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0045_seed204287.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8572626858949661,
+      "target_cosine_x100": 34.290507435798645,
+      "top1_margin_x100": 4.543969035148621
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0046_seed204288.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8847671002149582,
+      "target_cosine_x100": 35.39068400859833,
+      "top1_margin_x100": 4.760950803756714
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0047_seed204289.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8893983066082001,
+      "target_cosine_x100": 35.575932264328,
+      "top1_margin_x100": 4.639750719070435
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0048_seed204290.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8717591315507889,
+      "target_cosine_x100": 34.870365262031555,
+      "top1_margin_x100": 4.98320460319519
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0049_seed204291.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8584053069353104,
+      "target_cosine_x100": 34.336212277412415,
+      "top1_margin_x100": 6.565371155738831
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0050_seed204292.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8503792434930801,
+      "target_cosine_x100": 34.015169739723206,
+      "top1_margin_x100": 5.423259735107422
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0051_seed204293.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9282372891902924,
+      "target_cosine_x100": 37.129491567611694,
+      "top1_margin_x100": 4.9256861209869385
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0052_seed204294.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8763299882411957,
+      "target_cosine_x100": 35.05319952964783,
+      "top1_margin_x100": 5.753776431083679
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0053_seed204295.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9418877959251404,
+      "target_cosine_x100": 37.675511837005615,
+      "top1_margin_x100": 5.544674396514893
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0054_seed204296.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8447626978158951,
+      "target_cosine_x100": 33.7905079126358,
+      "top1_margin_x100": 3.670322895050049
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0055_seed204297.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8556754142045975,
+      "target_cosine_x100": 34.2270165681839,
+      "top1_margin_x100": 6.442746520042419
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0056_seed204298.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8556252717971802,
+      "target_cosine_x100": 34.22501087188721,
+      "top1_margin_x100": 6.204012036323547
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0057_seed204299.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8943770825862885,
+      "target_cosine_x100": 35.77508330345154,
+      "top1_margin_x100": 6.899428367614746
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0058_seed204300.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8117838948965073,
+      "target_cosine_x100": 32.47135579586029,
+      "top1_margin_x100": 4.3223559856414795
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0059_seed204301.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8633030205965042,
+      "target_cosine_x100": 34.53212082386017,
+      "top1_margin_x100": 4.768198728561401
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0060_seed204302.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9063748270273209,
+      "target_cosine_x100": 36.254993081092834,
+      "top1_margin_x100": 6.026968359947205
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0061_seed204303.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8884240686893463,
+      "target_cosine_x100": 35.53696274757385,
+      "top1_margin_x100": 3.064355254173279
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0062_seed204304.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9089826792478561,
+      "target_cosine_x100": 36.359307169914246,
+      "top1_margin_x100": 6.528982520103455
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0063_seed204305.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.897538810968399,
+      "target_cosine_x100": 35.90155243873596,
+      "top1_margin_x100": 5.801454186439514
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0064_seed204306.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8903130888938904,
+      "target_cosine_x100": 35.612523555755615,
+      "top1_margin_x100": 1.2812018394470215
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0065_seed204307.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8587396144866943,
+      "target_cosine_x100": 34.34958457946777,
+      "top1_margin_x100": 4.168790578842163
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0066_seed204308.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9233048558235168,
+      "target_cosine_x100": 36.932194232940674,
+      "top1_margin_x100": 4.072844982147217
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0067_seed204309.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8812612295150757,
+      "target_cosine_x100": 35.25044918060303,
+      "top1_margin_x100": 5.943194031715393
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0068_seed204310.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9064722806215286,
+      "target_cosine_x100": 36.258891224861145,
+      "top1_margin_x100": 5.633404850959778
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0069_seed204311.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.908796638250351,
+      "target_cosine_x100": 36.35186553001404,
+      "top1_margin_x100": 5.7119399309158325
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0070_seed204312.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8611643314361572,
+      "target_cosine_x100": 34.44657325744629,
+      "top1_margin_x100": 2.916482090950012
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0071_seed204313.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8392422646284103,
+      "target_cosine_x100": 33.569690585136414,
+      "top1_margin_x100": 6.522783637046814
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0072_seed204314.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8803128451108932,
+      "target_cosine_x100": 35.21251380443573,
+      "top1_margin_x100": 4.1557639837265015
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0073_seed204315.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9370758384466171,
+      "target_cosine_x100": 37.483033537864685,
+      "top1_margin_x100": 5.918684601783752
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0074_seed204316.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9014426171779633,
+      "target_cosine_x100": 36.05770468711853,
+      "top1_margin_x100": 5.499085783958435
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0075_seed204317.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8887190371751785,
+      "target_cosine_x100": 35.54876148700714,
+      "top1_margin_x100": 3.579050302505493
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0076_seed204318.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8230666816234589,
+      "target_cosine_x100": 32.922667264938354,
+      "top1_margin_x100": 4.931974411010742
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0077_seed204319.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9094654768705368,
+      "target_cosine_x100": 36.37861907482147,
+      "top1_margin_x100": 6.373167037963867
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0078_seed204320.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8823247998952866,
+      "target_cosine_x100": 35.29299199581146,
+      "top1_margin_x100": 6.233662366867065
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0079_seed204321.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8651863038539886,
+      "target_cosine_x100": 34.607452154159546,
+      "top1_margin_x100": 5.844908952713013
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0080_seed204322.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.890694260597229,
+      "target_cosine_x100": 35.62777042388916,
+      "top1_margin_x100": 5.591544508934021
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0081_seed204323.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8939043432474136,
+      "target_cosine_x100": 35.756173729896545,
+      "top1_margin_x100": 7.076770067214966
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0082_seed204324.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9073381125926971,
+      "target_cosine_x100": 36.293524503707886,
+      "top1_margin_x100": 5.201202630996704
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0083_seed204325.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8674262464046478,
+      "target_cosine_x100": 34.69704985618591,
+      "top1_margin_x100": 5.1093608140945435
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0084_seed204326.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8054781705141068,
+      "target_cosine_x100": 32.21912682056427,
+      "top1_margin_x100": 5.596631765365601
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0085_seed204327.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8660384267568588,
+      "target_cosine_x100": 34.64153707027435,
+      "top1_margin_x100": 5.098354816436768
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0086_seed204328.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8907567709684372,
+      "target_cosine_x100": 35.63027083873749,
+      "top1_margin_x100": 6.127601861953735
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0087_seed204329.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9241391718387604,
+      "target_cosine_x100": 36.965566873550415,
+      "top1_margin_x100": 5.996933579444885
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0088_seed204330.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.833948627114296,
+      "target_cosine_x100": 33.35794508457184,
+      "top1_margin_x100": 2.455770969390869
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0089_seed204331.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9255243092775345,
+      "target_cosine_x100": 37.02097237110138,
+      "top1_margin_x100": 5.676630139350891
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0090_seed204332.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8902774006128311,
+      "target_cosine_x100": 35.611096024513245,
+      "top1_margin_x100": 4.7524333000183105
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0091_seed204333.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.933418944478035,
+      "target_cosine_x100": 37.3367577791214,
+      "top1_margin_x100": 4.459765553474426
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0092_seed204334.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8708661049604416,
+      "target_cosine_x100": 34.834644198417664,
+      "top1_margin_x100": 5.650085210800171
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0093_seed204335.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8814568072557449,
+      "target_cosine_x100": 35.2582722902298,
+      "top1_margin_x100": 5.2106112241744995
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0094_seed204336.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8260735124349594,
+      "target_cosine_x100": 33.04294049739838,
+      "top1_margin_x100": 2.728170156478882
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0095_seed204337.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.9103874117136002,
+      "target_cosine_x100": 36.415496468544006,
+      "top1_margin_x100": 5.6542277336120605
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0096_seed204338.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8506116271018982,
+      "target_cosine_x100": 34.02446508407593,
+      "top1_margin_x100": 5.364719033241272
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0097_seed204339.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8800754696130753,
+      "target_cosine_x100": 35.20301878452301,
+      "top1_margin_x100": 4.754862189292908
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0098_seed204340.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8706585317850113,
+      "target_cosine_x100": 34.82634127140045,
+      "top1_margin_x100": 5.303439497947693
+    },
+    {
+      "correct": true,
+      "image": "evaluation/generated/sdxl_primary/happy/happy_0099_seed204341.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_clip_score": 0.8673932403326035,
+      "target_cosine_x100": 34.69572961330414,
+      "top1_margin_x100": 4.11943793296814
+    }
+  ],
+  "zero_shot_accuracy": 0.9166666666666666
+}

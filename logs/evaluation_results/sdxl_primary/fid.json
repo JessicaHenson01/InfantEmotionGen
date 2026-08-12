@@ -1,0 +1,9 @@
+{
+  "feature_dimension": 2048,
+  "generated_image_count": 300,
+  "image_size": 299,
+  "metric": "FID",
+  "notes": "Lower is better. Images are resized before batching; use equal sample counts and identical settings when comparing runs.",
+  "overall_fid": 144.68795776367188,
+  "real_image_count": 750
+}

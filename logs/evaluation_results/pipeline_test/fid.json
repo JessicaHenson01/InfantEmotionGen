@@ -1,0 +1,8 @@
+{
+  "feature_dimension": 2048,
+  "generated_image_count": 240,
+  "metric": "FID",
+  "notes": "Lower is better. Use equal sample counts and identical settings when comparing runs.",
+  "overall_fid": 54.84636306762695,
+  "real_image_count": 960
+}

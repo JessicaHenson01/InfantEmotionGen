@@ -1,0 +1,49 @@
+[
+  {
+    "components": {
+      "text_encoder": 123060480,
+      "text_encoder_2": 694659840,
+      "unet": 2567463684,
+      "vae_1_0": 83653863
+    },
+    "kind": "base",
+    "name": "sdxl_base",
+    "snapshot": "/Users/jessicahenson/.cache/huggingface/hub/models--stabilityai--stable-diffusion-xl-base-1.0/snapshots/462165984030d82259a11f4367a4eed129e94a7b",
+    "status": "ok",
+    "total_parameters": 3468837867
+  },
+  {
+    "components": {
+      "unet_lora_final": 12574720
+    },
+    "kind": "adapter",
+    "name": "sdxl_primary_lora",
+    "snapshot": "/Users/jessicahenson/.cache/huggingface/hub/models--InfantEmotionGen--SDXLPrimary/snapshots/37633ba48a2d893528de9364760e383f547f4ede",
+    "status": "ok",
+    "total_parameters": 12574720
+  },
+  {
+    "components": {
+      "text_encoder": 123650304,
+      "text_encoder_2": 694659840,
+      "text_encoder_3": 4762310656,
+      "transformer": 2469663936,
+      "vae": 83819683
+    },
+    "kind": "base",
+    "name": "sd35_base",
+    "snapshot": "/Users/jessicahenson/.cache/huggingface/hub/models--stabilityai--stable-diffusion-3.5-medium/snapshots/b940f670f0eda2d07fbb75229e779da1ad11eb80",
+    "status": "ok",
+    "total_parameters": 8134104419
+  },
+  {
+    "components": {
+      "mmdit_lora_final": 7274496
+    },
+    "kind": "adapter",
+    "name": "sd35_medium_lora",
+    "snapshot": "/Users/jessicahenson/.cache/huggingface/hub/models--InfantEmotionGen--stable-diffusion-3.5-medium/snapshots/2082ed1351ea3f63b6e8b7cb7d80782b5a827f0f",
+    "status": "ok",
+    "total_parameters": 7274496
+  }
+]

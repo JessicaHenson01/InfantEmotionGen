@@ -1,0 +1,2476 @@
+{
+  "accuracy": 0.7966666666666666,
+  "classification_report": {
+    "angry": {
+      "f1-score": 0.7906976744186046,
+      "precision": 0.9444444444444444,
+      "recall": 0.68,
+      "support": 100.0
+    },
+    "crying": {
+      "f1-score": 0.8089887640449438,
+      "precision": 0.9230769230769231,
+      "recall": 0.72,
+      "support": 100.0
+    },
+    "happy": {
+      "f1-score": 0.9949748743718593,
+      "precision": 1.0,
+      "recall": 0.99,
+      "support": 100.0
+    },
+    "macro avg": {
+      "f1-score": 0.8648871042784693,
+      "precision": 0.9558404558404558,
+      "recall": 0.7966666666666665,
+      "support": 300.0
+    },
+    "micro avg": {
+      "f1-score": 0.8706739526411658,
+      "precision": 0.9598393574297188,
+      "recall": 0.7966666666666666,
+      "support": 300.0
+    },
+    "weighted avg": {
+      "f1-score": 0.8648871042784693,
+      "precision": 0.9558404558404557,
+      "recall": 0.7966666666666666,
+      "support": 300.0
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "angry",
+      "crying",
+      "happy"
+    ],
+    "matrix": [
+      [
+        68,
+        6,
+        0
+      ],
+      [
+        4,
+        72,
+        0
+      ],
+      [
+        0,
+        0,
+        99
+      ]
+    ]
+  },
+  "image_count": 300,
+  "macro_f1": 0.8648871042784693,
+  "metric": "FER classifier agreement",
+  "model_id": "trpakov/vit-face-expression",
+  "records": [
+    {
+      "confidence": 0.6509531736373901,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0000_seed4242.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9192429780960083,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0001_seed4243.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9458420872688293,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0002_seed4244.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.7859867811203003,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0003_seed4245.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.3176775872707367,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0004_seed4246.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9844613671302795,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0005_seed4247.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.3642852306365967,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0006_seed4248.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9578119516372681,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0007_seed4249.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.48788467049598694,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0008_seed4250.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8365272283554077,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0009_seed4251.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9842240810394287,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0010_seed4252.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8518943786621094,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0011_seed4253.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.6766637563705444,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0012_seed4254.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9180863499641418,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0013_seed4255.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9266005158424377,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0014_seed4256.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.5711612701416016,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0015_seed4257.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.6256927847862244,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0016_seed4258.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9543934464454651,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0017_seed4259.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8968462944030762,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0018_seed4260.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9746204614639282,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0019_seed4261.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.7544953227043152,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0020_seed4262.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.44002780318260193,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0021_seed4263.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.5392448902130127,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0022_seed4264.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.7806710004806519,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0023_seed4265.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.7568520307540894,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0024_seed4266.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9707205891609192,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0025_seed4267.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9896804690361023,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0026_seed4268.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.3836742043495178,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0027_seed4269.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9580817222595215,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0028_seed4270.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9872390627861023,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0029_seed4271.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9904083013534546,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0030_seed4272.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.39695173501968384,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0031_seed4273.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9834743142127991,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0032_seed4274.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9830342531204224,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0033_seed4275.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9410190582275391,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0034_seed4276.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.6768015027046204,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0035_seed4277.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.7375120520591736,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0036_seed4278.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9769206047058105,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0037_seed4279.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.5216178297996521,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0038_seed4280.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.6511869430541992,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0039_seed4281.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8501793146133423,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0040_seed4282.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8972355723381042,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0041_seed4283.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.4981025755405426,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0042_seed4284.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9608644247055054,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0043_seed4285.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9890406727790833,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0044_seed4286.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9600440859794617,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0045_seed4287.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.5799829959869385,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0046_seed4288.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.7854940295219421,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0047_seed4289.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.6516673564910889,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0048_seed4290.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.7764002084732056,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0049_seed4291.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.44056111574172974,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0050_seed4292.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9755927324295044,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0051_seed4293.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8732202649116516,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0052_seed4294.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9890852570533752,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0053_seed4295.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9425008296966553,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0054_seed4296.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9581419229507446,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0055_seed4297.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8918435573577881,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0056_seed4298.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.7400628924369812,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0057_seed4299.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9822580814361572,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0058_seed4300.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9823235273361206,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0059_seed4301.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.991517186164856,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0060_seed4302.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9458212852478027,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0061_seed4303.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9864606857299805,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0062_seed4304.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.5040351748466492,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0063_seed4305.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9053158760070801,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0064_seed4306.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9899356961250305,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0065_seed4307.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.6836457848548889,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0066_seed4308.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.862297534942627,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0067_seed4309.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.84095299243927,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0068_seed4310.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9079567790031433,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0069_seed4311.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8193585276603699,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0070_seed4312.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8898757100105286,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0071_seed4313.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.5458419919013977,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0072_seed4314.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.590499222278595,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0073_seed4315.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9514835476875305,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0074_seed4316.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.5119155645370483,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0075_seed4317.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8918455243110657,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0076_seed4318.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9898354411125183,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0077_seed4319.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.6634572744369507,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0078_seed4320.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8756501078605652,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0079_seed4321.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.4823460876941681,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0080_seed4322.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9548757076263428,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0081_seed4323.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.7074196934700012,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0082_seed4324.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8972820043563843,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0083_seed4325.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.6033389568328857,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0084_seed4326.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8185395002365112,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0085_seed4327.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9813131093978882,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0086_seed4328.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.4392695128917694,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0087_seed4329.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.5103307366371155,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0088_seed4330.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9444055557250977,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0089_seed4331.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.941638171672821,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0090_seed4332.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.533614993095398,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0091_seed4333.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9092332720756531,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0092_seed4334.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.83030766248703,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0093_seed4335.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.5622906684875488,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0094_seed4336.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.5499910712242126,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0095_seed4337.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.9341778755187988,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0096_seed4338.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.4793831706047058,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0097_seed4339.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.6272974610328674,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0098_seed4340.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.8707634806632996,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/angry/angry_0099_seed4341.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "angry"
+    },
+    {
+      "confidence": 0.7562187910079956,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0000_seed104242.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9509899020195007,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0001_seed104243.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9417214393615723,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0002_seed104244.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9627735018730164,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0003_seed104245.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9359834790229797,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0004_seed104246.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.634303867816925,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0005_seed104247.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7845180034637451,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0006_seed104248.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9343022108078003,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0007_seed104249.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9667527079582214,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0008_seed104250.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.5614984035491943,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0009_seed104251.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9590944051742554,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0010_seed104252.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.5368556380271912,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0011_seed104253.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.500187337398529,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0012_seed104254.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.930072009563446,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0013_seed104255.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9779768586158752,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0014_seed104256.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8190008401870728,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0015_seed104257.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7757740616798401,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0016_seed104258.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.5217621922492981,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0017_seed104259.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8834518790245056,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0018_seed104260.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8174779415130615,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0019_seed104261.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.3944737911224365,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0020_seed104262.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.6971749067306519,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0021_seed104263.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.5498618483543396,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0022_seed104264.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9484471082687378,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0023_seed104265.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7356621026992798,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0024_seed104266.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8826791048049927,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0025_seed104267.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7329594492912292,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0026_seed104268.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.35059410333633423,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0027_seed104269.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8572835922241211,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0028_seed104270.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9689509868621826,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0029_seed104271.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9662371277809143,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0030_seed104272.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.893140971660614,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0031_seed104273.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8721945285797119,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0032_seed104274.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.949753999710083,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0033_seed104275.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.5854223370552063,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0034_seed104276.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.885850191116333,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0035_seed104277.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9193438291549683,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0036_seed104278.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9313380122184753,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0037_seed104279.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9190114736557007,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0038_seed104280.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9449144005775452,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0039_seed104281.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9366602897644043,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0040_seed104282.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.6188145279884338,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0041_seed104283.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8460302352905273,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0042_seed104284.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7438033819198608,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0043_seed104285.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7079039216041565,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0044_seed104286.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9054113626480103,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0045_seed104287.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.48745039105415344,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0046_seed104288.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.83012455701828,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0047_seed104289.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.464675635099411,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0048_seed104290.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7678771018981934,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0049_seed104291.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.5464544296264648,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0050_seed104292.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8854758143424988,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0051_seed104293.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9725602269172668,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0052_seed104294.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.905655026435852,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0053_seed104295.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8363742828369141,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0054_seed104296.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.5921769142150879,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0055_seed104297.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9283064603805542,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0056_seed104298.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.5780720114707947,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0057_seed104299.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9703953862190247,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0058_seed104300.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.69862300157547,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0059_seed104301.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.6794670820236206,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0060_seed104302.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8834377527236938,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0061_seed104303.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.44932594895362854,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0062_seed104304.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8905078768730164,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0063_seed104305.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8886171579360962,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0064_seed104306.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8926833868026733,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0065_seed104307.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9675093293190002,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0066_seed104308.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.6541478037834167,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0067_seed104309.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8816587924957275,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0068_seed104310.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9668466448783875,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0069_seed104311.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.4030044674873352,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0070_seed104312.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.630238950252533,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0071_seed104313.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9556522965431213,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0072_seed104314.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9262382388114929,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0073_seed104315.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.896479606628418,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0074_seed104316.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9604390263557434,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0075_seed104317.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9254640340805054,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0076_seed104318.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.639405369758606,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0077_seed104319.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8881732225418091,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0078_seed104320.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.5007041096687317,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0079_seed104321.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.922874927520752,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0080_seed104322.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.561702311038971,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0081_seed104323.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8340961337089539,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0082_seed104324.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7857595086097717,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0083_seed104325.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.921836793422699,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0084_seed104326.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9455057978630066,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0085_seed104327.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9158622026443481,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0086_seed104328.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9648440480232239,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0087_seed104329.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.766333818435669,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0088_seed104330.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.48001351952552795,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0089_seed104331.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7026967406272888,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0090_seed104332.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7150822877883911,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0091_seed104333.png",
+      "mapped_prediction": "UNMAPPED:fear",
+      "predicted_model_label": "fear",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8609710335731506,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0092_seed104334.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9261282682418823,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0093_seed104335.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9458609223365784,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0094_seed104336.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.7680310606956482,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0095_seed104337.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9382011890411377,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0096_seed104338.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.8841547966003418,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0097_seed104339.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9640108942985535,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0098_seed104340.png",
+      "mapped_prediction": "crying",
+      "predicted_model_label": "sad",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.571718156337738,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/crying/crying_0099_seed104341.png",
+      "mapped_prediction": "angry",
+      "predicted_model_label": "angry",
+      "target_class": "crying"
+    },
+    {
+      "confidence": 0.9942786693572998,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0000_seed204242.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9366926550865173,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0001_seed204243.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9909263849258423,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0002_seed204244.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9945030212402344,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0003_seed204245.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9940556287765503,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0004_seed204246.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.5851733684539795,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0005_seed204247.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9907976388931274,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0006_seed204248.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.992305338382721,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0007_seed204249.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9892141222953796,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0008_seed204250.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.993827760219574,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0009_seed204251.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9947212934494019,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0010_seed204252.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9948222637176514,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0011_seed204253.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9943338632583618,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0012_seed204254.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9945381283760071,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0013_seed204255.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9941241145133972,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0014_seed204256.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9937061667442322,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0015_seed204257.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9929285645484924,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0016_seed204258.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9911694526672363,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0017_seed204259.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9949615001678467,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0018_seed204260.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9947896003723145,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0019_seed204261.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9944952130317688,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0020_seed204262.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9937939643859863,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0021_seed204263.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9943994879722595,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0022_seed204264.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9941295385360718,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0023_seed204265.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9950953722000122,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0024_seed204266.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9935731291770935,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0025_seed204267.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9945691823959351,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0026_seed204268.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9902499318122864,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0027_seed204269.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.992486834526062,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0028_seed204270.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9947801828384399,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0029_seed204271.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.993320882320404,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0030_seed204272.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9943203926086426,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0031_seed204273.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9936853051185608,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0032_seed204274.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9899918437004089,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0033_seed204275.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9933231472969055,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0034_seed204276.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9904841184616089,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0035_seed204277.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9940038323402405,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0036_seed204278.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.994163453578949,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0037_seed204279.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.993312418460846,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0038_seed204280.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9923861026763916,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0039_seed204281.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9813526272773743,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0040_seed204282.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9936482310295105,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0041_seed204283.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9912049174308777,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0042_seed204284.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9939363598823547,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0043_seed204285.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9943990111351013,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0044_seed204286.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9943335056304932,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0045_seed204287.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.99395751953125,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0046_seed204288.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.993782103061676,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0047_seed204289.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9928572177886963,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0048_seed204290.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9942514896392822,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0049_seed204291.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9947121143341064,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0050_seed204292.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9933921694755554,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0051_seed204293.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9942514896392822,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0052_seed204294.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9938321113586426,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0053_seed204295.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9268708229064941,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0054_seed204296.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9915744662284851,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0055_seed204297.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9933492541313171,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0056_seed204298.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9940090179443359,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0057_seed204299.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9941824078559875,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0058_seed204300.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9951363205909729,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0059_seed204301.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9930705428123474,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0060_seed204302.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9941180944442749,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0061_seed204303.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9933752417564392,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0062_seed204304.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.993202805519104,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0063_seed204305.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.980811595916748,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0064_seed204306.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9945030212402344,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0065_seed204307.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.992637038230896,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0066_seed204308.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9941139817237854,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0067_seed204309.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9933898448944092,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0068_seed204310.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9940412640571594,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0069_seed204311.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9943846464157104,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0070_seed204312.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9939407110214233,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0071_seed204313.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.990022599697113,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0072_seed204314.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.992649257183075,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0073_seed204315.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9912516474723816,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0074_seed204316.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.887795090675354,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0075_seed204317.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.994996190071106,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0076_seed204318.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9937180280685425,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0077_seed204319.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9944814443588257,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0078_seed204320.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9904454946517944,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0079_seed204321.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9924329519271851,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0080_seed204322.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9528470039367676,
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0081_seed204323.png",
+      "mapped_prediction": "UNMAPPED:neutral",
+      "predicted_model_label": "neutral",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9940956830978394,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0082_seed204324.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9939600229263306,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0083_seed204325.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9910126328468323,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0084_seed204326.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9947060942649841,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0085_seed204327.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9928963780403137,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0086_seed204328.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9927491545677185,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0087_seed204329.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9941113591194153,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0088_seed204330.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9919679760932922,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0089_seed204331.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9891961812973022,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0090_seed204332.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9883439540863037,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0091_seed204333.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9948668479919434,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0092_seed204334.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9928944706916809,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0093_seed204335.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9940080642700195,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0094_seed204336.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9311990737915039,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0095_seed204337.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9941579103469849,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0096_seed204338.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9934388995170593,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0097_seed204339.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.992841362953186,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0098_seed204340.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    },
+    {
+      "confidence": 0.9940855503082275,
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/generated/sd35_medium/happy/happy_0099_seed204341.png",
+      "mapped_prediction": "happy",
+      "predicted_model_label": "happy",
+      "target_class": "happy"
+    }
+  ],
+  "unmapped_predictions": {
+    "fear": 27,
+    "neutral": 24
+  },
+  "weighted_f1": 0.8648871042784693
+}

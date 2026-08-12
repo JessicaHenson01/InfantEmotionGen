@@ -1,0 +1,1961 @@
+{
+  "confusion": {
+    "angry->angry": 57,
+    "angry->crying": 9,
+    "angry->happy": 14,
+    "crying->angry": 33,
+    "crying->crying": 39,
+    "crying->happy": 8,
+    "happy->angry": 16,
+    "happy->crying": 7,
+    "happy->happy": 57
+  },
+  "image_count": 240,
+  "mean_target_cosine_x100": 31.185761398325365,
+  "metric": "OpenCLIP emotion alignment",
+  "model": "ViT-B-32",
+  "per_class": {
+    "angry": {
+      "count": 80,
+      "mean_target_cosine_x100": 30.17351681366563,
+      "mean_top1_margin_x100": 1.8107171542942524,
+      "zero_shot_accuracy": 0.7125
+    },
+    "crying": {
+      "count": 80,
+      "mean_target_cosine_x100": 32.46242651715875,
+      "mean_top1_margin_x100": 1.3851059786975384,
+      "zero_shot_accuracy": 0.4875
+    },
+    "happy": {
+      "count": 80,
+      "mean_target_cosine_x100": 30.921340864151716,
+      "mean_top1_margin_x100": 2.9818435572087765,
+      "zero_shot_accuracy": 0.7125
+    }
+  },
+  "pretrained": "laion2b_s34b_b79k",
+  "records": [
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/240_F_167162968_3XZTaU8jNBkBXMLM6TreWNJu0x3OyVer_jpg.rf.zbkrOE9i1qsAuhfiw6bo__3a36a95924.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 35.596734285354614,
+      "top1_margin_x100": 1.1937528848648071
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/360_F_1011479432_Iu6EkFwepmru65ufsIJGbF9GzqXxZuDl_1__jpg.rf.uBH73u2F5LwfBWZpnXEz__0d781637df.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 36.91454529762268,
+      "top1_margin_x100": 2.282613515853882
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/360_F_1459099633_1sSGJfctJY3DWsxLMazIxY9xjoLgGhMJ_jpg.rf.k3mCRMyZgrARU1WvhbHl__64fd030c1c.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 38.81669044494629,
+      "top1_margin_x100": 2.4156033992767334
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/aaefaf8c52b261c93d96a8f51088f133_jpg.rf.1ix7mp5vcaQOEvHv5Yn6__f4f8cae8e8.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 28.54788899421692,
+      "top1_margin_x100": 0.2515822649002075
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/angry-girl-blog-web_jpg.rf.tTqYYRX3alH8y7s57hZ6__915158d3d0.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 27.12428569793701,
+      "top1_margin_x100": 2.839483320713043
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/angry-little-girl-blue-background-260nw-1701488545_jpg.rf.xELRz2a8cu47ScvysVxR__faa6fb874c.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 29.59940731525421,
+      "top1_margin_x100": 1.9358634948730469
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/b588b6e7e8d1a28ef0a7400924ce73b5_jpg.rf.cT75AGpNi1PHvMW0su1T__ea64d96b46.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 38.80552053451538,
+      "top1_margin_x100": 1.3018399477005005
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/cheerful-indian-newborn-baby-close-up-R9CWBT_jpg.rf.7dSfgov4evwLGhoMXe7w__945298a7ed.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 29.452913999557495,
+      "top1_margin_x100": 0.060558319091796875
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/dA0G9a6_jpg.rf.yLj2Z4rnm27TycHUmZ9S__07a584aff1.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 31.72047734260559,
+      "top1_margin_x100": 0.8598208427429199
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/depositphotos_9431050-stock-photo-angry-little-girl-with-beautiful_jpg.rf.6WOp1eEsSHbZqwhIfRn8__db42403759.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 25.441953539848328,
+      "top1_margin_x100": 3.79580557346344
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-108997044-612x612_jpg.rf.PAiKIYVM137Qsd0QEVVF__1bfb1f28cd.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 38.371166586875916,
+      "top1_margin_x100": 1.6193568706512451
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-1173706355-612x612_1__jpg.rf.CZlPln6kUwvMK2oAe0u3__0989d575bb.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_cosine_x100": 32.94528424739838,
+      "top1_margin_x100": 0.44191479682922363
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-1363761788-612x612_jpg.rf.HT8JjGHuoOhlEjNwSA9i__d4749ea29d.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 28.390008211135864,
+      "top1_margin_x100": 0.006917119026184082
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-1494058197-612x612_1__jpg.rf.Qk2HGQVwvfUdE0RLgfJ9__9a82e74aae.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 33.44809412956238,
+      "top1_margin_x100": 4.71222996711731
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-154945639-612x612_jpg.rf.6GS7vb6WoCBGLl3ZFzIQ__cdc2a341f9.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 38.13520669937134,
+      "top1_margin_x100": 4.2282044887542725
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-168580888-612x612_jpg.rf.g5ScQ1118AOswaGyawjn__1e62d9dbd2.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 33.22668671607971,
+      "top1_margin_x100": 3.7460267543792725
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-171281963-612x612_jpg.rf.9YJkWV6MhxF2DTIrSBVq__2eed73123e.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 33.59370827674866,
+      "top1_margin_x100": 3.697451949119568
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-2164212503-612x612_jpg.rf.LBKdgp3uk3moZLUfcGqy__8cc46fa0e1.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 33.03154706954956,
+      "top1_margin_x100": 1.5339523553848267
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-527825734-612x612_jpg.rf.OoWGnwrKYmuk6zq7HiqR__675fd64806.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 31.782352924346924,
+      "top1_margin_x100": 2.8375476598739624
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-604434175-612x612_jpg.rf.a7I002FI7nI51SitkN8M__3acfa6a510.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 34.20242965221405,
+      "top1_margin_x100": 3.3006757497787476
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/gettyimages-92328495-612x612_jpg.rf.842gqUj2t1M7QGogD1yG__57fa881ceb.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 29.26006019115448,
+      "top1_margin_x100": 1.601824164390564
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/image_6__jpeg.rf.2dg0krHzneavXBhqdweT__73d9113e3b.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 27.007490396499634,
+      "top1_margin_x100": 3.1023919582366943
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_-_2025-06-29T115725_083_jpg.rf.O5u5PMR6uMWrLf6MEokV__ebd8a27f92.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 29.633820056915283,
+      "top1_margin_x100": 0.5566328763961792
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_12__jpg.rf.YTPhUfRy3qAHr1W9Kf4B__3977d59baf.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 31.55227303504944,
+      "top1_margin_x100": 0.5850523710250854
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_131__jpeg.rf.VvYG2kIy1CtqGoLpcWAK__6b27a915e6.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 32.272592186927795,
+      "top1_margin_x100": 3.3218711614608765
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_14__jpg.rf.PgKDN2BwEYLzPAZCRoNG__04cc77b6b3.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 29.241907596588135,
+      "top1_margin_x100": 3.1170785427093506
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_209__jpeg.rf.0M0GeBCabdFs4lq3xBrT__6fa473311f.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_cosine_x100": 31.865757703781128,
+      "top1_margin_x100": 0.1979619264602661
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_215__jpeg.rf.U1wTbjH9d5uvIGhCz2xq__3441f5760f.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 29.25267219543457,
+      "top1_margin_x100": 0.6569027900695801
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_23__jpg.rf.dBGUvElVZiQCVEXV2ZdF__6ce48971c8.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 31.00331425666809,
+      "top1_margin_x100": 1.3254880905151367
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_247__jpeg.rf.mHWbzanCyLgPuzjjfePU__350b11555b.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 32.078567147254944,
+      "top1_margin_x100": 1.3139575719833374
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_338__jpeg.rf.1llNTpOO9hL6y2leHIOS__833fcd3d7c.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_cosine_x100": 35.06592512130737,
+      "top1_margin_x100": 2.1937131881713867
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_34__jpg.rf.5OZpzSegN0lDpzf5Tc5O__227282cc4a.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 34.21339392662048,
+      "top1_margin_x100": 1.4301598072052002
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_49__jpg.rf.0zDNmWX5rAdyUd1FX9jF__54c9c621a2.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_cosine_x100": 28.18981409072876,
+      "top1_margin_x100": 0.08097589015960693
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_54__jpeg.rf.ll2mkXwbrzBuYfFczcie__648969014f.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 27.946889400482178,
+      "top1_margin_x100": 2.1253347396850586
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_57__jpeg.rf.0JFUwMJ0MVSrzN7I5PbW__4d88bf1b15.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 29.827535152435303,
+      "top1_margin_x100": 1.0663002729415894
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_65__jpeg.rf.ktv67jUmmR8dI27YonxP__6d31e0ef03.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 27.440664172172546,
+      "top1_margin_x100": 1.4722257852554321
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_74__jpeg.rf.RgBy1hWEtDLDisMo7bUF__c1c3c5dc5c.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 23.845909535884857,
+      "top1_margin_x100": 2.2511154413223267
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_80__jpg.rf.7sd8RxWVq78VHwfoHp1D__d5f24ca995.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_cosine_x100": 23.460498452186584,
+      "top1_margin_x100": 0.09561926126480103
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_95__jpeg.rf.zpQKV64ZZ242G7ir1JeR__fd39e8ad0e.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 28.90251874923706,
+      "top1_margin_x100": 2.8950124979019165
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/images_96__jpg.rf.6KTLygLQMez0IdBHVZHB__2fd66b029f.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 30.318045616149902,
+      "top1_margin_x100": 4.641750454902649
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1157958012-612x612_jpg.rf.j2Rdz056ZSFbUErXpzNA__f0291b5c47.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 32.43100643157959,
+      "top1_margin_x100": 1.3841629028320312
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1188475339-170667a_jpg.rf.C3sUzZJVvUxx9UqXePqW__a76e68983e.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 21.266788244247437,
+      "top1_margin_x100": 0.7728159427642822
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1212064339-612x612_jpg.rf.wtyYboFqYIMe49vd43PX__911cb50699.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 26.711389422416687,
+      "top1_margin_x100": 1.5421658754348755
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1264158203-612x612_jpg.rf.GawuRsiNWzkHACGPeCLM__cf6941d7f3.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_cosine_x100": 32.83582329750061,
+      "top1_margin_x100": 0.616985559463501
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1264356224-612x612_jpg.rf.DGQff8c7dybm79AYgYeZ__736238209c.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 30.526232719421387,
+      "top1_margin_x100": 3.50605845451355
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1292510770-640x640_jpg.rf.LNcREsVoYTccx43MQTbQ__434474c89a.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_cosine_x100": 25.522243976593018,
+      "top1_margin_x100": 0.385013222694397
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1344647673-612x612_jpg.rf.ZK5yAWbWlnYePOEC93Li__1ee7e1119f.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 32.401472330093384,
+      "top1_margin_x100": 3.0657976865768433
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1357592913-612x612_jpg.rf.6btLNmKytvhPAZRXj5vZ__8c19bcb617.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 31.18603229522705,
+      "top1_margin_x100": 2.812942862510681
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1369923391-612x612_jpg.rf.gM9V63nM3bvtiFJ0AOVi__6283aa4ff8.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 29.598692059516907,
+      "top1_margin_x100": 2.524900436401367
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1390099065-612x612_jpg.rf.jFupw3PkEgKL3KUsslfN__e3b193c4ae.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 28.44228446483612,
+      "top1_margin_x100": 1.3558387756347656
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1399186141-612x612_jpg.rf.gMbLvzPWfKoRU6ejkixq__bd6f6c5fb8.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 28.072887659072876,
+      "top1_margin_x100": 0.6300866603851318
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1441429466-612x612_jpg.rf.0gjUg257WPNYrIR9c7ng__a15e67bad8.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 35.305872559547424,
+      "top1_margin_x100": 2.8037339448928833
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1445552222-612x612_jpg.rf.bv5kPX5yfVDv3my097SF__51b6464a39.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 33.96416902542114,
+      "top1_margin_x100": 1.155942678451538
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1459570738-612x612_jpg.rf.qpBckjrfqFSezHfuVOzd__01581ff6b8.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_cosine_x100": 24.94722306728363,
+      "top1_margin_x100": 0.27151405811309814
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-149044226-612x612_jpg.rf.SDpwLM7J7VIarMmGEItZ__8bd9144349.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 31.420499086380005,
+      "top1_margin_x100": 2.9671072959899902
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-1495808061-612x612_jpg.rf.6KRqguSfEG4IJ1AHxo3m__8b506e6fd1.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 32.186728715896606,
+      "top1_margin_x100": 1.7837464809417725
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-172157037-612x612_jpg.rf.C6Sq2RYLRexfN9MovjDv__4b074b86b6.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 32.51453340053558,
+      "top1_margin_x100": 1.6962707042694092
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-178534101-612x612_jpg.rf.qNbuKeuikjy2VDFhOzIV__cb1e11380b.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 24.59334433078766,
+      "top1_margin_x100": 1.257137954235077
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-183299112-612x612_jpg.rf.qm1tFbtww0s7DbclHDPI__12c756d912.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 27.00417935848236,
+      "top1_margin_x100": 0.3964930772781372
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-186866947-612x612_jpg.rf.2Azi9OVLMenrIj3tJUCX__ae7ccbcc8b.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 26.94692313671112,
+      "top1_margin_x100": 0.29348433017730713
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-2035761162-612x612_1__jpg.rf.LGY7YNFmj7TcShnLzF0q__d519fb6b70.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 30.357366800308228,
+      "top1_margin_x100": 2.253079414367676
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-2164211145-612x612_jpg.rf.r5Bd2BDoTISleI5We227__924ea00ae6.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 29.645130038261414,
+      "top1_margin_x100": 0.3827989101409912
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-2201860240-612x612_jpg.rf.LW3nBUZQ1g0uDfuV0W8G__0bedc0759f.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 22.803813219070435,
+      "top1_margin_x100": 0.8379071950912476
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-2221481634-612x612_jpg.rf.O3KmRd9xh6bPrVAQ0CuG__e397ad8874.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 24.19237196445465,
+      "top1_margin_x100": 1.985032856464386
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-466187626-612x612_jpg.rf.HXOkzatzrPCPnpMono4T__a0ff716472.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 30.304938554763794,
+      "top1_margin_x100": 2.8156518936157227
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-466712526-612x612_jpg.rf.7ZBBi874YUlQ3mirMTPJ__1ec0625b10.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 29.52861785888672,
+      "top1_margin_x100": 0.651291012763977
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-471452961-612x612_jpg.rf.71ehKleXcDy6ubYgFdMZ__19719be445.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 35.591524839401245,
+      "top1_margin_x100": 1.9827157258987427
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-482588284-612x612_jpg.rf.ycl3X0R8jL75GqUrzF3l__65650b8901.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 26.57080888748169,
+      "top1_margin_x100": 4.9682289361953735
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-508151500-612x612_jpg.rf.DcHYCLQGL02l6epgliqo__087d1f1058.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 26.298564672470093,
+      "top1_margin_x100": 0.5709648132324219
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-511648317-612x612_jpg.rf.wRImgG68U2g7f8H1lF5B__6038eb238d.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 31.047427654266357,
+      "top1_margin_x100": 1.0373443365097046
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-523478150-612x612_jpg.rf.7dZaEiyNaxklg5C9qphf__82c76b3f5d.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 15.24800956249237,
+      "top1_margin_x100": 1.3380959630012512
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-537584791-612x612_jpg.rf.3R0MVSDMmSQwMlGWQcPH__472919dcbb.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 29.495209455490112,
+      "top1_margin_x100": 0.7673323154449463
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-602332284-612x612_jpg.rf.R89FO14jkD7DtACPQuw5__12c6133ba9.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 30.531513690948486,
+      "top1_margin_x100": 3.970208764076233
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-668430802-612x612_jpg.rf.B7sgc2Q5aO73uiMJU63t__b1e962ea03.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 31.110283732414246,
+      "top1_margin_x100": 2.0955711603164673
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-904776268-612x612_jpg.rf.KpiCMWtsAz4ey8WQ9LUn__7b56900f43.png",
+      "predicted_class": "happy",
+      "target_class": "angry",
+      "target_cosine_x100": 31.232941150665283,
+      "top1_margin_x100": 0.5187630653381348
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-93355247-612x612_jpg.rf.Nc3TLdjejUynJabGHOSK__032e2ee173.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 34.25511717796326,
+      "top1_margin_x100": 2.3206233978271484
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/istockphoto-964287450-612x612_jpg.rf.PbTZD2oWgTbkMO7G70W0__78e288a8f2.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 31.572183966636658,
+      "top1_margin_x100": 0.9535938501358032
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/newborn-baby-girl-with-serious-face-looks-to-the-side-while-_jpg.rf.gytsvxlajtsLbPDDOaSc__9da16e1a70.png",
+      "predicted_class": "crying",
+      "target_class": "angry",
+      "target_cosine_x100": 30.27130365371704,
+      "top1_margin_x100": 0.9123027324676514
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/portrait-little-angry-toddler-girl-260nw-76643389_webp.rf.0FgKSkueWmLgIftFxkGU__96a7844caa.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 29.542148113250732,
+      "top1_margin_x100": 4.371660947799683
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/angry/portrait-of-a-beautiful-angry-girl-DT7M81_jpg.rf.oqc6dSnXAOfOD7tSWo4h__9ec0c3ae18.png",
+      "predicted_class": "angry",
+      "target_class": "angry",
+      "target_cosine_x100": 24.877193570137024,
+      "top1_margin_x100": 1.8094360828399658
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/18-1020-Baby-Crying-In-Kitchen-9_4x3_jpg.rf.AOZjsKoWYKqHtJGZFE5A__6dec704402.png",
+      "predicted_class": "happy",
+      "target_class": "crying",
+      "target_cosine_x100": 33.78261625766754,
+      "top1_margin_x100": 0.40944814682006836
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/24682085-cute-baby-girl-crying-over-white-bedcover_1__jpg.rf.8mijMZFopKYyuWgzk3Hw__f45f3e4c20.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 34.23796892166138,
+      "top1_margin_x100": 1.7131954431533813
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/5943446-portrait-of-cute-baby-boy-1-year-old-at-home-looking-away_jpg.rf.JheEvf6dGG4BbbB0oWy6__2cbc29a840.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 24.196961522102356,
+      "top1_margin_x100": 3.0809223651885986
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/6ce4614696e4c549b979446700b78fa7_jpg.rf.a37CTNRsV7Q9PYGjVb5F__b54b4f5f8c.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 26.727744936943054,
+      "top1_margin_x100": 1.7953187227249146
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/76554691_jpg.rf.XRtJxEpDgN0D7EY1Ld7m__cb22ba2562.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 28.638219833374023,
+      "top1_margin_x100": 0.6783664226531982
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/A-cute-baby-girl-398004-pixahive-683x1024_jpg.rf.6YNXxjIt8L5RCgYMQdqw__68e23c41fb.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 28.88108491897583,
+      "top1_margin_x100": 1.3391852378845215
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/Weekly_Week-82-Hero-e1592838526503_jpg.rf.6IY5WgBZIzaQW6ZukkTd__5387ae037e.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 34.0959906578064,
+      "top1_margin_x100": 0.8023500442504883
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/adorable-new-born-baby-crying-shouting_58409-12447_jpg.rf.K1nHDfaNmlx7ypXMRO6j__7c568edf70.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 35.29396653175354,
+      "top1_margin_x100": 2.245640754699707
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/be14a3a1916a5ac15f3716efe6768e88_jpg.rf.mOqtTzJekYUya8pQ3AGG__37a62e5022.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 30.179467797279358,
+      "top1_margin_x100": 0.17433464527130127
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/closeup-portrait-of-cute-little-baby-girl-crying-in-pink-pajama-hat-CNR1F1_jpg.rf.QS0KuinomieBD1g182sQ__0ef46c7b1e.png",
+      "predicted_class": "happy",
+      "target_class": "crying",
+      "target_cosine_x100": 33.333659172058105,
+      "top1_margin_x100": 0.11179745197296143
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/crying-baby-5489270_jpg.rf.wlMgA96RJinZ4hx9yljR__a0fefffa43.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 33.71589183807373,
+      "top1_margin_x100": 0.5859673023223877
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/crying-infant-baby-boy-at-the-age-of-four-months-close-up-po_jpg.rf.e4CMFOM1DiEGWnmnbkRB__28d59d4763.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 33.93011689186096,
+      "top1_margin_x100": 1.3887882232666016
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/crying_toddler-732x549-thumbnail-732x549_jpg.rf.dJhlIpfEpTOAr6AzThe4__f282e37327.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 34.334784746170044,
+      "top1_margin_x100": 2.8526723384857178
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/cute-angry-new-born-baby-face-H7MXC8_jpg.rf.e1vYcXN8BrFNHww8gzXb__9a1774739e.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 33.86395573616028,
+      "top1_margin_x100": 2.2827118635177612
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/cute-baby-girl-crying-CX751H_jpg.rf.qNHjbnyDGBwSJtYGJoGy__26d25d34f5.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 31.619155406951904,
+      "top1_margin_x100": 0.8964568376541138
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/free-photo-of-cute-little-girl-in-pink-dress_jpeg.rf.xoDkVDXmpCJdrXsrsdG9__81fcdb781f.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 25.8658230304718,
+      "top1_margin_x100": 2.2951900959014893
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/gettyimages-77188236-612x612_jpg.rf.Ay6URdhZFXBHvjHYKJhy__2d558e1ae9.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 33.721545338630676,
+      "top1_margin_x100": 0.3132671117782593
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/image_11__jpeg.rf.RfirVvFsrpJxGLNasdPs__41859aae8c.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 32.6551079750061,
+      "top1_margin_x100": 1.6687780618667603
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/image_13__jpeg.rf.SxUvyrnSlkS4mbNZ25Cf__3a38607c18.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 34.52438414096832,
+      "top1_margin_x100": 0.6502091884613037
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_106__jpeg.rf.cGurBFhgyLBAISzDH3VW__3e9ad5eb5c.png",
+      "predicted_class": "happy",
+      "target_class": "crying",
+      "target_cosine_x100": 31.68284296989441,
+      "top1_margin_x100": 4.075688123703003
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_123__jpeg.rf.0vMuVZ31wensfPQayLPJ__612f5e9fc3.png",
+      "predicted_class": "happy",
+      "target_class": "crying",
+      "target_cosine_x100": 24.368740618228912,
+      "top1_margin_x100": 0.2745881676673889
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_237__jpeg.rf.9q4pi7uSf5vD4bc7tSRJ__5605bc0845.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 31.38485550880432,
+      "top1_margin_x100": 3.3920258283615112
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_2__jpeg.rf.zAcwgW0etCane13BD7z9__85a0356e15.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 33.666402101516724,
+      "top1_margin_x100": 2.547365427017212
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_31__jpeg.rf.SFTmPhIZ64LWh7NESrah__688eb4e9fe.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 35.8758807182312,
+      "top1_margin_x100": 3.270214796066284
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_46__jpeg.rf.BZSBa32ysLm7HFEfybH2__f07af51934.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 33.978623151779175,
+      "top1_margin_x100": 1.4264553785324097
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_5__jpg.rf.AMZWNWgV3OekTjERgl0R__0861a43f39.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 29.908812046051025,
+      "top1_margin_x100": 0.28908252716064453
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_72__jpeg.rf.wd7pfXrHIXzB15XTVG0d__240cd6f697.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 35.6436550617218,
+      "top1_margin_x100": 1.2764275074005127
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_76__jpeg.rf.CFtZW9OAA0nBO7kTrSTj__c4d2dd7b95.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 33.693110942840576,
+      "top1_margin_x100": 1.5532732009887695
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_83__jpeg.rf.yGKm3LWBcOTsa8JsN4ev__a4d8ded71e.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 34.45141911506653,
+      "top1_margin_x100": 0.2609431743621826
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_87__jpeg.rf.N1OiqVNEWYZmztXoVVDm__476e539438.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 36.97827160358429,
+      "top1_margin_x100": 2.103295922279358
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/images_99__jpeg.rf.losA1JWfTmvXo6ZopNq8__f0456f171f.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 32.34243392944336,
+      "top1_margin_x100": 2.566814422607422
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1021086246-612x612_jpg.rf.x8qjHSZuJZi4NpJHrqvD__a27c4cda4f.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 33.07330012321472,
+      "top1_margin_x100": 0.9306728839874268
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1034319328-612x612_jpg.rf.PORXNBbiXYSELKCinyK6__539ec4dc35.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 32.15299844741821,
+      "top1_margin_x100": 0.5236417055130005
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1049288320-612x612_jpg.rf.bzAcZQXd1zgyFa1S0MV0__a649983136.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 30.490267276763916,
+      "top1_margin_x100": 0.45405328273773193
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1124736125-612x612_jpg.rf.cibzBXsvVlCYf0D8yB5n__fe77e057c5.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 35.885193943977356,
+      "top1_margin_x100": 1.1597126722335815
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1127266905-612x612_jpg.rf.9dKtzPR6CPehco22hRdR__a35bb4eeb1.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 32.55932927131653,
+      "top1_margin_x100": 0.04349946975708008
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1156610580-612x612_jpg.rf.vUeiQc2RMDM05v1aFaJe__d9e1b2137d.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 30.33682107925415,
+      "top1_margin_x100": 1.681208610534668
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1161296844-640x640_jpg.rf.XQzaR0jWKHjTzUiWjF0E__3c9356de95.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 36.64225935935974,
+      "top1_margin_x100": 1.1314988136291504
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1187554229-612x612_jpg.rf.S8Wxo6vBs7nwp6cbm9xp__1fd5c7fca3.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 34.390026330947876,
+      "top1_margin_x100": 1.5937566757202148
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1206516215-612x612_jpg.rf.8TVpUskSQi3mOd6Juai5__d114277b36.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 34.156447649002075,
+      "top1_margin_x100": 1.2296438217163086
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-121026784-612x612_jpg.rf.5dXTVDGBgMqiMCdUpJa7__bc60adec2f.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 31.839579343795776,
+      "top1_margin_x100": 0.20982027053833008
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1220409674-612x612_jpg.rf.1Ln9zHLMedz6cnAFR0fP__cd00e84775.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 31.4415842294693,
+      "top1_margin_x100": 2.95962393283844
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1252856878-612x612_jpg.rf.hVGpIY3OwqXZL2i7YEA7__38e83bc645.png",
+      "predicted_class": "happy",
+      "target_class": "crying",
+      "target_cosine_x100": 32.18055963516235,
+      "top1_margin_x100": 4.230865836143494
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1279845260-612x612_jpg.rf.xNJnhcQyO7thhk4kk72A__aaf9e41d67.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 32.695043087005615,
+      "top1_margin_x100": 0.5770504474639893
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1306870800-612x612_jpg.rf.QWzd5kROzbRrDWUsrMg4__da2437c657.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 35.09691655635834,
+      "top1_margin_x100": 2.6981860399246216
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1321280779-612x612_jpg.rf.2hqvipe6NFz0tzFSJ5b2__13bdb882b1.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 35.96917986869812,
+      "top1_margin_x100": 1.0774433612823486
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1321420383-612x612_jpg.rf.CyrBmpZLumpCTowwSJ9h__0e7d20cc07.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 34.87280011177063,
+      "top1_margin_x100": 1.2364208698272705
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1334317252-612x612_jpg.rf.2nW2UGouC1WKKJcWZJTL__a56ff6b587.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 33.65751504898071,
+      "top1_margin_x100": 0.25673508644104004
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1345364741-612x612_jpg.rf.11uEnx6CFDmF6SJXzyiD__5e585f60e4.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 36.116284132003784,
+      "top1_margin_x100": 0.7380276918411255
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1345364745-612x612_jpg.rf.2nHSj3Tfa3PfkUiZeW1x__f6a9940a5c.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 32.9925000667572,
+      "top1_margin_x100": 3.0541062355041504
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1388274989-612x612_jpg.rf.cgnFWoYxH3QhiTECt9C7__4a70b5a7f6.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 33.76852869987488,
+      "top1_margin_x100": 0.9115934371948242
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1402451348-640x640_jpg.rf.PVmpDtIzNkSBpMjjgbln__36bacb4956.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 30.43280839920044,
+      "top1_margin_x100": 0.8620083332061768
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1408645525-612x612_jpg.rf.Rp1UClYC91IV3pUw9FpF__9a4428da55.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 33.36145281791687,
+      "top1_margin_x100": 0.003984570503234863
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1425179665-612x612_jpg.rf.cv90hXnCvmDIggGNES5c__15c39bc735.png",
+      "predicted_class": "happy",
+      "target_class": "crying",
+      "target_cosine_x100": 33.20828080177307,
+      "top1_margin_x100": 2.360084652900696
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1442298500-612x612_jpg.rf.abCvJwh1TN2FNCgq1mGK__df6d07ce6d.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 35.374823212623596,
+      "top1_margin_x100": 1.6640633344650269
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1447398663-612x612_jpg.rf.Ab5Pn2ZQYc8DdNq7o8tH__f7755e6953.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 35.30345559120178,
+      "top1_margin_x100": 0.48590898513793945
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-146895682-612x612_jpg.rf.NxLEaE7LVcy6CQPKbiUC__a4e5fd1f68.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 32.50586986541748,
+      "top1_margin_x100": 0.36962926387786865
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1480015054-612x612_jpg.rf.hJsBeOmUHFzYgjke1ut3__878cfef0d9.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 33.02003741264343,
+      "top1_margin_x100": 0.5263060331344604
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-172332690-612x612_jpg.rf.fjahUzAEoGvvmg11BWcN__30cc6313b5.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 30.310744047164917,
+      "top1_margin_x100": 2.037787437438965
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-172379801-612x612_jpg.rf.M029Z6HEB34GNEedk9R8__7bed04c8e4.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 28.258875012397766,
+      "top1_margin_x100": 2.076500654220581
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1795271638-612x612_jpg.rf.KKetolrWVlUlikLmj90j__232a754018.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 37.69233822822571,
+      "top1_margin_x100": 2.1596014499664307
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-182707440-612x612_jpg.rf.RNa81m0WjzIHDhwO7svD__1cfd90f7f3.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 33.861011266708374,
+      "top1_margin_x100": 0.3651559352874756
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-187242597-612x612_jpg.rf.n3ataBpaEnEMc1siFjd2__b0478d0d71.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 33.51872265338898,
+      "top1_margin_x100": 2.572593092918396
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-1937875587-612x612_jpg.rf.A3O3reNPzt74i2x1EDYK__b7a56f22e5.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 33.91996622085571,
+      "top1_margin_x100": 0.2507239580154419
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-2047924638-612x612_jpg.rf.Q1rUwALoFbWJ00dkH4he__1b86d74524.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 33.719414472579956,
+      "top1_margin_x100": 1.534724235534668
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-2113089453-612x612_jpg.rf.2obpit136AlqBLaXHOk6__530120aa8b.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 28.071564435958862,
+      "top1_margin_x100": 2.625042200088501
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-2164386069-612x612_jpg.rf.qRCStBj6gwcEVJpTJUid__e6c77d0e39.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 32.04337954521179,
+      "top1_margin_x100": 2.1077990531921387
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-2167401413-612x612_jpg.rf.j6XidwBtgzJb6voEitsb__50db5088ff.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 27.7090847492218,
+      "top1_margin_x100": 0.5548030138015747
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-2187836622-612x612_jpg.rf.AtSJWTEYhbEeJlRwkdvu__6b41348a12.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 32.66982138156891,
+      "top1_margin_x100": 0.6052345037460327
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-535803623-612x612_jpg.rf.GvuHhAQ2RFIk8ksEyPRV__7f2ab7aa70.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 32.433369755744934,
+      "top1_margin_x100": 0.3395885229110718
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-886972318-612x612_jpg.rf.PpSSTHGVDt6TlmBnGPeV__47400709c4.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 33.792415261268616,
+      "top1_margin_x100": 0.7324129343032837
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-942424374-612x612_jpg.rf.GzicprjEw4UP9jUUzSrJ__4a769d40ab.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 30.026739835739136,
+      "top1_margin_x100": 0.3932654857635498
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/istockphoto-987451706-612x612_jpg.rf.uiEUzwNGGpqYjjT9GNnd__07c0158d9f.png",
+      "predicted_class": "happy",
+      "target_class": "crying",
+      "target_cosine_x100": 29.138267040252686,
+      "top1_margin_x100": 0.9334683418273926
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/mag_ap_bab2_042_wide_jpg.rf.dtZznm9BCf5ah6NRPHzd__e3d7111080.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 37.09145784378052,
+      "top1_margin_x100": 1.3104349374771118
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/newborn-baby-cries-on-white-260nw-2093568406_jpg.rf.xBxkPKDY7exObmXEQ8wi__21620415f2.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 33.35353136062622,
+      "top1_margin_x100": 0.23694634437561035
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/portrait-cute-adorable-little-african-260nw-1761215723_jpg.rf.kJ9OvKkmBQXkkYLkEdNd__a2d72ddc49.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 28.373754024505615,
+      "top1_margin_x100": 0.9727209806442261
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/sad-baby-1578986_jpg.rf.Df528NPpJBkOr2KJVotI__21593d15d8.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 32.12496042251587,
+      "top1_margin_x100": 0.9095430374145508
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/sad-cryig-little-baby-closeup-vintage-style-portrait-crying-_jpg.rf.ydkmBIOCEOLriLWfI2vK__d3b055f5e7.png",
+      "predicted_class": "happy",
+      "target_class": "crying",
+      "target_cosine_x100": 26.016491651535034,
+      "top1_margin_x100": 3.2367557287216187
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/sad-crying-baby-on-white-background-child-emotions-concept-illustration-photo_jpeg.rf.S0x3MNIT6pfJd28IF9B3__c48d891efc.png",
+      "predicted_class": "angry",
+      "target_class": "crying",
+      "target_cosine_x100": 30.31418025493622,
+      "top1_margin_x100": 3.1162619590759277
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/crying/sddefault_jpg.rf.h4xlEWneK0UIb62m4UNz__689a73dd1d.png",
+      "predicted_class": "crying",
+      "target_class": "crying",
+      "target_cosine_x100": 31.456676125526428,
+      "top1_margin_x100": 0.44679343700408936
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/151503124-a-cute-indian-innocent-new-born-baby-in-a-jovial-m_jpg.rf.SoTFU2btIuxXd1dB0tIk__7027192377.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 34.487321972846985,
+      "top1_margin_x100": 5.409541726112366
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/20c7ce68427e60072314e64f969ef0a6_jpg.rf.kWOPaobiieCMXHBTKsNE__ed5fdbb701.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 34.03095006942749,
+      "top1_margin_x100": 3.7295103073120117
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/3077730-portrait-of-beautiful-happy-baby-on-the-grass_jpg.rf.xgXgX8l3IOWbqxYeWRv3__973eb41a2e.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 32.330381870269775,
+      "top1_margin_x100": 3.2510906457901
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/309c896e007a14e29a4b02cc968195c2_jpg.rf.llF4UZ6rxn7HZw2jpVOx__8fbe83b0a5.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 17.846886813640594,
+      "top1_margin_x100": 1.070845127105713
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/34696481533_36fc9a025d_z_jpg.rf.L0NQ6DuGw2QEncnTB89m__dd5e2ad63f.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 27.903735637664795,
+      "top1_margin_x100": 4.3943822383880615
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/360_F_979694325_iR40yD8K0rEgQ1sHqffxl35jCBzjqTOI_jpg.rf.ljgsWwltcKPopPgR6DoE__4802903f82.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 35.783860087394714,
+      "top1_margin_x100": 4.754608869552612
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/4fb69ff5b2ca7-image_jpg.rf.bjwMZSmANb2GN8h8QAnZ__bfc5d7980b.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 32.20081329345703,
+      "top1_margin_x100": 6.343850493431091
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/58f89645934dba2aef8a94c873a87808_jpg.rf.Bm7adPbtP7NgkoFi9aVF__923e7d0aaa.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 33.01580250263214,
+      "top1_margin_x100": 2.699562907218933
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/685180358c3d7-image_jpg.rf.q7EYJbXUwa6Np48WOrRs__aea097d005.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 33.39163064956665,
+      "top1_margin_x100": 4.558092355728149
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/COLOURBOX51845276_jpg.rf.QBTUW3aWMpC49UVGM0Ic__0963f045ed.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 34.22357439994812,
+      "top1_margin_x100": 1.5323400497436523
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/aa082d0cf7c60a28026e9c8b15d20d2b_jpg.rf.xHIzhNn9Ra6SXmtnarZm__b9079bc66f.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 33.02648663520813,
+      "top1_margin_x100": 4.460036754608154
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/adorable-baby-crawling-on-soft-white-blanket-smiling-joyfully-at-camera-photo_jpg.rf.k96oaRLTqAkK67lTI3JS__ed4c312c35.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 35.815367102622986,
+      "top1_margin_x100": 5.897721648216248
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/af1520f04970290d44a428f3d1784acd_jpg.rf.yn2TCiNJdcxeWvahHMEU__e2a4d48444.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 18.20899248123169,
+      "top1_margin_x100": 0.18036067485809326
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/b8e95576a47bf2ff13ab6b1495af0c53_jpg.rf.YnFMCKwTQ3lcJsK0IpwR__9ce4516891.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 31.41600787639618,
+      "top1_margin_x100": 3.8752108812332153
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/baby-face-massage-background-mother-gently-stroking-baby-boy_jpg.rf.Pf9Y4sOyxtVkQlbdGQ09__8647279936.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 30.236589908599854,
+      "top1_margin_x100": 3.067415952682495
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/baby-portrait-smile-lying-on-260nw-2482458223_jpg.rf.vkD0cbRRJP4FMXmW4XLN__48e62f5518.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 34.62740480899811,
+      "top1_margin_x100": 3.0326932668685913
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/baby-with-peach-background-smiling-and-happy-free-photo_jpg.rf.a9SmOVvTpJDPy7kjvf5p__8e3801e3a6.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 32.92200565338135,
+      "top1_margin_x100": 3.2245129346847534
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/beautiful-smiling-cute-baby-expressive-260nw-1483286045_webp.rf.I3rxRgRSNsAbc6EAnNw7__a143f07e19.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 34.36255753040314,
+      "top1_margin_x100": 4.962161183357239
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/cute-baby-boy-on-natural-background-2BFJAB7_jpg.rf.tCB2XdWBp2G26akZuH62__65303f39af.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 30.629050731658936,
+      "top1_margin_x100": 3.1725138425827026
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/cute-baby-girl-bow-on-260nw-1170655525_webp.rf.jqtATV959DW1L7de78Fe__2b7e11d5ae.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 31.30456805229187,
+      "top1_margin_x100": 3.2699525356292725
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/cute-newborn-asian-baby-with-smiling-happy-face-family-happy_jpg.rf.5kRc1ktbXN9S1Y9Xmu4Z__9c95aeee6e.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 32.43062496185303,
+      "top1_margin_x100": 1.4161169528961182
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/cute-smiling-baby-boy-dimples-footage-072407927_iconl_webp.rf.ztniyilmFUikl6DBVYOO__e5529ef571.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 30.698713660240173,
+      "top1_margin_x100": 1.4956474304199219
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/d4d5a587efa45dc57c0df4aa4afc8f4c_jpg.rf.iP14L1qMKY3b0ecqNiIn__139654ac56.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 30.489587783813477,
+      "top1_margin_x100": 1.301640272140503
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/depositphotos_269310676-stock-photo-cute-indian-baby-girl-playing_jpg.rf.Ic2ihqagCOVnbq6s88kR__82d6069dec.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 26.27306580543518,
+      "top1_margin_x100": 1.0747313499450684
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/happy-baby-cute-little-newborn-baby-with-smiling-face_758367_jpg.rf.jDn15hPsfLZejY4nkFfD__be6c4ad2d3.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 35.66746115684509,
+      "top1_margin_x100": 1.6494512557983398
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/happy-family-cute-asian-newborn-baby-wear-blue-shirt-lying-c_jpg.rf.HXIBRoY8ThOOrNb1YVkl__3d95a27796.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 31.45459294319153,
+      "top1_margin_x100": 0.71372389793396
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/image_7__jpeg.rf.hq832QOPDZGjcpARR0u6__c4dc900d7d.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 35.03393530845642,
+      "top1_margin_x100": 4.464346170425415
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_107__jpeg.rf.BIJwh6fPHq7zvjYso2mP__026d2c293e.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 30.071863532066345,
+      "top1_margin_x100": 0.1905202865600586
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_143__jpeg.rf.kEmsI17atExX6xlCE7Bi__75ad990e1d.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 28.9544939994812,
+      "top1_margin_x100": 0.9049057960510254
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_146__jpeg.rf.B5BEgCZQvdroRmoneGUy__0b2c243805.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 33.541226387023926,
+      "top1_margin_x100": 4.484778642654419
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_164__jpeg.rf.rIkhgvo8ooGpydaWX9uj__b5416ea7cd.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 29.90671396255493,
+      "top1_margin_x100": 1.249861717224121
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_193__jpeg.rf.MD7Qa4Mqug4j9zTXyRRj__1a0db72ec1.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 28.037476539611816,
+      "top1_margin_x100": 1.2143641710281372
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_206__jpeg.rf.5iaeqmHqwQjxaS0Df6Sz__29ca8fff6c.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 29.787662625312805,
+      "top1_margin_x100": 1.1789888143539429
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_222__jpeg.rf.OGAjSoXVWpeDBzWaoiy5__8b0a404113.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 34.08769965171814,
+      "top1_margin_x100": 4.155451059341431
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_24__jpg.rf.1WOY5cb5xnkzapXcwgsd__7429c8cd0b.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 29.319024085998535,
+      "top1_margin_x100": 2.958822250366211
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_25__jpg.rf.pfqnf7GI8vNf3KRap7zk__0b278289bc.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 35.67734956741333,
+      "top1_margin_x100": 3.0844688415527344
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_277__jpeg.rf.rowacuF042COecFRCzxZ__88de91a3ae.png",
+      "predicted_class": "crying",
+      "target_class": "happy",
+      "target_cosine_x100": 27.517330646514893,
+      "top1_margin_x100": 0.0025957822799682617
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_27__jpg.rf.JUaN6YqZiXshUVE0Jg9y__9d297f7685.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 30.624639987945557,
+      "top1_margin_x100": 1.8302083015441895
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_282__jpeg.rf.I5OR3BZ3LZU0NNtLt2Fz__94317ad493.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 33.98374021053314,
+      "top1_margin_x100": 4.3797701597213745
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_290__jpeg.rf.4xTsE7ApJOwMlLQ4tow8__029a8965e3.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 32.10684657096863,
+      "top1_margin_x100": 4.437878727912903
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_30__jpeg.rf.m2ThvKoPFg9mkGgCouNg__0d1f799f2b.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 29.302772879600525,
+      "top1_margin_x100": 2.843809127807617
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_362__jpeg.rf.eT2ffghnqqbUOo8zj267__641a24d983.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 21.21559977531433,
+      "top1_margin_x100": 1.8419831991195679
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_364__jpeg.rf.7bF0AODYtWK8TTjXY3WG__29d3b0c674.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 31.085723638534546,
+      "top1_margin_x100": 7.267798483371735
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_399__jpeg.rf.iOiSdM1Q2nfnM630ehZe__1f2d07d926.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 33.90969932079315,
+      "top1_margin_x100": 2.5831371545791626
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_405__jpeg.rf.q45MkJALXw7R1JRWbh4z__a43502a6ee.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 33.62956345081329,
+      "top1_margin_x100": 3.0405133962631226
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_409__jpeg.rf.mPvBlqRkInm8PTpxO7Ni__19789dbb76.png",
+      "predicted_class": "crying",
+      "target_class": "happy",
+      "target_cosine_x100": 29.457026720046997,
+      "top1_margin_x100": 0.732111930847168
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_440__jpeg.rf.l21L1BIELGL6qyyMujdm__210079dbf3.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 29.7137588262558,
+      "top1_margin_x100": 4.89809513092041
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_443__jpeg.rf.ec2kRE4KnvOZVjXdzU5V__7c148b526a.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 35.42537987232208,
+      "top1_margin_x100": 3.2590776681900024
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_45__jpg.rf.z9iFnqpDG0ewaueStNXm__b715022fcc.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 29.579752683639526,
+      "top1_margin_x100": 2.222651243209839
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_474__jpeg.rf.OEzzKG861GZ9nE13Vx7B__3dab35140b.png",
+      "predicted_class": "crying",
+      "target_class": "happy",
+      "target_cosine_x100": 20.546245574951172,
+      "top1_margin_x100": 2.0029813051223755
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_479__jpeg.rf.BLnqaRxQzbSCFeE7BLWj__fcd664ca24.png",
+      "predicted_class": "crying",
+      "target_class": "happy",
+      "target_cosine_x100": 27.595335245132446,
+      "top1_margin_x100": 0.12748241424560547
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_47__jpeg.rf.BMgL12NrUhus4JhlDS0P__3aaaa7ccb0.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 31.30233585834503,
+      "top1_margin_x100": 2.4461179971694946
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_4__jpg.rf.iVR2miHACpYQQ28viKHt__1bd6e1a248.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 35.08253991603851,
+      "top1_margin_x100": 5.12065589427948
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_516__jpeg.rf.Schv7826Mq3fwRNJjVZz__134bf23f51.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 32.60555863380432,
+      "top1_margin_x100": 5.196863412857056
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_57__jpg.rf.oNuiXi48atyvNKpZpdx4__20ef8fa2d8.png",
+      "predicted_class": "crying",
+      "target_class": "happy",
+      "target_cosine_x100": 29.573974013328552,
+      "top1_margin_x100": 1.6074955463409424
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_65__jpg.rf.mPRGSsz4ytdxlcdNgG2L__29184ec88c.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 26.908165216445923,
+      "top1_margin_x100": 2.8932511806488037
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_72__jpg.rf.9LKYTZL3hSfjKwONbgAF__82e0dfc4fe.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 32.25535452365875,
+      "top1_margin_x100": 3.0650287866592407
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_77__jpg.rf.4IFNFNGeRGS2xq4FNxYl__2bc309eeb4.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 25.828665494918823,
+      "top1_margin_x100": 0.4314154386520386
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_81__jpeg.rf.xlZdJXmFoJK3W3adePe3__dddbbec64e.png",
+      "predicted_class": "crying",
+      "target_class": "happy",
+      "target_cosine_x100": 22.967129945755005,
+      "top1_margin_x100": 1.7834722995758057
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_93__jpeg.rf.fQlLWjemaMuoYsWLMqls__e69a96e805.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 32.46833086013794,
+      "top1_margin_x100": 1.878422498703003
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_94__jpeg.rf.QORQkq8TIhcDQVoKLk8e__3f311abed1.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 36.05896830558777,
+      "top1_margin_x100": 1.832205057144165
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/images_97__jpg.rf.fXaEWHyY5cYL1ILIdYaL__f32a32c4c7.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 35.33974885940552,
+      "top1_margin_x100": 5.32798171043396
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/istockphoto-1245081377-612x612_jpg.rf.SQ9ZHgPu5iSo7kkzlQ86__dbd156ce3a.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 37.9161536693573,
+      "top1_margin_x100": 3.5703718662261963
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/istockphoto-1355259577-612x612_jpg.rf.IJaRMkIJVNWsPDA0Gy3N__1193d7a292.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 31.544440984725952,
+      "top1_margin_x100": 1.4118671417236328
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/istockphoto-1432807347-612x612_jpg.rf.AO5vLYjSWRdRkTmMdMPj__29a2f7e3a0.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 33.84813666343689,
+      "top1_margin_x100": 4.472059011459351
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/istockphoto-144319974-612x612_1__jpg.rf.y8q7bjR3NPqadES829em__7b9bae87f5.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 28.134888410568237,
+      "top1_margin_x100": 3.669685125350952
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/istockphoto-177434529-612x612_jpg.rf.66gtm3tTREHD73A9XfUj__d691e40164.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 34.711772203445435,
+      "top1_margin_x100": 3.6205649375915527
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/istockphoto-184880422-170667a_jpg.rf.hWW3GPFFKAomZRoUNvzG__de5dd8cb64.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 31.2735915184021,
+      "top1_margin_x100": 1.2636274099349976
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/istockphoto-488181405-612x612_jpg.rf.m2U2ECmiIyMIPOtBUSo3__4429661d61.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 32.91008472442627,
+      "top1_margin_x100": 3.592902421951294
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/istockphoto-892959344-612x612_jpg.rf.nqZW9gZFxO7ii8Wud1PG__95a49ed08a.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 33.2649290561676,
+      "top1_margin_x100": 4.221683740615845
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/istockphoto-928427868-612x612_jpg.rf.hMyp4tDChWLg6lH7akDA__597ed29c16.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 23.77135455608368,
+      "top1_margin_x100": 2.1723568439483643
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/little-kid-white-bodysuit-vest-260nw-1627357537_jpg.rf.I3Z37Dml98BWamX8UYiP__056762aaf1.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 32.76475667953491,
+      "top1_margin_x100": 3.907984495162964
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/newborn-behaviour-nutshellnarrow_jpg.rf.giGf252Pqls9lnxQyMEs__a998ba2010.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 30.22247552871704,
+      "top1_margin_x100": 1.5639036893844604
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/pexels-photo-459953_webp.rf.bHSFhEy0iOlbeJ6b7cd7__a38236c7b5.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 34.21560823917389,
+      "top1_margin_x100": 4.9387723207473755
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/photo-1504298589646-858f2c46ce1d_jpg.rf.lxR6H3wUVTYXJgqhezkf__296e6b0a4a.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 36.87857985496521,
+      "top1_margin_x100": 6.747770309448242
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/pic_jpg.rf.01OJPbtODJSzwvrxMSVC__bb0ca1c153.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 23.096203804016113,
+      "top1_margin_x100": 0.4135936498641968
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/pngtree-small-angry-girl-pointing-her-finger-png-image_12010119_png.rf.nmhLCVGtQ3RCWayhlbeb__182f861c4c.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 19.99835968017578,
+      "top1_margin_x100": 5.166608095169067
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/sad-baby-boy-34-months-600nw-2496412083_jpg.rf.yMP40eR36oqpPgfauCat__8976bdf0b0.png",
+      "predicted_class": "angry",
+      "target_class": "happy",
+      "target_cosine_x100": 29.18793559074402,
+      "top1_margin_x100": 2.272367477416992
+    },
+    {
+      "correct": true,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/social-smile-1-shutterstock_2432301069_png.rf.SPxFDbrbcrcfgyMRixzB__8a7016bceb.png",
+      "predicted_class": "happy",
+      "target_class": "happy",
+      "target_cosine_x100": 36.042970418930054,
+      "top1_margin_x100": 6.872767210006714
+    },
+    {
+      "correct": false,
+      "image": "/Users/jessicahenson/InfantEmotionGen/evaluation/data/pipeline_test/happy/what-to-write-in-a-new-baby-card-new-baby-card-messages-moth_jpg.rf.7mgRftsg0afifbVVzVo1__8110b2958e.png",
+      "predicted_class": "crying",
+      "target_class": "happy",
+      "target_cosine_x100": 28.645360469818115,
+      "top1_margin_x100": 1.1913716793060303
+    }
+  ],
+  "zero_shot_accuracy": 0.6375
+}
