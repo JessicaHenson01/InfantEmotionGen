@@ -249,6 +249,8 @@ Current final comparison on the external reference set:
 | SDXLPrimary | 144.6880 | 0.9167 | 0.8925 | 0.5533 | 0.5598 | 300 |
 | SD3.5 Medium | **125.2550** | **0.9433** | **0.9241** | **0.7967** | **0.8649** | 300 |
 
+Training logs, generation logs, and tracked evaluation JSON summaries are stored in `logs/`. See `logs/README.md` for the evidence inventory and the note about the truncated SDXL terminal progress capture.
+
 See `evaluation/README.md` for the complete evaluation workflow, smoke-test split, model registry, generation protocol, and metric details.
 
 ---
