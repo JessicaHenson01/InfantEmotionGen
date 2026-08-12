@@ -1,6 +1,6 @@
 # Synthetic Infant Facial Expression Generation Using SDXL and Stable Diffusion 3.5
 
-This repository contains the code and configuration for fine-tuning two state-of-the-art diffusion models—**SDXL** and **Stable Diffusion 3.5 Medium**—for controlled infant facial expression generation. The models are fine-tuned using **DreamBooth** personalization and **Low-Rank Adaptation (LoRA)** on a curated dataset of infant faces with three emotion classes: `happy`, `angry`, and `crying`.
+This repository contains the code and configuration for fine-tuning two latent diffusion architectures — **SDXL** and **Stable Diffusion 3.5 Medium** — for controlled infant facial expression generation. The models are fine-tuned using **DreamBooth** personalization and **Low-Rank Adaptation (LoRA)** on a curated dataset of infant faces with three emotion classes: `happy`, `angry`, and `crying`.
 
 ---
 
@@ -8,6 +8,7 @@ This repository contains the code and configuration for fine-tuning two state-of
 
 - [Project Structure](#project-structure)
 - [Requirements](#requirements)
+- [Dataset](#dataset)
 - [Training Pipelines](#training-pipelines)
   - [Train SDXL](#1-train-sdxl-unet-based)
   - [Train SD3.5 Medium](#2-train-sd35-medium-mmdit-based)
@@ -16,7 +17,8 @@ This repository contains the code and configuration for fine-tuning two state-of
   - [Generate with SD3.5 Medium](#2-generate-with-sd35-medium)
 - [Evaluation](#evaluation)
 - [Configuration](#configuration)
-- [License](#license)
+- [Hardware](#hardware)
+
 
 ---
 
@@ -31,32 +33,32 @@ InfantEmotionGen/
 │   │   ├── generate_infant_faces.py
 │   │   └── save_utils.py
 │   │
-│   └── stable_diffusion_35/              # SD3.5 Medium training and inference scripts
-│       ├── train_dreambooth_lora_sd35.py
-│       └── generate_infant_faces_sd35.py
+│   |── stable_diffusion_35/              # SD3.5 Medium training and inference scripts
+│   |   ├── train_dreambooth_lora_sd35.py
+│   |   |── generate_infant_faces_sd35.py
+|   |   └── config.py
+|   |
+|   └── data_utils/
+|       └── dataset.py
 │
 ├── data/
 │   ├── baby_emotion_samples/             # Training images (1200 total, 400 per emotion)
 │   └── labels_formatted.json             # JSON file mapping images to emotion labels
 │
-├── models/
-│   ├── infant_lora/                      # SDXL LoRA weights (output)
-│   └── infant_lora_sd35/                 # SD3.5 LoRA weights (output)
-│
-├── generated_images/
-│   ├── sdxl/                             # SDXL generated images
-│   └── sd35/                             # SD3.5 generated images
 │
 ├── evaluation/                           # Evaluation scripts, configs, and outputs
-│   └── generated/                        # Evaluation-generated images
+│   
 │
 ├── logs/
 │   ├── *_train.log                       # Training logs
 │   ├── *_generate.log                    # Generation logs
 │   └── evaluation_results/               # Tracked JSON metric summaries
 │
-├── InfantEmotionGen_Evaluation.ipynb     # Notebook wrapper for final evaluation
-├── configs.py                            # Shared hyperparameter configuration
+├── Data_Preprocessing.ipynb              # Notebook for data preprocessing
+├── SDXL_training.ipynb                   # Notebook for SDXL training and inference
+├── SD3-5_training.ipynb                  # Notebook for SD3.5 training and inference
+├── Model_Evaluation.ipynb                # Notebook wrapper for final evaluation
+├── requirements.txt                      # Dependencies to be installed
 ├── .pylintrc                             # Pylint configuration
 └── README.md                             # This file
 ```
@@ -77,6 +79,31 @@ Install dependencies via pip using the provided `requirements.txt`:
 ```bash
 pip install -r requirements.txt
 ```
+
+---
+
+## Dataset
+
+The experiments use infant facial-expression images from the Smart Baby
+Monitoring System dataset. Three expression categories are used:
+
+- `happy`
+- `angry`
+- `crying`
+
+The fine-tuning set contains **1,200 images**, with **400 images per
+expression**. A separate held-out reference set contains **750 images**,
+with **250 images per expression**.
+
+The evaluation reference images are non-overlapping with the fine-tuning
+images.
+
+Infant faces are extracted and resized to **512 × 512 pixels** before
+fine-tuning. No additional dataset-level augmentation is applied after face
+extraction.
+
+The dataset used for final evaluation is available through the project's
+external Hugging Face dataset repository.
 
 ---
 
@@ -240,3 +267,9 @@ All hyperparameters for training and generation are configured via the `configs.
 | Max Steps | `1500` | `1500` |
 
 Edit `configs.py` to adjust these values globally across training runs.
+
+## Hardware
+
+Training and generation were performed using NVIDIA GPUs with CUDA
+acceleration. GPU memory requirements may vary depending on the selected
+batch size, precision, gradient checkpointing, and model configuration.
