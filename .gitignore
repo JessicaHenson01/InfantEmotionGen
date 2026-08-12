@@ -12,6 +12,10 @@ __pycache__/
 /*.bmp
 /dataset.json
 
+# Local/private training data
+data/baby_emotion_samples/
+data/baby_emotion_sampels/
+
 # Evaluation data generated from private/source datasets
 evaluation/data/*
 evaluation/generated/
