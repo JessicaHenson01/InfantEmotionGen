@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Combine FID, CLIP, and FER JSON files into CSV and Markdown."""
 from __future__ import annotations
+
 import argparse
 import csv
 import sys
@@ -46,7 +47,7 @@ def main():
             "run": name,
             "FID ↓": fid.get("overall_fid", ""),
             "CLIP agreement ↑": clip.get("zero_shot_accuracy", ""),
-            "CLIP target cosine ×100 ↑": clip.get("mean_target_cosine_x100", ""),
+            "CLIPScore ↑": clip.get("mean_target_clip_score", ""),
             "FER accuracy ↑": fer.get("accuracy", ""),
             "FER macro F1 ↑": fer.get("macro_f1", ""),
             "generated images": clip.get("image_count", "")

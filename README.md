@@ -175,24 +175,46 @@ generated_images/
 
 ## Evaluation
 
-Evaluation is performed on a held-out reference set of 750 images (250 per emotion) from the same dataset. The following metrics are computed:
+Evaluation is performed with the scripts under `evaluation/`. Final evaluation uses the held-out Hugging Face dataset `InfantEmotionGen/InfantEmotionGen_Dataset`, specifically `final_test_samples/test_samples.json`, which provides 750 balanced reference images (250 per emotion). The generated images are compared with:
 
 - **FID:** Measures distributional realism against the reference set.
-- **CLIP Score:** Measures semantic alignment between generated images and prompt embeddings.
+- **CLIP Agreement and CLIPScore:** Measures semantic alignment between generated images and emotion prompts.
 - **FER Accuracy & Macro F1:** Measures emotional expression recognizability using a frozen facial expression classifier.
 
-> **Note:** The evaluation script is currently under development. Please refer to `evaluation/run_evaluation.py` for the final implementation. Update this section with the exact evaluation command once the script is finalized.
-
-### Example Evaluation Command (Placeholder)
+Populate and validate the final external reference set:
 
 ```bash
-python evaluation/run_evaluation.py \
-  --model sdxl \
-  --generated_dir ./generated_images/sdxl \
-  --reference_dir ./data/held_out_samples
+evaluation/scripts/populate_external_reference.sh
+evaluation/scripts/populate_external_reference.sh --validate-only
 ```
 
-**Metrics Output:** Results will be logged to WandB and saved as a JSON file in the `evaluation/` directory.
+Run the full configured evaluation:
+
+```bash
+evaluation/scripts/run_full_model_evaluation.sh
+```
+
+If SDXL is already complete and only SD3.5 needs to run:
+
+```bash
+RUN_SDXL=0 DEVICE=mps evaluation/scripts/run_full_model_evaluation.sh
+```
+
+Evaluation outputs are saved under `evaluation/results/<run_name>/`, and the final comparison table is written to:
+
+```text
+evaluation/results/comparison.csv
+evaluation/results/comparison.md
+```
+
+Current final comparison on the external reference set:
+
+| Model | FID ↓ | CLIP Agreement ↑ | CLIPScore ↑ | FER Acc. ↑ | FER Macro F1 ↑ | Images |
+|-------|------:|-----------------:|------------:|-----------:|---------------:|-------:|
+| SDXLPrimary | 144.6880 | 0.9167 | 0.8925 | 0.5533 | 0.5598 | 300 |
+| SD3.5 Medium | **125.2550** | **0.9433** | **0.9241** | **0.7967** | **0.8649** | 300 |
+
+See `evaluation/README.md` for the complete evaluation workflow, smoke-test split, model registry, generation protocol, and metric details.
 
 ---
 

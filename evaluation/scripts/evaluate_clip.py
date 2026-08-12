@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Evaluate generated classes with OpenCLIP image-text similarity."""
 from __future__ import annotations
+
 import argparse
 import sys
 from collections import Counter, defaultdict
@@ -107,6 +108,7 @@ def main():
 
     records = []
     target_scores = defaultdict(list)
+    clip_scores = defaultdict(list)
     margins = defaultdict(list)
     confusion = Counter()
 
@@ -146,12 +148,15 @@ def main():
             pred_idx = int(np.argmax(probs[row]))
             predicted = class_names[pred_idx]
 
-            score = float(cosine[row, target_idx] * 100)
+            target_cosine = float(cosine[row, target_idx])
+            score = float(target_cosine * 100)
+            clip_score = float(2.5 * max(target_cosine, 0.0))
             ordered = np.sort(cosine[row])
             margin = float((ordered[-1] - ordered[-2]) * 100)
 
             confusion[(target, predicted)] += 1
             target_scores[target].append(score)
+            clip_scores[target].append(clip_score)
             margins[target].append(margin)
 
             records.append({
@@ -160,6 +165,7 @@ def main():
                 "predicted_class": predicted,
                 "correct": target == predicted,
                 "target_cosine_x100": score,
+                "target_clip_score": clip_score,
                 "top1_margin_x100": margin
             })
 
@@ -172,6 +178,9 @@ def main():
         "zero_shot_accuracy": sum(r["correct"] for r in records) / len(records),
         "mean_target_cosine_x100": float(np.mean(
             [r["target_cosine_x100"] for r in records]
+        )),
+        "mean_target_clip_score": float(np.mean(
+            [r["target_clip_score"] for r in records]
         )),
         "per_class": {},
         "confusion": {
@@ -189,11 +198,13 @@ def main():
                 "count": len(subset),
                 "zero_shot_accuracy": sum(r["correct"] for r in subset) / len(subset),
                 "mean_target_cosine_x100": float(np.mean(target_scores[name])),
+                "mean_target_clip_score": float(np.mean(clip_scores[name])),
                 "mean_top1_margin_x100": float(np.mean(margins[name]))
             }
 
     save_json(result, args.output)
     print(f"CLIP agreement: {result['zero_shot_accuracy']:.4f}")
+    print(f"CLIPScore: {result['mean_target_clip_score']:.4f}")
     print(f"Saved: {args.output}")
 
 
