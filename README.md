@@ -43,7 +43,7 @@ InfantEmotionGen/
 │
 ├── data/
 │   ├── baby_emotion_samples/             # Training images (1200 total, 400 per emotion)
-│   └── labels_formatted.json             # JSON file mapping images to emotion labels
+│   └── baby_emotion_samples.json         # JSON file mapping images to emotion labels
 │
 │
 ├── evaluation/                           # Evaluation scripts, configs, and outputs
@@ -118,7 +118,7 @@ Run the following command from the **project root**:
 ```bash
 python src/stable_diffusion/train_dreambooth_lora_sdxl.py \
   --data_dir ./data/baby_emotion_samples \
-  --json_path ./data/labels_formatted.json \
+  --json_path ./data/baby_emotion_samples.json \
   --output_dir ./models/infant_lora \
   --wandb_project "infant-emotion-generation" \
   --wandb_run_name "sdxl-training" \
@@ -143,7 +143,7 @@ Run the following command from the **project root**:
 ```bash
 python src/stable_diffusion_35/train_dreambooth_lora_sd35.py \
   --data_dir ./data/baby_emotion_samples \
-  --json_path ./data/labels_formatted.json \
+  --json_path ./data/baby_emotion_samples.json \
   --output_dir ./models/infant_lora_sd35 \
   --wandb_project "infant-emotion-generation" \
   --wandb_run_name "sd35-training" \
@@ -214,7 +214,7 @@ Evaluation is performed with the scripts under `evaluation/`. Final evaluation u
 - **CLIP Agreement and CLIPScore:** Measures semantic alignment between generated images and emotion prompts.
 - **FER Accuracy & Macro F1:** Measures emotional expression recognizability using a frozen facial expression classifier.
 
-For the notebook-based workflow, open `InfantEmotionGen_Evaluation.ipynb` from the repository root and run the cells in order. The notebook validates the external reference set, checks generated image counts, runs the configured metrics for both model runs, prints the comparison table, and copies JSON summaries into `logs/evaluation_results/`.
+For the notebook-based workflow, open `Model_Evaluation.ipynb` from the repository root and run the cells in order. The notebook validates the external reference set, checks generated image counts, runs the configured metrics for both model runs, prints the comparison table, and copies JSON summaries into `logs/evaluation_results/`.
 
 Populate and validate the final external reference set:
 
